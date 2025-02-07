@@ -1,7 +1,10 @@
 import { HeroSection } from "./components/hero-section";
-
+import { FeaturedProducts } from "./components/featured-products";
 export default function Home() {
   return (
-    <HeroSection/>
+    <div>
+      <HeroSection/>
+      <FeaturedProducts/>
+    </div>
   );
 }

@@ -23,14 +23,15 @@ const NavIcons = () => {
         <Heart className="h-[22px] w-[22px]" />
         <span className="sr-only">Wishlist</span>
       </button>
-      <button className="text-foreground">
-        <ShoppingCart className="h-[22px] w-[22px]" />
-        <span className="sr-only">Cart</span>
-      </button>
       <button className="text-foreground" onClick={handleProfile}>
         <User className="h-[22px] w-[22px]" />
         <span className="sr-only">User menu</span>
       </button>
+      <button className="text-foreground">
+        <ShoppingCart className="h-[22px] w-[22px]" />
+        <span className="sr-only">Cart</span>
+      </button>
+      
       {isProfileOpen && isLoggedIn && (
         <div className="absolute p-4 rounded-md top-12 right-0 bg-white shadow-md">
           <Link href="/profile" className="block mb-2">

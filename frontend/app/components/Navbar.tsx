@@ -30,11 +30,7 @@ const Navbar = () => {
             </div>
           </Link>
           <div className="hidden xl:flex gap-8">
-            <Link href="/">Home</Link>
-            <Link href="/">NewIn</Link>
-            <Link href="/">Collections</Link>
-            <Link href="/">About</Link>
-            <Link href="/">Contact</Link>
+            
             <Link href="/" className="hover:text-gray-600 transition">Home</Link>
             <Link href="/" className="hover:text-gray-600 transition">NewIn</Link>
             <Link href="/" className="hover:text-gray-600 transition">Collections</Link>

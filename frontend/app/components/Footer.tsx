@@ -78,7 +78,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 py-12 border-t border-gray-200">
           {/* Brand Section */}
           <div className="lg:col-span-1">
-            <Image src="/logo.png" alt="Kashvi Creation Logo" width={150} height={50} className="mb-4" />
+            <Image src="/logo2.jpg" alt="Kashvi Creation Logo" width={150} height={50} className="mb-4" />
             <p className="text-gray-600 text-sm">
               We are a fashion brand that offers the best of contemporary, ethnic Indian fashion and fusion-wear styles.
             </p>

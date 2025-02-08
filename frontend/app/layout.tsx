@@ -8,12 +8,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body>
-        <Navbar/>
-        {children}
-        <Footer/>
-      </body>
-    </html>
-  );
+		<html lang='en'>
+			<body>
+				<Navbar />
+				<div className='w-full h-[2px] bg-gradient-to-r from-transparent via-[#ff9933] to-transparent '></div>
+				{children}
+				<Footer />
+			</body>
+		</html>
+	);
 }

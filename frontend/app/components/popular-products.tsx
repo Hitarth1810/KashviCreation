@@ -1,5 +1,6 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
+import Image from "next/image"
 
 interface Product {
   id: number
@@ -49,7 +50,7 @@ export function PopularProducts() {
           <div key={product.id} className="group">
             <div className="relative aspect-[3/4] mb-4">
               <div className="absolute inset-0 bg-[url('/frame.svg')] bg-contain bg-no-repeat">
-                <img
+                <Image
                   src={product.image || "/placeholder.svg"}
                   alt={product.name}
                   className="w-full h-full object-cover p-4"

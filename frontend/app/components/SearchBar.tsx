@@ -66,7 +66,7 @@ const SearchBar = () => {
             name="name"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Search"
+            placeholder="Search for sarees"
             className="w-full bg-transparent outline-none text-sm placeholder:text-gray-400"
           />
           {searchTerm && (
@@ -78,7 +78,7 @@ const SearchBar = () => {
         <button
           type="button"
           onClick={toggleSearch}
-          className="p-2 hover:bg-gray-50 transition-colors duration-200 relative z-10"
+          className="p-2 transition-colors duration-200 relative z-10"
         >
           <Image src="/search.png" alt="Search" width={20} height={20} priority />
         </button>

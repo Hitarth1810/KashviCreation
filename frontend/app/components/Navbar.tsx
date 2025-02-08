@@ -43,6 +43,7 @@ const Navbar = () => {
             <Link href="/">Collections</Link>
             <Link href="/">About</Link>
             <Link href="/">Contact</Link>
+<<<<<<< HEAD
 					</div>
 				</div>
 				{/*RIGHT*/}
@@ -52,6 +53,19 @@ const Navbar = () => {
 				</div>
 			</div>
 		</div>
+=======
+          </div>
+        </div>
+        {/*RIGHT*/}
+        <div className="w-2/3 xl:w-1/2 flex items-center justify-end gap-6">
+          <div className="flex-1 flex justify-end">
+            <SearchBar />
+          </div>
+          <NavIcons />
+        </div>
+      </div>
+    </div>
+>>>>>>> be3ae4d3df8f2e1d57c40790327f5dadb3c08824
   )
 }
 

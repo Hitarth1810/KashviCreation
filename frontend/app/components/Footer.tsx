@@ -2,33 +2,28 @@
 
 import Image from "next/image"
 import Link from "next/link"
-import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api"
 
-const mapContainerStyle = {
-  width: "100%",
-  height: "200px",
-   // Adjusted height to make the map smaller
-}
+
 
 // Replace with your actual latitude and longitude
-const center = {
-  lat: 21.192392127899055,
-  lng:  72.83928371128913,
-}
+
 
 export default function Footer() {
   return (
     <footer className="bg-pink-50 pt-16 pb-8">
      <div className="container mx-auto px-4">
-  <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12  relative">
-    {/* Google Maps Section - Added padding and margin classes */}
-    <div className="w-full rounded-lg overflow-hidden shadow-md ml-auto md:w-[90%]">
-      <LoadScript googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || ""}>
-        <GoogleMap mapContainerStyle={mapContainerStyle} center={center} zoom={15}>
-          <Marker position={center} />
-        </GoogleMap>
-      </LoadScript>
-    </div>
+     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12 relative">
+      {/* Map Section - Replaced Google Maps with iframe */}
+      <div className="w-full rounded-lg overflow-hidden shadow-md ml-auto md:w-[90%]">
+        <iframe 
+          src="https://www.google.com/maps/embed?pb=!1m27!1m12!1m3!1d59525.106476417786!2d72.80288866081364!3d21.17947688894457!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m12!3e6!4m4!1s0x3be04f30c2a28475%3A0xad5f81ba586f9f2c!3m2!1d21.179439!2d72.8442207!4m5!1s0x3be04f30c2a28475%3A0xad5f81ba586f9f2c!2s6124%2C%20Millenium%20Textile%20Market%2C%20Shop%20No%206115%20to%2C%204%2C%20Bhatena%20Rd%2C%20Udhna%20Udhyog%20Nagar%2C%20Bhatena%2C%20Surat%2C%20Gujarat%20395002!3m2!1d21.179439!2d72.8442207!5e0!3m2!1sen!2sin!4v1739093957921!5m2!1sen!2sin"
+          className="w-full h-[200px]" // Same height as previous map
+          style={{border: 0}}
+          allowFullScreen={true}
+          loading="lazy"
+          referrerPolicy="no-referrer-when-downgrade"
+        />
+      </div>
 
    
                {/* Instagram Feed Section */}

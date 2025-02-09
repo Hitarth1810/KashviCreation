@@ -84,7 +84,7 @@ export default function AboutPage() {
             <motion.p variants={fadeInUp} className="text-gray-600 leading-relaxed">
               At Kashvi Creation, we blend centuries-old traditional craftsmanship with contemporary design
               sensibilities. Our journey began with a vision to create sarees that not only preserve our rich cultural
-              heritage but also cater to the modern woman's aesthetic preferences.
+              heritage but also cater to the modern woman&apos;s aesthetic preferences.
             </motion.p>
             <motion.p variants={fadeInUp} className="text-gray-600 leading-relaxed">
               Each piece in our collection is a testament to the skilled artisans who pour their heart and soul into

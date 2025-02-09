@@ -4,8 +4,10 @@ import type { NextPage } from "next"
 import type React from "react"
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { Star, Heart, Send } from "lucide-react"
+import { Star, Heart, Send,Minus, Plus } from "lucide-react"
 import Image from "next/image"
+import { useRouter } from "next/navigation"
+
 
 // Types
 interface Color {
@@ -74,6 +76,7 @@ const initialReviews: Review[] = [
 ]
 
 const ProductPage: NextPage = () => {
+  const router=useRouter()
   const [selectedImage, setSelectedImage] = useState<string>(thumbnails[0])
   const [hoveredImage, setHoveredImage] = useState<string | null>(null)
   const [reviews, setReviews] = useState<Review[]>(initialReviews)
@@ -85,6 +88,11 @@ const ProductPage: NextPage = () => {
   const [hoverRating, setHoverRating] = useState<number>(0)
   const [isInCart, setIsInCart] = useState(false)
   const [isInWishlist, setIsInWishlist] = useState(false)
+  const [quantity, setQuantity] = useState<number>(1)
+
+  const handleQuantityChange = (type: "increment" | "decrement") => {
+    setQuantity((prev) => (type === "increment" ? prev + 1 : Math.max(1, prev - 1)))
+  }
 
   const handleSubmitReview = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -99,6 +107,14 @@ const ProductPage: NextPage = () => {
       setNewReview({ name: "", comment: "", rating: 5 })
     }
   }
+  const handleCartClick = () => {
+    if (isInCart) {
+      router.push("/cart")
+    } else {
+      setIsInCart(true)
+    }
+  }
+
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -208,13 +224,25 @@ const ProductPage: NextPage = () => {
                 </div>
               </motion.div>
             </AnimatePresence>
-
+            {/*Quantity Selection*/}
+            <div>
+              <h3 className="text-sm font-medium text-gray-900">Quantity</h3>
+              <div className="flex items-center mt-2 border border-gray-300 rounded-lg w-max p-2">
+                <motion.button whileTap={{ scale: 0.9 }} onClick={() => handleQuantityChange("decrement")}>
+                  <Minus className="w-5 h-5 text-gray-700" />
+                </motion.button>
+                <span className="mx-4 text-lg font-semibold">{quantity}</span>
+                <motion.button whileTap={{ scale: 0.9 }} onClick={() => handleQuantityChange("increment")}>
+                  <Plus className="w-5 h-5 text-gray-700" />
+                </motion.button>
+              </div>
+            </div>
             {/* Action Buttons */}
             <div className="flex space-x-4 py-4">
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                onClick={() => setIsInCart(!isInCart)}
+                onClick={handleCartClick}
                 className="flex-1 bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors"
               >
                 {isInCart ? "View Cart" : "Add to Cart"}

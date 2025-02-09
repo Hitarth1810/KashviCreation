@@ -9,7 +9,7 @@ import LogoLetter from "@/public/KCLogoLetter.png"
 
 const Navbar = () => {
   return (
-    <nav className="h-20 px-4 md:px-8 lg:px-16 xl:px-24 2xl:px-32 bg-gradient-to-r from-[#FFFAF0] to-[#FFF5E6] shadow-lg sticky top-0 z-50">
+    <nav className="h-16 px-4 md:px-8 lg:px-16 xl:px-24 2xl:px-32 bg-gradient-to-r from-[#FFFAF0] to-[#FFF5E6] shadow-lg sticky top-0 z-50">
       {/* MOBILE NAVBAR */}
       <div className="h-full flex items-center justify-between md:hidden">
         <Link href="/" className="flex items-center space-x-2">

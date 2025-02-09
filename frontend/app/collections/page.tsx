@@ -62,7 +62,7 @@ export default function Collections() {
                 exit={{ opacity: 0, scale: 0.9 }}
                 transition={{ duration: 0.3 }}
               >
-                <Link href={`/product/${saree.id}`} className="block">
+                <Link href='/productpage' className="block">
                   <div className="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 overflow-hidden">
                     {/* Image Container */}
                     <div className="relative group">

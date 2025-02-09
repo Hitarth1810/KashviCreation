@@ -61,7 +61,7 @@ const NavIcons = () => {
 
       {isProfileOpen && isLoggedIn && (
         <div className="absolute p-4 rounded-md top-12 right-0 bg-white shadow-md">
-          <Link href="/profile" className="block mb-2">
+          <Link href="/" className="block mb-2">
             Profile
           </Link>
           <button className="block" onClick={() => console.log("Logout clicked")}>

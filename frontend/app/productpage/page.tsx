@@ -165,7 +165,7 @@ const ProductPage: NextPage = () => {
           <div className="space-y-4 overflow-y-auto h-full pr-4">
             <div>
               <h1 className="text-3xl font-bold text-gray-900">Traditional Silk Saree</h1>
-              <p className="text-2xl font-semibold text-gray-900 mt-2">$299.99</p>
+              
             </div>
 
             {/* Reviews Summary */}

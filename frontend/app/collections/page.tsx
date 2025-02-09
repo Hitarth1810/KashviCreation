@@ -3,19 +3,20 @@
 import { useState, useEffect } from "react"
 import Image from "next/image"
 import Link from "next/link"
-import { Eye, ShoppingCart } from "lucide-react"
+import { Eye, Heart } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 
 const sarees = Array.from({ length: 32 }, (_, i) => ({
   id: i + 1,
   name: `Elegant Saree ${i + 1}`,
   image: `/saree-${(i % 4) + 1}.jpg`,
-  price: Math.floor(Math.random() * (10000 - 5000 + 1) + 5000),
+  
   description: "Beautiful handcrafted saree with intricate designs and vibrant colors.",
 }))
 
 export default function Collections() {
   const [cart, setCart] = useState<number[]>([])
+  const [wishlist, setWishlist] = useState<number[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
@@ -27,15 +28,29 @@ export default function Collections() {
   }, [cart])
 
   useEffect(() => {
+    localStorage.setItem("wishlist", JSON.stringify(wishlist))
+  }, [wishlist])
+
+  useEffect(() => {
     const savedCart = localStorage.getItem("cart")
+    const savedWishlist = localStorage.getItem("wishlist")
     if (savedCart) {
       setCart(JSON.parse(savedCart))
+    }
+    if (savedWishlist) {
+      setWishlist(JSON.parse(savedWishlist))
     }
   }, [])
 
   const addToCart = (e: React.MouseEvent, id: number) => {
     e.preventDefault()
     setCart([...cart, id])
+  }
+
+  const toggleWishlist = (e: React.MouseEvent, id: number) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setWishlist((prev) => (prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]))
   }
 
   return (
@@ -62,7 +77,7 @@ export default function Collections() {
                 exit={{ opacity: 0, scale: 0.9 }}
                 transition={{ duration: 0.3 }}
               >
-                <Link href='/productpage' className="block">
+                <Link href="/productpage" className="block">
                   <div className="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 overflow-hidden">
                     {/* Image Container */}
                     <div className="relative group">
@@ -85,10 +100,14 @@ export default function Collections() {
                         <motion.button
                           whileHover={{ scale: 1.1 }}
                           whileTap={{ scale: 0.9 }}
-                          onClick={(e) => addToCart(e, saree.id)}
-                          className="bg-white text-amber-800 p-3 rounded-full shadow-md hover:bg-amber-800 hover:text-white transition-colors duration-300"
+                          onClick={(e) => toggleWishlist(e, saree.id)}
+                          className={`p-3 rounded-full shadow-md transition-colors duration-300 ${
+                            wishlist.includes(saree.id)
+                              ? "bg-white text-red-500"
+                              : "bg-white text-amber-800 hover:bg-amber-800 hover:text-white"
+                          }`}
                         >
-                          <ShoppingCart size={24} />
+                          <Heart size={24} fill={wishlist.includes(saree.id) ? "currentColor" : "none"} />
                         </motion.button>
                       </div>
                     </div>
@@ -96,7 +115,6 @@ export default function Collections() {
                     {/* Details */}
                     <div className="p-4">
                       <h2 className="text-xl font-semibold text-gray-800 mb-2">{saree.name}</h2>
-                      <p className="text-amber-600 font-bold mb-3">₹{saree.price.toLocaleString()}</p>
                       <p className="text-gray-600 text-sm mb-4">{saree.description}</p>
 
                       {/* Button */}
@@ -130,3 +148,4 @@ export default function Collections() {
     </div>
   )
 }
+

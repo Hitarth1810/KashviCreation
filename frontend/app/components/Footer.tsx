@@ -4,6 +4,14 @@ import Image from "next/image"
 import Link from "next/link"
 
 
+import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api"
+import Logo from "@/public/KCLogo.png"
+import LogoLetter from "@/public/KCLogoLetter.png"
+const mapContainerStyle = {
+  width: "100%",
+  height: "200px",
+   // Adjusted height to make the map smaller
+}
 
 // Replace with your actual latitude and longitude
 
@@ -73,24 +81,35 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 py-12 border-t border-gray-200">
           {/* Brand Section */}
           <div className="lg:col-span-1">
-            <Image src="/logo2.jpg" alt="Kashvi Creation Logo" width={150} height={50} className="mb-4" />
-            <p className="text-gray-600 text-sm">
+          <Link href="/" className="flex items-center space-x-3 mr-3">
+            <Image src={Logo || "/placeholder.svg"} alt="logo" width={40} height={50} className="opacity-90" priority />
+            <Image
+              src={LogoLetter || "/placeholder.svg"}
+              alt="logoletter"
+              width={90}
+              height={30}
+              className="opacity-90"
+              priority
+            />
+          </Link>
+          <p className="text-gray-600 text-sm mt-10">
               We are a fashion brand that offers the best of contemporary, ethnic Indian fashion and fusion-wear styles.
             </p>
           </div>
+         
 
           {/* Quick Links */}
           <div>
             <h4 className="text-lg font-medium mb-4">Quick Link</h4>
             <ul className="space-y-2">
               <li>
-                <Link href="/men" className="text-gray-600 hover:text-gray-900">
-                  Men
+                <Link href="/" className="text-gray-600 hover:text-gray-900">
+                  NewIn
                 </Link>
               </li>
               <li>
-                <Link href="/women" className="text-gray-600 hover:text-gray-900">
-                  Women
+                <Link href="/collections" className="text-gray-600 hover:text-gray-900">
+                  Collections
                 </Link>
               </li>
               <li>
@@ -108,7 +127,7 @@ export default function Footer() {
 
           {/* Vastram */}
           <div>
-            <h4 className="text-lg font-medium mb-4">Vastram</h4>
+            <h4 className="text-lg font-medium mb-4">Kashvi</h4>
             <ul className="space-y-2">
               <li>
                 <Link href="/about" className="text-gray-600 hover:text-gray-900">

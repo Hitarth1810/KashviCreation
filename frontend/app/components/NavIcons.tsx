@@ -53,11 +53,15 @@ const NavIcons = () => {
   }
 
   return (
-    <div className="flex items-center gap-4 xl:gap-6 relative">
+    <div className="flex items-center gap-2 xl:gap-4 relative">
+      <Link href="/wishlist" 
+        className="p-1 text-gray-700 hover:text-blue-600 transition-colors relative">
       <button className="p-1 text-gray-700 hover:text-blue-600 transition-colors">
         <Heart className="h-[22px] w-[22px]" />
         <span className="sr-only">Wishlist</span>
       </button>
+      </Link>
+      
       
       <div className="profile-menu relative">
         <button 

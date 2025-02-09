@@ -184,7 +184,7 @@ export default function Footer() {
             <h4 className="text-lg font-medium mb-4">My Account</h4>
             <ul className="space-y-2">
               <li>
-                <Link href="/login" className="text-gray-600 hover:text-gray-900">
+                <Link href="/signin" className="text-gray-600 hover:text-gray-900">
                   Login
                 </Link>
               </li>
@@ -196,16 +196,6 @@ export default function Footer() {
               <li>
                 <Link href="/wishlist" className="text-gray-600 hover:text-gray-900">
                   Wishlist
-                </Link>
-              </li>
-              <li>
-                <Link href="/track-order" className="text-gray-600 hover:text-gray-900">
-                  Order Tracking
-                </Link>
-              </li>
-              <li>
-                <Link href="/order-history" className="text-gray-600 hover:text-gray-900">
-                  Order History
                 </Link>
               </li>
             </ul>

@@ -4,14 +4,9 @@ import Image from "next/image"
 import Link from "next/link"
 
 
-import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api"
 import Logo from "@/public/KCLogo.png"
 import LogoLetter from "@/public/KCLogoLetter.png"
-const mapContainerStyle = {
-  width: "100%",
-  height: "200px",
-   // Adjusted height to make the map smaller
-}
+
 
 // Replace with your actual latitude and longitude
 

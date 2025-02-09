@@ -7,14 +7,12 @@ const JWT_EXPIRES_IN = "1d";
 type JWTPayload = {
 	userId: string;
 	email: string;
-	role: string;
 };
 
 export function generateToken(user: User): string {
 	const payload: JWTPayload = {
 		userId: user.id,
 		email: user.email,
-		role: user.role,
 	};
 
 	return jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });

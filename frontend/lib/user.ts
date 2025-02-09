@@ -4,6 +4,7 @@ import crypto from "crypto";
 
 export type CreateUserInput = {
 	email: string;
+	phone: number;
 	password: string;
 	name?: string;
 };
@@ -11,25 +12,25 @@ export type CreateUserInput = {
 export type UpdateUserInput = {
 	email?: string;
 	name?: string;
+	phone?: number;
 	password?: string;
 };
 
 export async function createUser(data: CreateUserInput) {
 	const hashedPassword = await bcrypt.hash(data.password, 12);
 
-	return prisma.user.create({
-		data: {
-			...data,
-			password: hashedPassword,
-		},
-		select: {
-			id: true,
-			email: true,
-			name: true,
-			role: true,
-			createdAt: true,
-		},
-	});
+	try {
+		const u = prisma.user.create({
+			data: {
+				...data,
+				password: hashedPassword,
+			},
+		});
+		return u;
+	} catch (error) {
+		console.error("User Creation Error:", error);
+		return null;
+	}
 }
 
 export async function findUserByEmail(email: string) {

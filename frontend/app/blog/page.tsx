@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from "react";
-import { motion } from "framer-motion";
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import { Search, ChevronRight } from "lucide-react";
+import { Search, ChevronRight, ChevronLeft } from "lucide-react";
+import { blogPosts } from "../data/blogPosts";
 
-interface BlogPost {
+interface blogPosts {
   id: number;
   title: string;
   excerpt: string;
@@ -15,77 +16,8 @@ interface BlogPost {
   readTime: string;
   image: string;
   slug: string;
+  content: string;
 }
-
-const blogPosts: BlogPost[] = [
-  {
-    id: 1,
-    title: "The Art of Draping: 10 Traditional Saree Styles You Must Know",
-    excerpt:
-      "Discover the rich cultural heritage behind different saree draping styles, from the classic Nivi to the elegant Gujarati style...",
-    category: "Styling Guide",
-    date: "March 15, 2024",
-    readTime: "8 min read",
-    image: "/blog_drapping.jpg",
-    slug: "art-of-draping",
-  },
-  {
-    id: 2,
-    title: "Understanding Silk Sarees: A Complete Guide to Types and Care",
-    excerpt:
-      "Learn about different types of silk sarees, from Kanjeevaram to Banarasi, and how to maintain their timeless beauty...",
-    category: "Fabric Care",
-    date: "March 12, 2024",
-    readTime: "6 min read",
-    image: "/blog_fabriccare.jpg",
-    slug: "silk-sarees-guide",
-  },
-  {
-    id: 3,
-    title: "Modern Saree Trends: Fusion Wear for the Contemporary Woman",
-    excerpt:
-      "Explore innovative ways to style your saree with contemporary elements, perfect for the modern fashion-forward woman...",
-    category: "Fashion Trends",
-    date: "March 10, 2024",
-    readTime: "5 min read",
-    image: "/blog_fashiontrends.jpg",
-    slug: "modern-saree-trends",
-  },
-  {
-    id: 4,
-    title: "Traditional Sarees: The Timeless Beauty of Indian Heritage",
-    excerpt:
-      "Dive into the world of traditional Indian sarees, from the regal Kanjivaram to the delicate Chanderi. Explore the craftsmanship, rich fabrics, and cultural significance behind these timeless weaves...",
-    category: "Traditional Wear",
-    date: "March 10, 2024",
-    readTime: "6 min read",
-    image: "/blog_trad.jpg",
-    slug: "traditional-wear-sarees",
-  },
-
-  {
-    id: 5,
-    title: "The Evolution of Saree: From Ancient Times to Modern Fashion",
-    excerpt:
-      "Trace the journey of the saree through history, exploring how this timeless garment has adapted to changing fashion trends while maintaining its cultural significance...",
-    category: "Fashion History",
-    date: "March 5, 2024",
-    readTime: "7 min read",
-    image: "/blog_history.jpg",
-    slug: "saree-evolution",
-  },
-  {
-    id: 6,
-    title: "Bridal Sarees: A Timeless Elegance for the Perfect Wedding Look",
-    excerpt:
-      "Explore the grandeur of bridal sarees, from Banarasi silk to Kanjivaram weaves. Discover how to choose the perfect saree for your big day, blending tradition with modern aesthetics...",
-    category: "Bridal Guide",
-    date: "March 5, 2024",
-    readTime: "7 min read",
-    image: "/blog_bridal.jpg",
-    slug: "bridal-wear-sarees",
-  },
-];
 
 const categories = [
   "All",
@@ -100,6 +32,34 @@ const categories = [
 export default function BlogPage() {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  const slides = [
+    "/blog_slider.jpg",
+    "/blog_slider2.jpg",
+    "/blog_slider3.jpg",
+    "/blog_slider4.jpg",
+    "/blog_slider5.jpg",
+  ];
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % slides.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, [slides.length]);
+
+  const nextSlide = () => {
+    setCurrentSlide((prev) => (prev + 1) % slides.length);
+  };
+
+  const prevSlide = () => {
+    setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
+  };
+
+  const goToSlide = (index: number) => {
+    setCurrentSlide(index);
+  };
 
   const filteredPosts = blogPosts.filter((post) => {
     const matchesCategory =
@@ -127,37 +87,67 @@ export default function BlogPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Improved Hero Section */}
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="relative h-[50vh] min-h-[500px] bg-[url('/placeholder.svg?height=1080&width=1920')] bg-cover bg-center"
-      >
-        <div className="absolute inset-0 bg-black/50" />
-        <div className="relative h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col justify-center items-center text-center">
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6 tracking-tight"
+      {/* New Hero Section with Slider */}
+      <div className="relative h-[80vh] min-h-[600px] overflow-hidden">
+        <AnimatePresence initial={false}>
+          <motion.div
+            key={currentSlide}
+            initial={{ opacity: 0, x: 1000 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -1000 }}
+            transition={{ duration: 0.8 }}
+            className="absolute inset-0"
           >
-            Elegance Unveiled
-          </motion.h1>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className="text-xl md:text-2xl text-gray-200 max-w-3xl leading-relaxed"
-          >
-            Embark on a journey through the rich tapestry of saree culture.
-            Explore timeless traditions, contemporary styles, and expert care
-            guides.
-          </motion.p>
+            <Image
+              src={slides[currentSlide] || "/placeholder.svg"}
+              alt="Saree Collection"
+              width={1500}
+              height={100}
+              className="object-cover"
+              priority
+            />
+            <div className="absolute inset-0 bg-black/30" />
+          </motion.div>
+        </AnimatePresence>
+
+        {/* Navigation Arrows */}
+        <button
+          onClick={prevSlide}
+          className="absolute left-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/30 hover:bg-white/50 transition-all"
+          aria-label="Previous slide"
+        >
+          <ChevronLeft className="w-6 h-6 text-white" />
+        </button>
+        <button
+          onClick={nextSlide}
+          className="absolute right-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/30 hover:bg-white/50 transition-all"
+          aria-label="Next slide"
+        >
+          <ChevronRight className="w-6 h-6 text-white" />
+        </button>
+
+        {/* Navigation Dots */}
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+          {slides.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => goToSlide(index)}
+              className={`w-3 h-3 rounded-full transition-all ${
+                currentSlide === index ? "bg-white scale-125" : "bg-white/50"
+              }`}
+              aria-label={`Go to slide ${index + 1}`}
+            />
+          ))}
         </div>
-      </motion.div>
+      </div>
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="flex justify-center items-center">
+          <h1 className="text-3xl font-bold text-gray-800 mb-8 text-center">
+            Explore Trends, Unravel Stories, and Embrace Elegance!
+          </h1>
+        </div>
         {/* Search and Filter */}
         <div className="mb-12 space-y-6">
           <div className="relative max-w-xl mx-auto">

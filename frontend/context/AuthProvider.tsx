@@ -1,5 +1,5 @@
 "use client";
-
+import axios from "axios";
 import { createContext, useContext, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { UserData } from "@/types/auth";
@@ -7,7 +7,12 @@ import { UserData } from "@/types/auth";
 interface AuthContextType {
 	user: UserData | null;
 	login: (email: string, password: string) => Promise<void>;
-	signup: (email: string, password: string, name: string) => Promise<void>;
+	signup: (
+		email: string,
+		password: string,
+		phone: number,
+		name: string
+	) => Promise<void>;
 	logout: () => Promise<void>;
 }
 
@@ -24,10 +29,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
 	const checkAuth = async () => {
 		try {
-			const res = await fetch("/api/auth/me");
-			if (res.ok) {
-				const userData = await res.json();
-				setUser(userData);
+			const res = await axios.get("/api/auth/me");
+			if (res.status === 200) {
+				setUser(res.data);
 			}
 		} catch {
 			setUser(null);
@@ -35,13 +39,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 	};
 
 	const login = async (email: string, password: string) => {
-		const res = await fetch("/api/auth/login", {
-			method: "POST",
+		const res = await axios.post("/api/auth/login", {
 			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify({ email, password }),
+			body: { email, password },
 		});
 
-		if (!res.ok) {
+		if (res.status !== 200) {
 			throw new Error("Login failed");
 		}
 
@@ -49,23 +52,30 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 		router.push("/dashboard");
 	};
 
-	const signup = async (email: string, password: string, name: string) => {
-		const res = await fetch("/api/auth/signup", {
-			method: "POST",
-			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify({ email, password, name }),
+	const signup = async (
+		email: string,
+		password: string,
+		phone: number,
+		name: string
+	) => {
+		const response = await axios.post("/api/auth/signup", {
+			name,
+			email,
+			phone,
+			password,
 		});
 
-		if (!res.ok) {
-			throw new Error("Signup failed");
+		const data = response.data;
+
+		if (response.status !== 200) {
+			throw new Error(data.message || "Something went wrong");
 		}
 
-		await checkAuth();
-		router.push("/dashboard");
+		router.push("/signin");
 	};
 
 	const logout = async () => {
-		await fetch("/api/auth/logout", { method: "POST" });
+		await axios.post("/api/auth/logout");
 		setUser(null);
 		router.push("/login");
 	};

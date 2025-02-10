@@ -2,11 +2,10 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import axios from "axios";
+import { useAuth } from "@/context/AuthProvider";
 
 export default function SignUpPage() {
-	const router = useRouter();
+	const { signup } = useAuth();
 	const [userType, setUserType] = useState("user");
 	const [name, setName] = useState("");
 	const [email, setEmail] = useState("");
@@ -19,20 +18,7 @@ export default function SignUpPage() {
 		setError("");
 
 		try {
-			const response = await axios.post("/api/auth/signup", {
-				name,
-				email,
-				phone,
-				password,
-			});
-
-			const data = response.data;
-
-			if (response.status !== 200) {
-				throw new Error(data.message || "Something went wrong");
-			}
-
-			router.push("/signin");
+			await signup(email, password, Number(phone), name)
 		} catch (err: unknown) {
 			if (err instanceof Error) {
 				setError(err.message);

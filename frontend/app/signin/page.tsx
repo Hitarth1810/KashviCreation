@@ -1,11 +1,10 @@
 "use client";
-import axios from "axios";
 import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/AuthProvider";
 
 export default function SignInPage() {
-	const router = useRouter();
+	const { login } = useAuth();
 	const [userType, setUserType] = useState("user");
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
@@ -16,25 +15,7 @@ export default function SignInPage() {
 		setError("");
 
 		try {
-			const response = await axios.post("/api/auth/login", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: { email, password, userType },
-			});
-
-			const data = response.data;
-
-			if (response.status !== 200) {
-				throw new Error(data.message || "Something went wrong");
-			}
-
-			if (userType === "admin") {
-				router.push("/admin/dashboard");
-			} else {
-				router.push("/dashboard");
-			}
+			await login(email, password);
 		} catch (err: unknown) {
 			if (err instanceof Error) {
 				setError(err.message);

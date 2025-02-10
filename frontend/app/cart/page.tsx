@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import Image from "next/image"
 import { Minus, Plus, Trash2, ShoppingBag } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
+import { useRouter } from "next/navigation"
 
 interface CartItem {
   id: number
@@ -16,6 +17,7 @@ interface CartItem {
 function CartPage() {
   const [cartItems, setCartItems] = useState<CartItem[]>([])
   const [isLoading, setIsLoading] = useState(true)
+  const router = useRouter()
 
   useEffect(() => {
     const savedCart = localStorage.getItem("cart")
@@ -48,6 +50,15 @@ function CartPage() {
     setCartItems((prevItems) => prevItems.filter((item) => item.id !== id))
     const currentCart = JSON.parse(localStorage.getItem("cart") || "[]")
     localStorage.setItem("cart", JSON.stringify(currentCart.filter((itemId: number) => itemId !== id)))
+  }
+
+  const handleBuyNow = () => {
+    const currentOrders = JSON.parse(localStorage.getItem("orders") || "[]")
+    const newOrders = [...currentOrders, ...cartItems.map((item) => item.id)]
+    localStorage.setItem("orders", JSON.stringify(newOrders))
+    localStorage.removeItem("cart")
+    setCartItems([])
+    router.push("/myorders")
   }
 
   if (isLoading) {
@@ -162,20 +173,15 @@ function CartPage() {
                   </motion.div>
                 ))}
 
-                {/* Cart Summary */}
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.5 }}
-                  className="mt-8 p-6 bg-amber-50 rounded-xl shadow-inner"
+                {/* Buy Now Button */}
+                <motion.button
+                  whileHover={{ scale: 1.05, backgroundColor: "#f59e0b" }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={handleBuyNow}
+                  className="mt-8 w-full bg-amber-500 text-white font-bold py-3 px-6 rounded-full shadow-lg transition-colors duration-300 hover:bg-amber-600 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-opacity-50"
                 >
-                  <div className="flex justify-between items-center">
-                    <span className="text-lg text-amber-900 font-medium">Total Items</span>
-                    <span className="text-2xl font-bold text-amber-800">
-                      {cartItems.reduce((sum, item) => sum + item.quantity, 0)}
-                    </span>
-                  </div>
-                </motion.div>
+                  Buy Now
+                </motion.button>
               </div>
             )}
           </AnimatePresence>

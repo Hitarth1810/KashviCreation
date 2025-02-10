@@ -5,7 +5,6 @@ import { createUser } from "./user";
 
 export async function loginUser(email: string, password: string) {
 	const user = await prisma.user.findUnique({ where: { email } });
-
 	if (!user) {
 		throw new Error("Invalid credentials");
 	}
@@ -37,10 +36,7 @@ export async function signupUser(
 	password: string
 ) {
 	try {
-
-		const user = await createUser({ name, email, phone: Number(phone), password });
-
-		
+		const user = await createUser({ name, email, phone, password });
 
 		if (!user) {
 			console.error("Signup Error: User already exists!");
@@ -48,11 +44,9 @@ export async function signupUser(
 		}
 
 		const token = generateToken(user);
-		
 
 		return { user, token };
 	} catch (error) {
-		throw error;
+		throw new Error(error instanceof Error ? error.message : String(error));
 	}
 }
-

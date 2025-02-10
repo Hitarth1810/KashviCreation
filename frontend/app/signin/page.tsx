@@ -21,7 +21,7 @@ export default function SignInPage() {
 				headers: {
 					"Content-Type": "application/json",
 				},
-				body: JSON.stringify({ email, password, userType }),
+				body: { email, password, userType },
 			});
 
 			const data = response.data;

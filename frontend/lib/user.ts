@@ -20,16 +20,19 @@ export async function createUser(data: CreateUserInput) {
 	const hashedPassword = await bcrypt.hash(data.password, 12);
 
 	try {
-		const u = prisma.user.create({
+		const u = await prisma.user.create({
 			data: {
-				...data,
+				email: data.email,
+				name: data.name,
+				phone: Number(data.phone),
 				password: hashedPassword,
 			},
 		});
+		console.log(u);
 		return u;
 	} catch (error) {
 		console.error("User Creation Error:", error);
-		return null;
+		throw new Error(error instanceof Error ? error.message : String(error));
 	}
 }
 

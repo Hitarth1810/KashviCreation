@@ -5,9 +5,7 @@ import { signupUser } from "@/lib/auth";
 export async function POST(request: Request) {
 	try {
 		const { name, phone, email, password } = await request.json();
-
 		const { user, token } = await signupUser(name, email, phone, password);
-
 		(await cookies()).set("token", token, {
 			httpOnly: true,
 			secure: process.env.NODE_ENV === "production",
@@ -24,10 +22,6 @@ export async function POST(request: Request) {
 			},
 		});
 	} catch (error) {
-		console.error("Signup Error:", error);
-		return NextResponse.json(
-			{ error: "Internal Server Error" },
-			{ status: 500 }
-		);
+		return NextResponse.json({ error }, { status: 500 });
 	}
 }

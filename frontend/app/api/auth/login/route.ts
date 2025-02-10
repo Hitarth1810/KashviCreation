@@ -4,14 +4,16 @@ import { loginUser } from "@/lib/auth";
 
 export async function POST(request: Request) {
 	try {
-		const { email, password } = await request.json();
-
+		const {
+			body: { email, password },
+		} = await request.json();
 		const { user, token } = await loginUser(email, password);
 
 		// Set JWT in HTTP-only cookie
-		(await
-            // Set JWT in HTTP-only cookie
-            cookies()).set("token", token, {
+		(
+			await // Set JWT in HTTP-only cookie
+			cookies()
+		).set("token", token, {
 			httpOnly: true,
 			secure: process.env.NODE_ENV === "production",
 			sameSite: "strict",
@@ -26,7 +28,7 @@ export async function POST(request: Request) {
 				role: user.role,
 			},
 		});
-	} catch  {
+	} catch {
 		return NextResponse.json({ error: "Login failed" }, { status: 401 });
 	}
 }

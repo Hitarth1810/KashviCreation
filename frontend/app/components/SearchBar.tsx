@@ -56,7 +56,7 @@ const SearchBar = () => {
       <div className="flex items-center">
         <form
           className={`flex items-center justify-between gap-4 bg-gray-100 p-2 rounded-md absolute right-10 transition-all duration-300 ease-in-out overflow-hidden ${
-            isOpen ? "w-64 opacity-100" : "w-0 opacity-0 pointer-events-none"
+            isOpen ? "w-80 opacity-100" : "w-0 opacity-0 pointer-events-none"
           }`}
           onSubmit={handleSearch}
         >

@@ -37,10 +37,10 @@ const Navbar = () => {
 
           <div className="hidden lg:flex space-x-6">
             <NavLink href="/">Home</NavLink>
-            <NavLink href="/new-in">New In</NavLink>
-            <NavLink href="/collections">Collections</NavLink>
             <NavLink href="/about">About</NavLink>
+            <NavLink href="/collections">Collections</NavLink>
             <NavLink href="/contact">Contact</NavLink>
+            <NavLink href="/blog">Blogs</NavLink>
           </div>
         </div>
 

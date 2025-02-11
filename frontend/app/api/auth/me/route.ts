@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { verifyToken } from "@/lib/jwt";
+import { findUserByEmail } from "@/lib/user";
 interface Request {
 	headers: Headers;
 }
@@ -13,8 +14,8 @@ export async function GET(req: Request): Promise<NextResponse> {
 
 	try {
 		// Verify JWT token (replace 'your-secret-key' with your actual secret)
-		const user = verifyToken(token); // Your JWT verification function
-
+		const JWTPayload = verifyToken(token); // Your JWT verification function
+        const user = await findUserByEmail(JWTPayload.email)
 		return NextResponse.json(user);
 	} catch {
 		return NextResponse.json({ error: "Invalid token" }, { status: 401 });

@@ -1,5 +1,7 @@
 "use client";
 
+import React from "react"
+import Link from "next/link"
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState, useRef } from "react";
 import React from "react";
@@ -114,6 +116,18 @@ export function HeroSection() {
           </div>
         </div>
       </div>
+      <div className="absolute bottom-0 left-0 right-0">
+        <svg viewBox="0 0 1200 120" preserveAspectRatio="none" className="w-full h-20">
+          <path
+            d="M985.66 92.83C906.67 72 823.78 31 743.84 14.19c-82.26-17.34-168.06-16.33-250.45.39-57.84 11.73-114 31.07-172 41.86A600.21 600.21 0 0 1 0 27.35V120h1200V95.8c-67.81 23.12-144.29 15.51-214.34-2.97Z"
+            className="fill-white"
+          />
+        </svg>
+      </div>
+    </div>
+  )
+}
+
     </main>
   );
 }

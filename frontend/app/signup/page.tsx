@@ -4,12 +4,11 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthProvider";
-import Popup from "./Popup";
+import Popup from "@/app/components/popup";
 
 export default function SignUpPage() {
   const { signup } = useAuth();
   const router = useRouter();
-  const [userType, setUserType] = useState("user");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -103,33 +102,6 @@ export default function SignUpPage() {
               onChange={(e) => setPassword(e.target.value)}
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#8B1B48] focus:border-transparent"
             />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Account Type</label>
-            <div className="flex space-x-4">
-              <label className="flex items-center">
-                <input
-                  type="radio"
-                  name="userType"
-                  value="user"
-                  checked={userType === "user"}
-                  onChange={(e) => setUserType(e.target.value)}
-                  className="mr-2 text-[#8B1B48] focus:ring-[#8B1B48]"
-                />
-                <span className="text-sm text-gray-700">User</span>
-              </label>
-              <label className="flex items-center">
-                <input
-                  type="radio"
-                  name="userType"
-                  value="admin"
-                  checked={userType === "admin"}
-                  onChange={(e) => setUserType(e.target.value)}
-                  className="mr-2 text-[#8B1B48] focus:ring-[#8B1B48]"
-                />
-                <span className="text-sm text-gray-700">Admin</span>
-              </label>
-            </div>
           </div>
           <button
             type="submit"

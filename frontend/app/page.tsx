@@ -1,4 +1,4 @@
-import { HeroSection } from "./components/hero-section";
+import { HeroSection }  from "./components/hero-section";
 import { FeaturedProducts } from "./components/featured-products";
 import { PopularCategories } from "./components/popular-categories";
 import { PopularProducts } from "./components/popular-products";

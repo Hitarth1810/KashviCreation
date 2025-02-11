@@ -4,7 +4,7 @@ import React from "react"
 import Link from "next/link"
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState, useRef } from "react";
-import React from "react";
+// import React from "react";
 import Image from "next/image";
 
 const images = [
@@ -124,10 +124,6 @@ export function HeroSection() {
           />
         </svg>
       </div>
-    </div>
-  )
-}
-
     </main>
-  );
+  )
 }

@@ -4,33 +4,28 @@ import Image from "next/image";
 interface Product {
   id: number;
   name: string;
-  price: number;
   image: string;
 }
 
 const products: Product[] = [
   {
     id: 1,
-    name: "Multi Color Net Embroidered Lehenga Set",
-    price: 27200,
+    name: "Multi Color Net Embroidered Set",
     image: "/dummy1.jpg",
   },
   {
     id: 2,
     name: "Green Quilted Jacket And Pant Set",
-    price: 17500,
     image: "/dummy2.jpg",
   },
   {
     id: 3,
-    name: "Yellow Silk Blend Floral Embroidered Bundi",
-    price: 12500,
+    name: "Yellow Silk Floral Embroidered Bundi",
     image: "/dummy3.jpeg",
   },
   {
     id: 4,
     name: "Wine Pure Banarasi Silk Lehenga Choli",
-    price: 10500,
     image: "/dummy4.jpg",
   },
 ];
@@ -38,22 +33,6 @@ const products: Product[] = [
 export function FeaturedProducts() {
   return (
     <div className="relative bg-gradient-to-b from-white to-[#FFF5E9] px-4 py-16 md:px-8 lg:px-16 xl:px-32 2xl:px-64">
-      {/* <div className="absolute top-0 left-0 right-0 h-24">
-        <svg
-          className="w-full h-full"
-          viewBox="0 0 1440 100"
-          fill="none"
-          preserveAspectRatio="none"
-        >
-          <path
-            d="M0,50 C320,20 480,80 720,50 C960,20 1120,80 1440,50 L1440,0 L0,0 Z"
-            fill="none"
-            stroke="#E5D1B8"
-            strokeWidth="1"
-          />
-        </svg>
-      </div> */}
-
       <div className="flex justify-between items-center mb-12">
         <div className="flex items-center gap-4">
           <h2
@@ -62,7 +41,6 @@ export function FeaturedProducts() {
           >
             Featured Products
           </h2>
-          {/* <div className="h-[1px] w-24 bg-gray-300 mt-1"></div> */}
         </div>
         <Link href="/">
           <button className="text-gray-600 hover:text-[#8B1D3F] pl-0 hover:cursor-pointer">
@@ -106,12 +84,15 @@ export function FeaturedProducts() {
                 </div>
               </div>
             </div>
-            <h3 className="font-medium text-sm mb-2 text-gray-800">
-              {product.name}
-            </h3>
-            <div className="flex items-center justify-between">
-              <p className="font-semibold">₹{product.price.toLocaleString()}</p>
-              <button className="px-4 py-1 rounded-full border border-[#8B1D3F] text-[#8B1D3F] text-sm bg-white hover:bg-[#8B1D3F] hover:text-white transition-colors">
+            <div className="flex justify-between items-end gap-2">
+              <h3 className="font-medium text-sm text-gray-800 w-3/4 break-words">
+                {product.name}
+              </h3>
+              <button
+                className="px-4 py-1.5 rounded-lg border border-[#8B1D3F] text-[#8B1D3F] text-sm bg-white 
+                hover:bg-[#8B1D3F] hover:text-white transition-all duration-200 
+                hover:shadow-md transform hover:-translate-y-0.5"
+              >
                 Add to Cart
               </button>
             </div>

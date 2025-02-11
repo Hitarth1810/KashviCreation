@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Mail, Phone, Clock, } from "lucide-react";
+import { Mail, Phone, Clock } from "lucide-react";
 import Logo from "@/public/KCLogo.png";
 import LogoLetter from "@/public/KCLogoLetter.png";
 
@@ -27,22 +27,22 @@ export default function Footer() {
 
           {/* Instagram Feed Section */}
           <div className="flex flex-col items-center w-full">
-          <h3 className="text-2xl font-serif mb-6 text-gray-800 text-center flex items-center justify-center gap-2">
-  Follow us on Instagram
-  <a
-    href="https://www.instagram.com/_kashvicreation?igsh=eG5naW1yMGU5ZjB0"
-    target="_blank"
-    rel="noopener noreferrer"
-    className="hover:opacity-80 transition duration-300"
-  >
-    <Image
-      src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png" 
-      alt="Instagram"
-      width={22}
-      height={22}
-    />
-  </a>
-</h3>
+            <h3 className="text-2xl font-serif mb-6 text-gray-800 text-center flex items-center justify-center gap-2">
+              Follow us on Instagram
+              <a
+                href="https://www.instagram.com/_kashvicreation?igsh=eG5naW1yMGU5ZjB0"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:opacity-80 transition duration-300"
+              >
+                <Image
+                  src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png"
+                  alt="Instagram"
+                  width={22}
+                  height={22}
+                />
+              </a>
+            </h3>
 
             <div className="grid grid-cols-4 gap-0.5 w-full max-w-md">
               <div className="aspect-square w-full relative">
@@ -80,7 +80,7 @@ export default function Footer() {
             </div>
           </div>
         </div>
-        
+
         {/* Added line between sections */}
         {/* Footer Links Section */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 py-12 border-t border-gray-200">
@@ -174,7 +174,6 @@ export default function Footer() {
                   Blog
                 </Link>
               </li>
-              
             </ul>
           </div>
 
@@ -212,13 +211,12 @@ export default function Footer() {
           <div>
             <h4 className="text-lg font-medium mb-4">Contact</h4>
             <ul className="space-y-2">
-              <li className="flex items-center space-x-1">
-              <Mail className="w-8 h-8 text-gray-600" strokeWidth={2} />
-              {" "}
+              <li className="flex items-center ">
+                <Mail className="w-8 h-8 text-gray-600" strokeWidth={2} />{" "}
                 {/* Increased size here */}
                 <Link
                   href="mailto:Kashvicreation10@gmail.com"
-                  className="text-gray-600 hover:text-gray-900"
+                  className="text-gray-600 hover:text-gray-900 hover:underline"
                 >
                   Kashvicreation10@gmail.com
                 </Link>

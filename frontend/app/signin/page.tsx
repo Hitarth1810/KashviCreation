@@ -1,36 +1,49 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import Link from "next/link"
-import { useRouter } from "next/navigation"
-import Popup from "./Popup"
+import { useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/AuthProvider";
+import Popup from "./Popup";
 
 export default function SignInPage() {
-  const router = useRouter()
-  const [userType, setUserType] = useState("user")
-  const [popup, setPopup] = useState({ message: "", type: "" as "success" | "error", isVisible: false })
+  const { login } = useAuth();
+  const router = useRouter();
+  const [userType, setUserType] = useState("user");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [popup, setPopup] = useState<{ message: string; type: "success" | "error"; isVisible: boolean }>({ message: "", type: "success", isVisible: false });
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-    // Add your signin logic here
-    const success = true // Replace with actual success/failure condition
-    if (success) {
-      setPopup({ message: "Sign in successful!", type: "success", isVisible: true })
+    event.preventDefault();
+    setError("");
+    setPopup({ message: "", type: "success", isVisible: false });
+
+    try {
+      await login(email, password);
+      setPopup({ message: "Sign in successful!", type: "success", isVisible: true });
       setTimeout(() => {
-        setPopup({ ...popup, isVisible: false })
+        setPopup({ ...popup, isVisible: false });
         if (userType === "admin") {
-          router.push("/admin/dashboard")
+          router.push("/admin/dashboard");
         } else {
-          router.push("/dashboard")
+          router.push("/dashboard");
         }
-      }, 3000)
-    } else {
-      setPopup({ message: "Sign in failed. Please try again.", type: "error", isVisible: true })
+      }, 3000);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message);
+        setPopup({ message: err.message, type: "error", isVisible: true });
+      } else {
+        setError("An unknown error occurred");
+        setPopup({ message: "An unknown error occurred", type: "error", isVisible: true });
+      }
     }
   }
 
   function closePopup() {
-    setPopup({ ...popup, isVisible: false })
+    setPopup({ ...popup, isVisible: false });
   }
 
   return (
@@ -40,6 +53,7 @@ export default function SignInPage() {
           <h1 className="text-3xl font-bold">Welcome Back</h1>
           <p className="text-gray-600 mt-2">Sign in to your account</p>
         </div>
+        {error && <p className="text-red-500 text-sm mb-4 text-center">{error}</p>}
         <form onSubmit={onSubmit} className="space-y-6">
           <div>
             <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
@@ -50,6 +64,8 @@ export default function SignInPage() {
               type="email"
               placeholder="Enter your email"
               required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#8B1B48] focus:border-transparent"
             />
           </div>
@@ -62,6 +78,8 @@ export default function SignInPage() {
               type="password"
               placeholder="Enter your password"
               required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#8B1B48] focus:border-transparent"
             />
           </div>
@@ -108,5 +126,5 @@ export default function SignInPage() {
       </div>
       {popup.isVisible && <Popup message={popup.message} type={popup.type} onClose={closePopup} />}
     </div>
-  )
+  );
 }

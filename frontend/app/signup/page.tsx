@@ -1,32 +1,43 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import Link from "next/link"
-import { useRouter } from "next/navigation"
-import Popup from "./Popup"
+import { useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/AuthProvider";
+import Popup from "./Popup";
 
 export default function SignUpPage() {
-  const router = useRouter()
-  const [userType, setUserType] = useState("user")
-  const [popup, setPopup] = useState({ message: "", type: "", isVisible: false })
+  const { signup } = useAuth();
+  const router = useRouter();
+  const [userType, setUserType] = useState("user");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [password, setPassword] = useState("");
+  const [popup, setPopup] = useState<{ message: string; type: "success" | "error"; isVisible: boolean }>({ message: "", type: "success", isVisible: false });
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-    // Add your signup logic here
-    const success = true // Replace with actual success/failure condition
-    if (success) {
-      setPopup({ message: "Sign up successful!", type: "success", isVisible: true })
+    event.preventDefault();
+    setPopup({ message: "", type: "error", isVisible: false });
+    
+    try {
+      await signup(email, password, Number(phone), name);
+      setPopup({ message: "Sign up successful!", type: "success", isVisible: true });
       setTimeout(() => {
-        setPopup({ ...popup, isVisible: false })
-        router.push("/signin")
-      }, 3000)
-    } else {
-      setPopup({ message: "Sign up failed. Please try again.", type: "error", isVisible: true })
+        setPopup({ ...popup, isVisible: false });
+        router.push("/signin");
+      }, 3000);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setPopup({ message: err.message, type: "error", isVisible: true });
+      } else {
+        setPopup({ message: "An unknown error occurred", type: "error", isVisible: true });
+      }
     }
   }
 
   function closePopup() {
-    setPopup({ ...popup, isVisible: false })
+    setPopup({ ...popup, isVisible: false });
   }
 
   return (
@@ -46,6 +57,8 @@ export default function SignUpPage() {
               type="text"
               placeholder="Enter your full name"
               required
+              value={name}
+              onChange={(e) => setName(e.target.value)}
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#8B1B48] focus:border-transparent"
             />
           </div>
@@ -58,6 +71,8 @@ export default function SignUpPage() {
               type="email"
               placeholder="Enter your email"
               required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#8B1B48] focus:border-transparent"
             />
           </div>
@@ -70,6 +85,8 @@ export default function SignUpPage() {
               type="tel"
               placeholder="Enter your phone number"
               required
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#8B1B48] focus:border-transparent"
             />
           </div>
@@ -82,6 +99,8 @@ export default function SignUpPage() {
               type="password"
               placeholder="Create a password"
               required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#8B1B48] focus:border-transparent"
             />
           </div>
@@ -128,5 +147,5 @@ export default function SignUpPage() {
       </div>
       {popup.isVisible && <Popup message={popup.message} type={popup.type} onClose={closePopup} />}
     </div>
-  )
+  );
 }

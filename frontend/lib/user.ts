@@ -1,6 +1,5 @@
 import { prisma } from "./prisma";
 import bcrypt from "bcryptjs";
-import crypto from "crypto";
 
 export type CreateUserInput = {
 	email: string;
@@ -68,20 +67,21 @@ export async function updateUser(id: string, data: UpdateUserInput) {
 	});
 }
 
-export async function generatePasswordResetToken(email: string) {
-	const token = crypto.randomBytes(32).toString("hex");
-	const expires = new Date(Date.now() + 3600000); // 1 hour
+// export async function generatePasswordResetToken(email: string) {
+// 	const token = window.crypto.getRandomValues(new Uint32Array(1))[0].toString(16);
+	
+// 	const expires = new Date(Date.now() + 3600000); // 1 hour
 
-	await prisma.user.update({
-		where: { email },
-		data: {
-			resetToken: token,
-			resetTokenExpires: expires,
-		},
-	});
+// 	await prisma.user.update({
+// 		where: { email },
+// 		data: {
+// 			resetToken: token,
+// 			resetTokenExpires: expires,
+// 		},
+// 	});
 
-	return token;
-}
+// 	return token;
+// }
 
 export async function verifyPasswordResetToken(token: string) {
 	const user = await prisma.user.findFirst({
@@ -96,15 +96,17 @@ export async function verifyPasswordResetToken(token: string) {
 	return user;
 }
 
-export async function generateEmailVerificationToken(userId: string) {
-	const token = crypto.randomBytes(32).toString("hex");
+// export async function generateEmailVerificationToken(userId: string) {
+// 	const token = window.crypto
+// 		.getRandomValues(new Uint32Array(1))[0]
+// 		.toString(16);
 
-	await prisma.user.update({
-		where: { id: userId },
-		data: {
-			verifyToken: token,
-		},
-	});
+// 	await prisma.user.update({
+// 		where: { id: userId },
+// 		data: {
+// 			verifyToken: token,
+// 		},
+// 	});
 
-	return token;
-}
+// 	return token;
+// }

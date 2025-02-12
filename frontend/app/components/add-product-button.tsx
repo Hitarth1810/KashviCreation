@@ -14,7 +14,11 @@ import {
 } from "@/app/components/ui/dialog";
 import { ProductForm } from "@/app/components/product-form";
 
-export function AddProductButton() {
+interface AddProductButtonProps {
+	refreshProducts: () => void;
+}
+
+export function AddProductButton({ refreshProducts }: AddProductButtonProps) {
 	const [open, setOpen] = useState(false);
 
 	return (
@@ -33,7 +37,13 @@ export function AddProductButton() {
 						fields.
 					</DialogDescription>
 				</DialogHeader>
-				<ProductForm onSuccess={() => setOpen(false)} />
+				{/* Pass refreshProducts to ProductForm */}
+				<ProductForm
+					onSuccess={() => {
+						setOpen(false); // Close dialog
+						refreshProducts(); // Refresh the product list
+					}}
+				/>
 			</DialogContent>
 		</Dialog>
 	);

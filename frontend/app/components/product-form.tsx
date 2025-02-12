@@ -2,11 +2,13 @@
 
 import { useState } from "react";
 import { X } from "lucide-react";
+import axios from "axios";
 
 import { Button } from "@/app/components/ui/button";
 import { Input } from "@/app/components/ui/input";
 import { Label } from "@/app/components/ui/label";
 import { Textarea } from "@/app/components/ui/textarea";
+import Image from "next/image";
 import type { Product } from "@/types/product";
 
 interface ProductFormProps {
@@ -15,24 +17,93 @@ interface ProductFormProps {
 }
 
 export function ProductForm({ product, onSuccess }: ProductFormProps) {
+	const [id, setId] = useState(product?.id || "");
+	const [name, setName] = useState(product?.name || "");
+	const [description, setDescription] = useState(product?.description || "");
+	const [category, setCategory] = useState(product?.category || "");
+	const [stock, setStock] = useState(product?.stock || 0);
 	const [colors, setColors] = useState<string[]>(product?.colors || []);
 	const [newColor, setNewColor] = useState("");
+	const [images, setImages] = useState<string[]>(product?.images || []); // Store uploaded image URLs
+	const [loading, setLoading] = useState(false);
+
+	// Upload Image to Cloudinary
+	const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+		const file = e.target.files?.[0];
+		if (!file) return;
+
+		setLoading(true);
+		const formData = new FormData();
+		formData.append("file", file);
+
+		try {
+			const { data } = await axios.post("/api/protected/admin/product", formData, {
+				headers: { "Content-Type": "multipart/form-data" },
+			});
+
+			setImages([...images, data.url]); // Store uploaded image URL
+		} catch (error) {
+			console.error("Upload failed:", error);
+		} finally {
+			setLoading(false);
+		}
+	};
 
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-		// Add your form submission logic here
-		onSuccess();
+		setLoading(true);
+
+		try {
+			const formData = new FormData();
+			formData.append("id", id);
+			formData.append("name", name);
+			formData.append("description", description);
+			formData.append("category", category);
+			formData.append("stock", stock.toString());
+			colors.forEach((color) => formData.append("colors", color));
+
+			if (images.length) {
+				images.forEach((file) => formData.append("images", file));
+			}
+
+			const response = await fetch("/api/protected/admin/product", {
+				method: "POST",
+				body: formData,
+			});
+
+			if (response.ok) {
+				onSuccess();
+			}
+		} catch (error) {
+			console.error("Error saving product:", error);
+		} finally {
+			setLoading(false);
+		}
 	};
+
 
 	return (
 		<form onSubmit={handleSubmit} className='space-y-6'>
 			<div className='space-y-4'>
+				{!product && ( // Only show for new product
+					<div className='grid gap-2'>
+						<Label htmlFor='product-id'>Product ID</Label>
+						<Input
+							id='product-id'
+							value={id}
+							onChange={(e) => setId(e.target.value)}
+							required
+							placeholder='Enter product id'
+						/>
+					</div>
+				)}
 				<div className='grid gap-2'>
 					<Label htmlFor='name'>Name</Label>
 					<Input
 						id='name'
+						value={name}
+						onChange={(e) => setName(e.target.value)}
 						required
-						defaultValue={product?.name}
 						placeholder='Enter product name'
 					/>
 				</div>
@@ -40,19 +111,20 @@ export function ProductForm({ product, onSuccess }: ProductFormProps) {
 					<Label htmlFor='description'>Description</Label>
 					<Textarea
 						id='description'
+						value={description}
+						onChange={(e) => setDescription(e.target.value)}
 						required
-						defaultValue={product?.description}
 						placeholder='Enter product description'
 					/>
 				</div>
 				<div className='grid gap-2'>
-					<Label htmlFor='price'>Price (₹)</Label>
+					<Label htmlFor='category'>Category</Label>
 					<Input
-						id='price'
-						type='number'
+						id='category'
+						value={category}
+						onChange={(e) => setCategory(e.target.value)}
 						required
-						defaultValue={product?.price}
-						placeholder='Enter price'
+						placeholder='Enter product category'
 					/>
 				</div>
 				<div className='grid gap-2'>
@@ -60,8 +132,9 @@ export function ProductForm({ product, onSuccess }: ProductFormProps) {
 					<Input
 						id='stock'
 						type='number'
+						value={stock}
+						onChange={(e) => setStock(Number(e.target.value))}
 						required
-						defaultValue={product?.stock}
 						placeholder='Enter stock quantity'
 					/>
 				</div>
@@ -106,16 +179,56 @@ export function ProductForm({ product, onSuccess }: ProductFormProps) {
 						</Button>
 					</div>
 				</div>
+
+				{/* Image Upload */}
 				<div className='grid gap-2'>
 					<Label>Images</Label>
-					<Input type='file' multiple accept='image/*' />
+					<Input
+						type='file'
+						accept='image/*'
+						onChange={handleImageUpload}
+						disabled={loading}
+					/>
+					{loading && <p>Uploading...</p>}
+
+					{/* Display Uploaded Images */}
+					<div className='flex flex-wrap gap-2'>
+						{images.map((image, index) => (
+							<div key={index} className='relative w-24 h-24'>
+								<Image
+									src={image}
+									alt={`Uploaded ${index}`}
+									layout='fill'
+									objectFit='cover'
+									className='rounded-lg'
+								/>
+								<button
+									type='button'
+									onClick={() =>
+										setImages(images.filter((_, i) => i !== index))
+									}
+									className='absolute top-0 right-0 bg-red-500 text-white p-1 rounded-full'
+								>
+									<X className='h-4 w-4' />
+								</button>
+							</div>
+						))}
+					</div>
 				</div>
 			</div>
+
 			<div className='flex justify-end gap-4'>
-				<Button type='button' variant='outline' onClick={() => onSuccess()}>
+				<Button
+					type='button'
+					variant='outline'
+					onClick={onSuccess}
+					disabled={loading}
+				>
 					Cancel
 				</Button>
-				<Button type='submit'>Save Product</Button>
+				<Button type='submit' disabled={loading}>
+					{loading ? "Saving..." : "Save Product"}
+				</Button>
 			</div>
 		</form>
 	);

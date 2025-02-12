@@ -2,11 +2,13 @@ export interface Product {
   id: string
   name: string
   description: string
-  thumbnails: string[]
+  images: string[]
+  createdAt: Date
+  updatedAt: Date
   colors: string[]
-  price: number
   stock: number
   reviews?: ProductReview[]
+  category: string
 }
 
 export interface ProductReview {

@@ -30,26 +30,51 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 	const checkAuth = async () => {
 		try {
 			const res = await axios.get("/api/auth/me");
+			const { id, email, name, phone, image, role } = res.data;
 			if (res.status === 200) {
-				setUser(res.data);
+				setUser({
+					id,
+					email,
+					name,
+					phone,
+					image,
+					role,
+				});
 			}
-		} catch {
+		} catch (e) {
+			console.log(e);
 			setUser(null);
 		}
 	};
 
 	const login = async (email: string, password: string) => {
-		const res = await axios.post("/api/auth/login", {
-			headers: { "Content-Type": "application/json" },
-			body: { email, password },
-		});
+		try {
+			const res = await axios.post(
+				"/api/auth/login",
 
-		if (res.status !== 200) {
-			throw new Error("Login failed");
+				{
+					headers: { "Content-Type": "application/json" },
+					body: { email, password },
+				}
+			);
+
+			if (res.status === 401) throw Error("Unauthorized");
+			if (res.status !== 200) {
+				throw new Error("Login failed");
+			}
+
+			const { role } = res.data.user
+			await checkAuth();
+
+			if (role === "ADMIN") {
+				router.push("/admin/dashboard");
+			} else {
+				router.push("/dashboard");
+			}
+		} catch (error) {
+			console.error("Login error:", error);
+			throw error;
 		}
-
-		await checkAuth();
-		router.push("/dashboard");
 	};
 
 	const signup = async (

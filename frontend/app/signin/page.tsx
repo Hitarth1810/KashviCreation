@@ -2,13 +2,11 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthProvider";
 import Popup from "@/app/components/popup";
 
 export default function SignInPage() {
-  const { login, user } = useAuth();
-  const router = useRouter();
+  const { login } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [popup, setPopup] = useState<{ message: string; type: "success" | "error"; isVisible: boolean }>({ message: "", type: "success", isVisible: false });
@@ -22,11 +20,6 @@ export default function SignInPage() {
       setPopup({ message: "Sign in successful!", type: "success", isVisible: true });
       setTimeout(() => {
         setPopup({ ...popup, isVisible: false });
-        if (user?.role === "Admin") {
-          router.push("/admin/dashboard");
-        } else {
-          router.push("/dashboard");
-        }
       }, 3000);
     } catch (err: unknown) {
       if (err instanceof Error) {

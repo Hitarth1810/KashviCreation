@@ -1,6 +1,6 @@
 "use client";
-
-import { useState } from "react";
+import axios from "axios";
+import { useEffect, useState } from "react";
 import { Badge } from "@/app/components/ui/badge";
 
 // Sample data - replace with your actual data fetching logic
@@ -22,8 +22,15 @@ const orders = [
 	// Add more orders...
 ];
 
-export function OrderList() {
+export function OrderList({ }) {
 	const [selectedOrder, setSelectedOrder] = useState<string | null>(null);
+	const [orders, setOrders] = useState([]);
+
+	useEffect(() => {
+		axios.get("/api/protected/admin/orders").then((response) => {
+			setOrders(response.data);
+		});
+	})
 
 	return (
 		<div className='p-4'>

@@ -59,7 +59,7 @@ model Blog {
 }
 
 model Product {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  id          String   @id @map("_id") 
   name        String
   description String
   images      String[]
@@ -67,7 +67,7 @@ model Product {
   updatedAt   DateTime @updatedAt
   colors      String[]
   stock       Int
-  reviews     Review[]
+  reviews     Review[] 
   category    String
 
   @@map("products")
@@ -76,7 +76,7 @@ model Product {
 model Review {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   userId    String   @db.ObjectId
-  productId String   @db.ObjectId
+  productId String   
   rating    Int
   comment   String
   createdAt DateTime @default(now())

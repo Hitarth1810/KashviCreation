@@ -10,27 +10,27 @@ import { Button } from "@/app/components/ui/button";
 const navItems = [
 	{
 		title: "Dashboard",
-		href: "/dashboard",
+		href: "/admin",
 		icon: Home,
 	},
 	{
 		title: "Orders",
-		href: "/dashboard/orders",
+		href: "/admin/orders",
 		icon: ShoppingBag,
 	},
 	{
 		title: "Products",
-		href: "/dashboard/products",
+		href: "/admin/products",
 		icon: Package,
 	},
 	{
 		title: "Customers",
-		href: "/dashboard/customers",
+		href: "/admin/customers",
 		icon: Users,
 	},
 	{
 		title: "Settings",
-		href: "/dashboard/settings",
+		href: "/admin/settings",
 		icon: Settings,
 	},
 ];
@@ -42,14 +42,7 @@ export function DashboardNav() {
 		<div className='flex w-64 flex-col border-r bg-muted/40'>
 			<div className='flex h-14 items-center border-b px-4'>
 				<Link href='/dashboard' className='flex items-center gap-2'>
-					<Image
-						src='/logo.svg'
-						alt='Logo'
-						width={32}
-						height={32}
-						className='rounded bg-primary p-1'
-					/>
-					<span className='font-semibold'>Saree Admin</span>
+					<span className='font-semibold'>Kashavi Creation Admin Panel</span>
 				</Link>
 			</div>
 			<nav className='flex-1 space-y-1 p-4'>

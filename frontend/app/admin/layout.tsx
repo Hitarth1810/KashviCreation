@@ -1,6 +1,8 @@
 import { DashboardNav } from "@/app/components/dashboard-nav";
 import type React from "react";
 
+
+
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-screen">

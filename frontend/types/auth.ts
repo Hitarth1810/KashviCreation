@@ -12,6 +12,6 @@ interface JWTPayload {
 	email: string;
 }
 
-type UserType = "User" | "Admin";
+type UserType = "USER" | "ADMIN";
 
 export type { UserData, JWTPayload };

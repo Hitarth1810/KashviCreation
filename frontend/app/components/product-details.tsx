@@ -133,9 +133,6 @@ export function ProductDetails() {
 						<div>
 							<h3 className='font-semibold'>Price & Stock</h3>
 							<div className='mt-2 flex items-center justify-between'>
-								<span className='text-lg font-semibold'>
-									₹{product.price.toLocaleString()}
-								</span>
 								<Badge variant={product.stock > 0 ? "default" : "destructive"}>
 									{product.stock} in stock
 								</Badge>

@@ -6,30 +6,12 @@ import { cn } from "@/lib/utils";
 import { Badge } from "@/app/components/ui/badge";
 import type { Product } from "@/types/product";
 
-// Sample data - replace with your actual data fetching logic
-const products: Product[] = [
-	{
-		id: "PROD001",
-		name: "Banarasi Silk Saree",
-		description: "Traditional Banarasi silk saree with intricate zari work",
-		thumbnails: ["/placeholder.svg"],
-		colors: ["Red", "Blue", "Green"],
-		price: 15999,
-		stock: 10,
-		reviews: [
-			{
-				id: "REV001",
-				rating: 5,
-				comment: "Beautiful saree, excellent quality!",
-				customerName: "Priya Sharma",
-				createdAt: new Date(),
-			},
-		],
-	},
-	// Add more products...
-];
 
-export function ProductList() {
+interface ProductListProps {
+  products: Product[];
+}
+
+export function ProductList({ products }: ProductListProps) {
 	const router = useRouter();
 	const searchParams = useSearchParams();
 	const selectedId = searchParams.get("id");
@@ -45,12 +27,12 @@ export function ProductList() {
 							selectedId === product.id && "border-primary bg-muted"
 						)}
 						onClick={() => {
-							router.push(`/dashboard/products?id=${product.id}`);
+							router.push(`/admin/products?id=${product.id}`);
 						}}
 					>
 						<div className='aspect-square overflow-hidden rounded-lg'>
 							<Image
-								src={product.thumbnails[0] || "/placeholder.svg"}
+								src={product.images[0] || "/placeholder.svg"}
 								alt={product.name}
 								width={400}
 								height={400}
@@ -59,9 +41,7 @@ export function ProductList() {
 						</div>
 						<div className='mt-4'>
 							<h3 className='font-semibold'>{product.name}</h3>
-							<p className='mt-1 text-sm text-muted-foreground'>
-								₹{product.price.toLocaleString()}
-							</p>
+							
 							<div className='mt-2 flex flex-wrap gap-2'>
 								{product.colors.map((color) => (
 									<Badge key={color} variant='secondary'>

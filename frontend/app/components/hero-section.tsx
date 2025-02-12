@@ -1,129 +1,88 @@
-"use client";
+'use client';
 
-import React from "react"
-import Link from "next/link"
-import { motion, AnimatePresence } from "framer-motion";
-import { useEffect, useState, useRef } from "react";
-// import React from "react";
-import Image from "next/image";
-
-const images = [
-  "/blog_bridal.jpg",
-  "/blog_drapping.jpg",
-  "/blog_fabriccare.jpg",
-  "/blog_fashiontrends.jpg",
-  "/blog_history.jpg",
-  "/blog_trad.jpg",
-];
+import { motion } from 'framer-motion';
+import { ShoppingBag, ScrollText } from 'lucide-react';
+import { Button } from '@/app/components/ui/button';
 
 export function HeroSection() {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  // Gradient effect
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      if (!containerRef.current) return;
-      
-      const rect = containerRef.current.getBoundingClientRect();
-      setMousePosition({
-        x: ((e.clientX - rect.left) / rect.width) * 100,
-        y: ((e.clientY - rect.top) / rect.height) * 100,
-      });
-    };
-
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, []);
-
-  // Carousel auto-play
-  useEffect(() => {
-    if (!isAutoPlaying) return;
-
-    const interval = setInterval(() => {
-      setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
-    }, 2000);
-
-    return () => clearInterval(interval);
-  }, [isAutoPlaying]);
-
-  const visibleImages = [
-    images[(currentIndex - 2 + images.length) % images.length],
-    images[(currentIndex - 1 + images.length) % images.length],
-    images[currentIndex],
-    images[(currentIndex + 1) % images.length],
-    images[(currentIndex + 2) % images.length],
-  ];
-
-  const gradientStyle = {
-    background: `radial-gradient(
-      circle at ${mousePosition.x}% ${mousePosition.y}%,
-      #FFF1E6 0%,
-      #FFE4D6 30%,
-      #FFD9C7 70%,
-      #FFF1E6 100%
-    )`,
-    transition: 'background 0.3s ease-out',
-  };
-
   return (
-    <main 
-      ref={containerRef}
-      className="min-h-screen relative overflow-hidden"
-      style={gradientStyle}
-    >
-      {/* Half-page design */}
-      <div className="absolute top-0 left-0 w-1/2 h-full bg-cover bg-center" style={{ backgroundImage: "url('/rangoli.png')" }}>
-        <div className="absolute inset-0 bg-black opacity-0"></div>
+    <div className="relative w-full h-screen overflow-hidden">
+      {/* Video Background */}
+      <div className="absolute inset-0 w-full h-full">
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="absolute w-full h-full object-cover object-center"
+        >
+          <source src="/sexy video.mp4" type="video/mp4" />
+        </video>
+
+        {/* Vignette effect */}
+        <div className="absolute inset-0 pointer-events-none bg-gradient-to-b from-black/70 via-transparent to-black/80" />
       </div>
 
-      {/* Main Content */}
-      <div className="relative z-10">
-        {/* Heading with Hindi text */}
-        <div className="text-center py-8">
-          <h1 className="text-4xl text-gray-800 kalam-bold">हमारी सुंदरता की कहानी</h1>
-        </div>
+      {/* Content */}
+      <div className="absolute inset-0 flex flex-col justify-center items-center text-[#FFF5E6] px-6 md:px-[9%]">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="w-full max-w-7xl mx-auto text-center"
+        >
+          {/* Title */}
+          <motion.h1
+            initial={{ x: -100, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{ delay: 0.3, duration: 0.8, type: 'spring', stiffness: 100 }}
+            className="text-4xl pr-[5%] md:text-7xl font-kalam font-bold drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)]"
+          >
+            प्रेम और विश्वास
+          </motion.h1>
 
-        {/* Image Carousel */}
-        <div className="pt-[2em] pb-16 px-4 flex justify-center items-center gap-8 relative">
-          <div className="flex gap-5 items-center justify-center">
-            <AnimatePresence mode="popLayout">
-              {visibleImages.map((image, index) => (
-                <motion.div
-                  key={image}
-                  layout
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.8 }}
-                  transition={{ duration: 0.5, ease: "easeInOut" }}
-                  whileHover={{ scale: 1.1 }}
-                  className={`relative ${
-                    index === 2 ? "w-[23em] h-[32em]" : index === 1 || index === 3 ? "w-[18em] h-[24em]" : "w-[15em] h-[20em]"
-                  } overflow-hidden rounded-lg shadow-lg hover:shadow-2xl`}
-                >
-                  <Image
-                    src={image}
-                    alt={`Carousel image ${index + 1}`}
-                    className="w-full h-full object-cover"
-                    width={400}
-                    height={100}
-                  />
-                </motion.div>
-              ))}
-            </AnimatePresence>
-          </div>
-        </div>
+          <motion.h1
+            initial={{ x: 100, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{ delay: 0.6, duration: 0.8, type: 'spring', stiffness: 100 }}
+            className="text-4xl pl-[10%] md:text-7xl font-kalam font-bold drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)]"
+          >
+            का अनोखा संगम
+          </motion.h1>
+
+          {/* Subtitle */}
+          <motion.p
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.9, duration: 0.8 }}
+            className="text-lg md:text-2xl text-[#F5E6E0] font-light tracking-wide mt-4"
+          >
+            Discover the elegance of traditional Indian craftsmanship
+          </motion.p>
+
+          {/* CTA Buttons */}
+          <motion.div
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 1.2, duration: 0.8 }}
+            className="flex flex-col md:flex-row justify-center gap-4 md:gap-6 mt-8"
+          >
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <Button className="bg-[#E8C4BC] hover:bg-[#eb8c7d] text-gray-800 shadow-lg px-6 md:px-8 py-4 text-lg">
+                <ShoppingBag className="mr-2 h-5 w-5" />
+                Shop Collection
+              </Button>
+            </motion.div>
+
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <Button className="border-2 border-[#E8C4BC] text-[#e7a292] hover:bg-[#E8C4BC]/10 px-6 md:px-8 py-4 text-lg">
+                <ScrollText className="mr-2 h-5 w-5" />
+                Our Story
+              </Button>
+            </motion.div>
+          </motion.div>
+        </motion.div>
       </div>
-      <div className="absolute bottom-0 left-0 right-0">
-        <svg viewBox="0 0 1200 120" preserveAspectRatio="none" className="w-full h-20">
-          <path
-            d="M985.66 92.83C906.67 72 823.78 31 743.84 14.19c-82.26-17.34-168.06-16.33-250.45.39-57.84 11.73-114 31.07-172 41.86A600.21 600.21 0 0 1 0 27.35V120h1200V95.8c-67.81 23.12-144.29 15.51-214.34-2.97Z"
-            className="fill-white"
-          />
-        </svg>
-      </div>
-    </main>
-  )
+    </div>
+  );
 }

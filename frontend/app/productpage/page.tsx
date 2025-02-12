@@ -1,33 +1,32 @@
-"use client"
+"use client";
 
-import type { NextPage } from "next"
-import type React from "react"
-import { useState } from "react"
-import { motion, AnimatePresence } from "framer-motion"
-import { Star, Heart, Send,Minus, Plus } from "lucide-react"
-import Image from "next/image"
-import { useRouter } from "next/navigation"
-
+import type { NextPage } from "next";
+import type React from "react";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Star, Heart, Send, Minus, Plus } from "lucide-react";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 // Types
 interface Color {
-  id: number
-  color: string
+  id: number;
+  color: string;
 }
 
 interface Review {
-  id: number
-  name: string
-  avatar: string
-  rating: number
-  date: string
-  comment: string
+  id: number;
+  name: string;
+  avatar: string;
+  rating: number;
+  date: string;
+  comment: string;
 }
 
 interface NewReview {
-  name: string
-  comment: string
-  rating: number
+  name: string;
+  comment: string;
+  rating: number;
 }
 
 // Constants
@@ -36,20 +35,21 @@ const colors: Color[] = [
   { id: 2, color: "bg-blue-500" },
   { id: 3, color: "bg-green-500" },
   { id: 4, color: "bg-purple-500" },
-]
+];
 
 const thumbnails: string[] = [
   "https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=800",
   "https://images.unsplash.com/photo-1583391733956-6c78276477e2?w=800",
   "https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=800",
   "https://images.unsplash.com/photo-1583391733956-6c78276477e2?w=800",
-]
+];
 
 const initialReviews: Review[] = [
   {
     id: 1,
     name: "Sarah Johnson",
-    avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150",
+    avatar:
+      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150",
     rating: 5,
     date: "2 weeks ago",
     comment:
@@ -58,7 +58,8 @@ const initialReviews: Review[] = [
   {
     id: 2,
     name: "Priya Patel",
-    avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150",
+    avatar:
+      "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150",
     rating: 4,
     date: "1 month ago",
     comment:
@@ -67,106 +68,113 @@ const initialReviews: Review[] = [
   {
     id: 3,
     name: "Meera Shah",
-    avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150",
+    avatar:
+      "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150",
     rating: 5,
     date: "2 months ago",
     comment:
       "This saree exceeded my expectations! The border design is exquisite and the fabric drapes beautifully. Received many compliments at the event.",
   },
-]
+];
 
 const ProductPage: NextPage = () => {
-  const router=useRouter()
-  const [selectedImage, setSelectedImage] = useState<string>(thumbnails[0])
-  const [hoveredImage, setHoveredImage] = useState<string | null>(null)
-  const [reviews, setReviews] = useState<Review[]>(initialReviews)
+  const router = useRouter();
+  const [selectedImage, setSelectedImage] = useState<string>(thumbnails[0]);
+  const [hoveredImage, setHoveredImage] = useState<string | null>(null);
+  const [reviews, setReviews] = useState<Review[]>(initialReviews);
   const [newReview, setNewReview] = useState<NewReview>({
     name: "",
     comment: "",
     rating: 5,
-  })
-  const [hoverRating, setHoverRating] = useState<number>(0)
-  const [isInCart, setIsInCart] = useState(false)
-  const [isInWishlist, setIsInWishlist] = useState(false)
-  const [quantity, setQuantity] = useState<number>(1)
+  });
+  const [hoverRating, setHoverRating] = useState<number>(0);
+  const [isInCart, setIsInCart] = useState(false);
+  const [isInWishlist, setIsInWishlist] = useState(false);
+  const [quantity, setQuantity] = useState<number>(1);
 
   const handleQuantityChange = (type: "increment" | "decrement") => {
-    setQuantity((prev) => (type === "increment" ? prev + 1 : Math.max(1, prev - 1)))
-  }
+    setQuantity((prev) =>
+      type === "increment" ? prev + 1 : Math.max(1, prev - 1)
+    );
+  };
 
   const handleSubmitReview = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
+    e.preventDefault();
     if (newReview.name.trim() && newReview.comment.trim()) {
       const review: Review = {
         id: reviews.length + 1,
         ...newReview,
         date: "Just now",
-        avatar: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150",
-      }
-      setReviews([review, ...reviews])
-      setNewReview({ name: "", comment: "", rating: 5 })
+        avatar:
+          "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150",
+      };
+      setReviews([review, ...reviews]);
+      setNewReview({ name: "", comment: "", rating: 5 });
     }
-  }
+  };
   const handleCartClick = () => {
     if (isInCart) {
-      router.push("/cart")
+      router.push("/cart");
     } else {
-      setIsInCart(true)
+      setIsInCart(true);
     }
-  }
-
-  
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 h-screen">
           {/* Left Column - Images */}
-          <div className="space-y-4 h-full flex flex-col">
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="flex-1 rounded-xl overflow-hidden bg-white relative"
-            >
-              <Image
-                src={hoveredImage || selectedImage || "/placeholder.svg"}
-                alt="Saree"
-                className="object-contain"
-                fill
-                sizes="(max-width: 500px) 100vw, 50vw"
-                priority
-              />
-            </motion.div>
-            <div className="flex flex-row gap-2">
-              {thumbnails.map((thumb, idx) => (
-                <motion.button
-                  key={idx}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => setSelectedImage(thumb)}
-                  onMouseEnter={() => setHoveredImage(thumb)}
-                  onMouseLeave={() => setHoveredImage(null)}
-                  className={`w-16 h-16 rounded-md overflow-hidden border-2 relative ${
-                    (hoveredImage || selectedImage) === thumb ? "border-blue-500" : "border-gray-200"
-                  }`}
-                >
-                  <Image
-                    src={thumb || "/placeholder.svg"}
-                    alt={`Thumbnail ${idx + 1}`}
-                    className="object-cover"
-                    fill
-                    sizes="64px"
-                  />
-                </motion.button>
-              ))}
-            </div>
-          </div>
+<div className="space-y-4 h-full flex flex-col items-center">
+  {/* Main Image Section - Now Bigger on Mobile */}
+  <motion.div
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    className="relative w-full h-[60vh] sm:h-[80vh] rounded-xl overflow-hidden bg-white flex items-center justify-center px-4"
+  >
+    <Image
+      src={hoveredImage || selectedImage || "/placeholder.svg"}
+      alt="Saree"
+      width={600} // Explicit width
+      height={600} // Explicit height
+      className="w-full h-full object-contain"
+      priority
+    />
+  </motion.div>
+
+  {/* Thumbnails Section - Now Scrollable on Mobile */}
+  <div className="flex gap-2 overflow-x-auto sm:overflow-hidden sm:grid sm:grid-cols-4 px-2">
+    {thumbnails.map((thumb, idx) => (
+      <motion.button
+        key={idx}
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        onClick={() => setSelectedImage(thumb)}
+        onMouseEnter={() => setHoveredImage(thumb)}
+        onMouseLeave={() => setHoveredImage(null)}
+        className={`w-20 h-20 rounded-md overflow-hidden border-2 flex-shrink-0 ${
+          (hoveredImage || selectedImage) === thumb ? "border-blue-500" : "border-gray-200"
+        }`}
+      >
+        <Image
+          src={thumb || "/placeholder.svg"}
+          alt={`Thumbnail ${idx + 1}`}
+          width={80}
+          height={80}
+          className="w-full h-full object-cover"
+        />
+      </motion.button>
+    ))}
+  </div>
+</div>
+
 
           {/* Right Column - Product Details */}
           <div className="space-y-4 overflow-y-auto h-full pr-4">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">Traditional Silk Saree</h1>
-              
+              <h1 className="text-3xl font-bold text-gray-900">
+                Traditional Silk Saree
+              </h1>
             </div>
 
             {/* Reviews Summary */}
@@ -175,7 +183,9 @@ const ProductPage: NextPage = () => {
                 {[...Array(5)].map((_, idx) => (
                   <Star
                     key={idx}
-                    className={`w-5 h-5 ${idx < 4 ? "text-yellow-400" : "text-gray-300"}`}
+                    className={`w-5 h-5 ${
+                      idx < 4 ? "text-yellow-400" : "text-gray-300"
+                    }`}
                     fill={idx < 4 ? "currentColor" : "none"}
                   />
                 ))}
@@ -203,9 +213,10 @@ const ProductPage: NextPage = () => {
                 {/* Description */}
                 <div className="prose prose-sm text-gray-600">
                   <p>
-                    Handcrafted with the finest silk, this traditional saree features intricate zari work and a stunning
-                    border design. Perfect for special occasions and celebrations, this piece embodies timeless elegance
-                    and cultural heritage.
+                    Handcrafted with the finest silk, this traditional saree
+                    features intricate zari work and a stunning border design.
+                    Perfect for special occasions and celebrations, this piece
+                    embodies timeless elegance and cultural heritage.
                   </p>
                 </div>
 
@@ -229,11 +240,17 @@ const ProductPage: NextPage = () => {
             <div>
               <h3 className="text-sm font-medium text-gray-900">Quantity</h3>
               <div className="flex items-center mt-2 border border-gray-300 rounded-lg w-max p-2">
-                <motion.button whileTap={{ scale: 0.9 }} onClick={() => handleQuantityChange("decrement")}>
+                <motion.button
+                  whileTap={{ scale: 0.9 }}
+                  onClick={() => handleQuantityChange("decrement")}
+                >
                   <Minus className="w-5 h-5 text-gray-700" />
                 </motion.button>
                 <span className="mx-4 text-lg font-semibold">{quantity}</span>
-                <motion.button whileTap={{ scale: 0.9 }} onClick={() => handleQuantityChange("increment")}>
+                <motion.button
+                  whileTap={{ scale: 0.9 }}
+                  onClick={() => handleQuantityChange("increment")}
+                >
                   <Plus className="w-5 h-5 text-gray-700" />
                 </motion.button>
               </div>
@@ -264,7 +281,9 @@ const ProductPage: NextPage = () => {
           </div>
         </div>
         <div className="mt-16">
-          <h2 className="text-2xl font-bold text-gray-900 mb-8">Customer Reviews</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-8">
+            Customer Reviews
+          </h2>
 
           {/* Add Review Form */}
           <motion.form
@@ -273,24 +292,33 @@ const ProductPage: NextPage = () => {
             onSubmit={handleSubmitReview}
             className="bg-white p-6 rounded-lg shadow-sm mb-8"
           >
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Write a Review</h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">
+              Write a Review
+            </h3>
             <div className="space-y-4">
               <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="name"
+                  className="block text-sm font-medium text-gray-700"
+                >
                   Your Name
                 </label>
                 <input
                   type="text"
                   id="name"
                   value={newReview.name}
-                  onChange={(e) => setNewReview({ ...newReview, name: e.target.value })}
+                  onChange={(e) =>
+                    setNewReview({ ...newReview, name: e.target.value })
+                  }
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Rating</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Rating
+                </label>
                 <div className="flex space-x-1">
                   {[1, 2, 3, 4, 5].map((rating) => (
                     <motion.button
@@ -305,9 +333,15 @@ const ProductPage: NextPage = () => {
                     >
                       <Star
                         className={`w-6 h-6 ${
-                          rating <= (hoverRating || newReview.rating) ? "text-yellow-400" : "text-gray-300"
+                          rating <= (hoverRating || newReview.rating)
+                            ? "text-yellow-400"
+                            : "text-gray-300"
                         }`}
-                        fill={rating <= (hoverRating || newReview.rating) ? "currentColor" : "none"}
+                        fill={
+                          rating <= (hoverRating || newReview.rating)
+                            ? "currentColor"
+                            : "none"
+                        }
                       />
                     </motion.button>
                   ))}
@@ -315,14 +349,19 @@ const ProductPage: NextPage = () => {
               </div>
 
               <div>
-                <label htmlFor="comment" className="block text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="comment"
+                  className="block text-sm font-medium text-gray-700"
+                >
                   Your Review
                 </label>
                 <textarea
                   id="comment"
                   rows={4}
                   value={newReview.comment}
-                  onChange={(e) => setNewReview({ ...newReview, comment: e.target.value })}
+                  onChange={(e) =>
+                    setNewReview({ ...newReview, comment: e.target.value })
+                  }
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                   required
                 />
@@ -361,14 +400,22 @@ const ProductPage: NextPage = () => {
                   </div>
                   <div className="flex-1">
                     <div className="flex items-center justify-between">
-                      <h3 className="font-medium text-gray-900">{review.name}</h3>
-                      <span className="text-sm text-gray-500">{review.date}</span>
+                      <h3 className="font-medium text-gray-900">
+                        {review.name}
+                      </h3>
+                      <span className="text-sm text-gray-500">
+                        {review.date}
+                      </span>
                     </div>
                     <div className="flex items-center mt-1">
                       {[...Array(5)].map((_, idx) => (
                         <Star
                           key={idx}
-                          className={`w-4 h-4 ${idx < review.rating ? "text-yellow-400" : "text-gray-300"}`}
+                          className={`w-4 h-4 ${
+                            idx < review.rating
+                              ? "text-yellow-400"
+                              : "text-gray-300"
+                          }`}
                           fill={idx < review.rating ? "currentColor" : "none"}
                         />
                       ))}
@@ -382,8 +429,7 @@ const ProductPage: NextPage = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default ProductPage
-
+export default ProductPage;

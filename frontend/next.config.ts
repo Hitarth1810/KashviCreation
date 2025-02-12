@@ -2,7 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
-    domains: ["res.cloudinary.com", "images.unsplash.com", "upload.wikimedia.org"], // Allow listed domains
+    domains: ["res.cloudinary.com", "images.unsplash.com", "upload.wikimedia.org","hebbkx1anhila5yf.public.blob.vercel-storage.com"], // Allow listed domains
     remotePatterns: [
       {
         protocol: "https",

@@ -1,23 +1,20 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import axios from "axios"
 import Image from "next/image"
 import Link from "next/link"
 import { Eye, Heart } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
-
-const sarees = Array.from({ length: 32 }, (_, i) => ({
-  id: i + 1,
-  name: `Elegant Saree ${i + 1}`,
-  image: `/saree-${(i % 4) + 1}.jpg`,
-  
-  description: "Beautiful handcrafted saree with intricate designs and vibrant colors.",
-}))
+import { Product } from "@/types/product"
 
 export default function Collections() {
   const [cart, setCart] = useState<number[]>([])
   const [wishlist, setWishlist] = useState<number[]>([])
   const [isLoading, setIsLoading] = useState(true)
+ 
+
+  const [sarees, setSarees] = useState<Product[]>([])
 
   useEffect(() => {
     setTimeout(() => setIsLoading(false), 1000)
@@ -40,6 +37,15 @@ export default function Collections() {
     if (savedWishlist) {
       setWishlist(JSON.parse(savedWishlist))
     }
+  }, [])
+
+  useEffect(() => {
+    axios.get("/api/product")
+      .then(response => {
+        setSarees(response.data)
+        setIsLoading(false)
+      })
+      .catch(error => console.error("Error fetching products:", error))
   }, [])
 
   const addToCart = (e: React.MouseEvent, id: number) => {
@@ -82,7 +88,7 @@ export default function Collections() {
                     {/* Image Container */}
                     <div className="relative group">
                       <Image
-                        src={saree.image || "/placeholder.svg"}
+                        src={saree.images[0] || "/placeholder.svg"}
                         alt={saree.name}
                         width={400}
                         height={600}
@@ -100,14 +106,14 @@ export default function Collections() {
                         <motion.button
                           whileHover={{ scale: 1.1 }}
                           whileTap={{ scale: 0.9 }}
-                          onClick={(e) => toggleWishlist(e, saree.id)}
+                          onClick={(e) => toggleWishlist(e, Number(saree.id))}
                           className={`p-3 rounded-full shadow-md transition-colors duration-300 ${
-                            wishlist.includes(saree.id)
+                            wishlist.includes(Number(saree.id))
                               ? "bg-white text-red-500"
                               : "bg-white text-amber-800 hover:bg-amber-800 hover:text-white"
                           }`}
                         >
-                          <Heart size={24} fill={wishlist.includes(saree.id) ? "currentColor" : "none"} />
+                          <Heart size={24} fill={wishlist.includes(Number(saree.id)) ? "currentColor" : "none"} />
                         </motion.button>
                       </div>
                     </div>
@@ -118,7 +124,7 @@ export default function Collections() {
                       <p className="text-gray-600 text-sm mb-4">{saree.description}</p>
 
                       {/* Button */}
-                      {cart.includes(saree.id) ? (
+                      {cart.includes(Number(saree.id)) ? (
                         <Link href="/cart">
                           <motion.button
                             whileHover={{ scale: 1.05 }}
@@ -132,7 +138,7 @@ export default function Collections() {
                         <motion.button
                           whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.95 }}
-                          onClick={(e) => addToCart(e, saree.id)}
+                          onClick={(e) => addToCart(e, Number(saree.id))}
                           className="bg-amber-800 text-white py-2 px-4 rounded-lg text-sm hover:bg-amber-700 transition-colors duration-300 w-full"
                         >
                           Add to Cart
@@ -148,4 +154,3 @@ export default function Collections() {
     </div>
   )
 }
-

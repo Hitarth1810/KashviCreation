@@ -1,5 +1,6 @@
 import { prisma } from "./prisma";
 import bcrypt from "bcryptjs";
+import { getProduct } from "./products";
 
 export type CreateUserInput = {
 	email: string;
@@ -110,3 +111,27 @@ export async function verifyPasswordResetToken(token: string) {
 
 // 	return token;
 // }
+
+export async function updateUserCart(id:string,productid:string){
+	const user = await prisma.user.update({
+		where: { id },
+		data: {
+			Cart: {
+				push: productid,
+			},
+		},
+	});
+	return user;
+}
+
+export async function getUserCart(id:string){
+	const user = await prisma.user.findUnique({
+		where: { id },
+		
+	});
+	if(!user?.Cart) return null
+	const cart=user.Cart.map(async id=>{
+		return await getProduct(id)
+	})
+	return cart;
+}

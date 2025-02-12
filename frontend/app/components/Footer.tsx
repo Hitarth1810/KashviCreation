@@ -254,7 +254,7 @@ export default function Footer() {
           </p>
         </div>
       </div>
-      com
+      
     </footer>
   );
 }

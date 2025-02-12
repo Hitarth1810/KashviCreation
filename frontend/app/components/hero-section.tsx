@@ -20,11 +20,11 @@ export function HeroSection() {
         </video>
 
         {/* Vignette effect */}
-        <div className="absolute inset-0 pointer-events-none bg-gradient-to-b from-black/70 via-transparent to-black/80" />
+        <div className="absolute inset-0 pointer-events-none bg-gradient-to-b from-black/70 via-black/10 to-black/70" />
       </div>
 
       {/* Content */}
-      <div className="absolute inset-0 flex flex-col justify-center items-center text-[#FFF5E6] px-6 md:px-[9%]">
+      <div className="absolute  inset-0 flex flex-col justify-center items-center text-[#FFF5E6] px-6 md:px-[9%]">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -36,7 +36,7 @@ export function HeroSection() {
             initial={{ x: -100, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             transition={{ delay: 0.3, duration: 0.8, type: 'spring', stiffness: 100 }}
-            className="text-4xl pr-[5%] md:text-7xl font-kalam font-bold drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)]"
+            className="text-4xl pr-[3%] md:text-7xl font-kalam font-bold drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)]"
           >
             प्रेम और विश्वास
           </motion.h1>
@@ -45,7 +45,7 @@ export function HeroSection() {
             initial={{ x: 100, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             transition={{ delay: 0.6, duration: 0.8, type: 'spring', stiffness: 100 }}
-            className="text-4xl pl-[10%] md:text-7xl font-kalam font-bold drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)]"
+            className="text-4xl pl-[13%] md:text-7xl font-kalam font-bold drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)]"
           >
             का अनोखा संगम
           </motion.h1>

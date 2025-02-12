@@ -14,7 +14,7 @@ export default function Footer() {
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12 relative">
           {/* Map Section - Replaced Google Maps with iframe */}
-          <div className="w-full rounded-lg overflow-hidden shadow-md ml-auto md:w-[90%]">
+          <div className="w-full rounded-lg overflow-hidden shadow-md ml-auto md:w-[90%] ml-2">
             <iframe
               src="https://www.google.com/maps/embed?pb=!1m27!1m12!1m3!1d59525.106476417786!2d72.80288866081364!3d21.17947688894457!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m12!3e6!4m4!1s0x3be04f30c2a28475%3A0xad5f81ba586f9f2c!3m2!1d21.179439!2d72.8442207!4m5!1s0x3be04f30c2a28475%3A0xad5f81ba586f9f2c!2s6124%2C%20Millenium%20Textile%20Market%2C%20Shop%20No%206115%20to%2C%204%2C%20Bhatena%20Rd%2C%20Udhna%20Udhyog%20Nagar%2C%20Bhatena%2C%20Surat%2C%20Gujarat%20395002!3m2!1d21.179439!2d72.8442207!5e0!3m2!1sen!2sin!4v1739093957921!5m2!1sen!2sin"
               className="w-full h-[200px]" // Same height as previous map
@@ -24,6 +24,8 @@ export default function Footer() {
               referrerPolicy="no-referrer-when-downgrade"
             />
           </div>
+          
+          <div className="hidden md:block absolute left-1/2 top-0 h-full w-[3px] bg-gray-400"></div>
 
           {/* Instagram Feed Section */}
           <div className="flex flex-col items-center w-full">
@@ -83,7 +85,7 @@ export default function Footer() {
 
         {/* Added line between sections */}
         {/* Footer Links Section */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 py-12 border-t border-gray-200">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 py-12 border-t border-gray-200">
           {/* Brand Section */}
           <div className="lg:col-span-1">
             <Link href="/" className="flex items-center space-x-3 mr-3">
@@ -112,48 +114,21 @@ export default function Footer() {
 
           {/* Quick Links */}
           <div>
-            <h4 className="text-lg font-medium mb-4">Quick Link</h4>
+            <h4 className="text-xl font-medium mb-4">Quick Links</h4>
             <ul className="space-y-2">
-              <li>
-                <Link href="/" className="text-gray-600 hover:text-gray-900">
-                  NewIn
-                </Link>
-              </li>
+              
               <li>
                 <Link
                   href="/collections"
-                  className="text-gray-600 hover:text-gray-900"
+                  className="text-gray-600 hover:text-gray-900 text-lg"
                 >
                   Collections
                 </Link>
               </li>
               <li>
                 <Link
-                  href="/collection"
-                  className="text-gray-600 hover:text-gray-900"
-                >
-                  Collection
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/virtual"
-                  className="text-gray-600 hover:text-gray-900"
-                >
-                  Virtual
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* Vastram */}
-          <div>
-            <h4 className="text-lg font-medium mb-4">Kashvi</h4>
-            <ul className="space-y-2">
-              <li>
-                <Link
                   href="/about"
-                  className="text-gray-600 hover:text-gray-900"
+                  className="text-gray-600 hover:text-gray-900 text-lg"
                 >
                   About Us
                 </Link>
@@ -161,7 +136,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/contact"
-                  className="text-gray-600 hover:text-gray-900"
+                  className="text-gray-600 hover:text-gray-900 text-lg"
                 >
                   Contact us
                 </Link>
@@ -169,22 +144,32 @@ export default function Footer() {
               <li>
                 <Link
                   href="/blog"
-                  className="text-gray-600 hover:text-gray-900"
+                  className="text-gray-600 hover:text-gray-900 text-lg"
                 >
                   Blog
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/faq"
+                  className="text-gray-600 hover:text-gray-900 text-lg"
+                >
+                  FAQs
                 </Link>
               </li>
             </ul>
           </div>
 
+          
+
           {/* My Account */}
           <div>
-            <h4 className="text-lg font-medium mb-4">My Account</h4>
+            <h4 className="text-xl font-medium mb-4">My Account</h4>
             <ul className="space-y-2">
               <li>
                 <Link
                   href="/signin"
-                  className="text-gray-600 hover:text-gray-900"
+                  className="text-gray-600 hover:text-gray-900 text-lg"
                 >
                   Login
                 </Link>
@@ -192,15 +177,15 @@ export default function Footer() {
               <li>
                 <Link
                   href="/cart"
-                  className="text-gray-600 hover:text-gray-900"
+                  className="text-gray-600 hover:text-gray-900 text-lg"
                 >
-                  Shopping Bag
+                  Shopping Cart
                 </Link>
               </li>
               <li>
                 <Link
                   href="/wishlist"
-                  className="text-gray-600 hover:text-gray-900"
+                  className="text-gray-600 hover:text-gray-900 text-lg"
                 >
                   Wishlist
                 </Link>
@@ -209,21 +194,21 @@ export default function Footer() {
           </div>
           {/* Contact */}
           <div>
-            <h4 className="text-lg font-medium mb-4">Contact</h4>
+            <h4 className="text-xl font-medium mb-4">Contact</h4>
             <ul className="space-y-2">
               <li className="flex items-center ">
-                <Mail className="w-8 h-8 text-gray-600" strokeWidth={2} />{" "}
+                <Mail className="w-6 h-6 text-gray-600" strokeWidth={2} />{" "}
                 {/* Increased size here */}
                 <Link
                   href="mailto:Kashvicreation10@gmail.com"
-                  className="text-gray-600 hover:text-gray-900 hover:underline"
+                  className="text-gray-600 hover:text-gray-900 hover:underline text-lg"
                 >
                   Kashvicreation10@gmail.com
                 </Link>
               </li>
               <li className="flex items-center space-x-2">
-                <Phone className="w-5 h-5 text-gray-600" />
-                <p className="text-gray-600 hover:text-gray-900">
+                <Phone className="w-6 h-6 text-gray-600" />
+                <p className="text-gray-600 hover:text-gray-900 text-lg">
                   <a href="tel:+919376421333" className="hover:text-gray-900">
                     +91 9376421333
                   </a>{" "}
@@ -235,8 +220,8 @@ export default function Footer() {
                 </p>
               </li>
               <li className="flex items-center space-x-2">
-                <Clock className="w-5 h-5 text-gray-600" />
-                <p className="text-gray-600 hover:text-gray-900">
+                <Clock className="w-6 h-6 text-gray-600" />
+                <p className="text-gray-600 hover:text-gray-900 text-lg">
                   10 AM - 7 PM, Monday - Saturday
                 </p>
               </li>
@@ -254,7 +239,7 @@ export default function Footer() {
           </p>
         </div>
       </div>
-      com
+      
     </footer>
   );
 }

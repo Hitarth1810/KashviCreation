@@ -1,21 +1,16 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-	images: {
-		domains: ["images.unsplash.com", "upload.wikimedia.org"],
-		remotePatterns: [
-			{
-				protocol: "https",
-				hostname: "hebbkx1anhila5yf.public.blob.vercel-storage.com",
-				port: "",
-				pathname: "/**",
-			},
-			{
-				protocol: "https",
-				hostname: "res.cloudinary.com",
-			},
-		],
-	},
+  images: {
+    domains: ["res.cloudinary.com", "images.unsplash.com", "upload.wikimedia.org"], // Allow listed domains
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "res.cloudinary.com",
+        pathname: "/diujpbja7/image/upload/**", // Allows only your Cloudinary account images
+      },
+    ],
+  },
 };
 
 export default nextConfig;

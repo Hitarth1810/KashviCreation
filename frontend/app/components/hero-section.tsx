@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion';
 import { ShoppingBag, ScrollText } from 'lucide-react';
 import { Button } from '@/app/components/ui/button';
+import Link from 'next/link';
 
 export function HeroSection() {
   return (
@@ -67,19 +68,22 @@ export function HeroSection() {
             transition={{ delay: 1.2, duration: 0.8 }}
             className="flex flex-col md:flex-row justify-center gap-4 md:gap-6 mt-8"
           >
+            <Link href='/collections' passHref>
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Button className="bg-[#E8C4BC] hover:bg-[#eb8c7d] text-gray-800 shadow-lg px-6 md:px-8 py-4 text-lg">
                 <ShoppingBag className="mr-2 h-5 w-5" />
                 Shop Collection
               </Button>
             </motion.div>
-
+            </Link>
+            <Link href='/about' passHref>
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Button className="border-2 border-[#E8C4BC] text-[#e7a292] hover:bg-[#E8C4BC]/10 px-6 md:px-8 py-4 text-lg">
                 <ScrollText className="mr-2 h-5 w-5" />
                 Our Story
               </Button>
             </motion.div>
+            </Link>
           </motion.div>
         </motion.div>
       </div>

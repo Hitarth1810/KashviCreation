@@ -106,14 +106,14 @@ const NavIcons = () => {
   return (
     <div className="flex items-center gap-2 xl:gap-4 relative">
       {/* Wishlist Icon */}
-      <Link href="/wishlist" className="p-1 text-white hover:text-blue-600 transition-colors">
+      <Link href="/wishlist" className="p-1 text-white hover:text-[#FFD700] transition-colors">
         <Heart className="h-[22px] w-[22px]" />
       </Link>
 
       {/* Profile Dropdown */}
       <div className="profile-menu relative">
         <button
-          className="p-1 text-white hover:text-blue-600 transition-colors"
+          className="p-1 text-white hover:text-[#FFD700] transition-colors"
           onClick={() => setIsProfileOpen((prev) => !prev)}
         >
           <User className="h-[22px] w-[22px]" />
@@ -211,7 +211,7 @@ const NavIcons = () => {
       </div>
 
       {/* Cart Icon */}
-      <Link href="/cart" className="p-1 text-white hover:text-blue-600 transition-colors relative">
+      <Link href="/cart" className="p-1 text-white hover:text-[#FFD700] transition-colors relative">
         <ShoppingCart className="h-[22px] w-[22px]" />
         {cartItems.length > 0 && (
           <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">

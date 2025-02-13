@@ -72,7 +72,7 @@ export function HeroSection() {
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Button className="bg-[#E8C4BC] hover:bg-[#eb8c7d] text-gray-800 shadow-lg px-6 md:px-8 py-4 text-lg">
                 <ShoppingBag className="mr-2 h-5 w-5" />
-                Shop Collection
+                Shop Now
               </Button>
             </motion.div>
             </Link>

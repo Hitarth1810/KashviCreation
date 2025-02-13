@@ -24,31 +24,19 @@ export function ProductForm({ product, onSuccess }: ProductFormProps) {
 	const [stock, setStock] = useState(product?.stock || 0);
 	const [colors, setColors] = useState<string[]>(product?.colors || []);
 	const [newColor, setNewColor] = useState("");
-	const [images, setImages] = useState<string[]>(product?.images || []); // Store uploaded image URLs
+	const [images, setImages] = useState<File[]>([]); // Store images as File objects
 	const [loading, setLoading] = useState(false);
 
-	// Upload Image to Cloudinary
-	const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-		const file = e.target.files?.[0];
-		if (!file) return;
+	// Handle Image Upload
+	const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const files = e.target.files;
+		if (!files) return;
 
-		setLoading(true);
-		const formData = new FormData();
-		formData.append("file", file);
-
-		try {
-			const { data } = await axios.post("/api/protected/admin/product", formData, {
-				headers: { "Content-Type": "multipart/form-data" },
-			});
-
-			setImages([...images, data.url]); // Store uploaded image URL
-		} catch (error) {
-			console.error("Upload failed:", error);
-		} finally {
-			setLoading(false);
-		}
+		// Convert FileList to Array and append to state
+		setImages([...images, ...Array.from(files)]);
 	};
 
+	// Handle Form Submission
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		setLoading(true);
@@ -60,18 +48,19 @@ export function ProductForm({ product, onSuccess }: ProductFormProps) {
 			formData.append("description", description);
 			formData.append("category", category);
 			formData.append("stock", stock.toString());
-			colors.forEach((color) => formData.append("colors", color));
 
-			if (images.length) {
-				images.forEach((file) => formData.append("images", file));
-			}
+			colors.forEach((color) => formData.append("colors", color)); // Ensure colors are properly sent
+			images.forEach((file) => formData.append("images", file)); // Ensure images are properly appended
 
-			const response = await fetch("/api/protected/admin/product", {
-				method: "POST",
-				body: formData,
-			});
+			const response = await axios.post(
+				"/api/protected/admin/product",
+				formData,
+				{
+					headers: { "Content-Type": "multipart/form-data" },
+				}
+			);
 
-			if (response.ok) {
+			if (response.status === 200) {
 				onSuccess();
 			}
 		} catch (error) {
@@ -85,7 +74,7 @@ export function ProductForm({ product, onSuccess }: ProductFormProps) {
 	return (
 		<form onSubmit={handleSubmit} className='space-y-6'>
 			<div className='space-y-4'>
-				{!product && ( // Only show for new product
+				{!product && (
 					<div className='grid gap-2'>
 						<Label htmlFor='product-id'>Product ID</Label>
 						<Input
@@ -186,20 +175,20 @@ export function ProductForm({ product, onSuccess }: ProductFormProps) {
 					<Input
 						type='file'
 						accept='image/*'
+						multiple
 						onChange={handleImageUpload}
 						disabled={loading}
 					/>
-					{loading && <p>Uploading...</p>}
 
 					{/* Display Uploaded Images */}
 					<div className='flex flex-wrap gap-2'>
 						{images.map((image, index) => (
 							<div key={index} className='relative w-24 h-24'>
 								<Image
-									src={image}
+									src={URL.createObjectURL(image)} // Preview before upload
 									alt={`Uploaded ${index}`}
-									layout='fill'
-									objectFit='cover'
+									fill
+									objectFit='contain'
 									className='rounded-lg'
 								/>
 								<button

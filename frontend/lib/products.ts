@@ -34,9 +34,11 @@ export async function getProduct(id: string) {
 
 export async function createProduct(data: ProductData) {
 	try {
+		console.log(data)
 		const product = prisma.product.create({
-			data,
+			data
 		});
+
 		return product;
 	} catch {
 		throw new Error("Error creating product");

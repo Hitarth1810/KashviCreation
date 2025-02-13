@@ -16,7 +16,7 @@ export default function Footer() {
           {/* Map Section - Replaced Google Maps with iframe */}
           <div className="w-full rounded-lg overflow-hidden shadow-md ml-auto md:w-[90%] ml-2">
             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m27!1m12!1m3!1d59525.106476417786!2d72.80288866081364!3d21.17947688894457!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m12!3e6!4m4!1s0x3be04f30c2a28475%3A0xad5f81ba586f9f2c!3m2!1d21.179439!2d72.8442207!4m5!1s0x3be04f30c2a28475%3A0xad5f81ba586f9f2c!2s6124%2C%20Millenium%20Textile%20Market%2C%20Shop%20No%206115%20to%2C%204%2C%20Bhatena%20Rd%2C%20Udhna%20Udhyog%20Nagar%2C%20Bhatena%2C%20Surat%2C%20Gujarat%20395002!3m2!1d21.179439!2d72.8442207!5e0!3m2!1sen!2sin!4v1739093957921!5m2!1sen!2sin"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3720.198385451438!2d72.84406537431065!3d21.18427668242081!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be04e4bffd55d29%3A0x9facf9728614cf00!2sMillennium%20Textile%20Market%202!5e0!3m2!1sen!2sin!4v1739453271727!5m2!1sen!2sin"
               className="w-full h-[200px]" // Same height as previous map
               style={{ border: 0 }}
               allowFullScreen={true}
@@ -24,7 +24,7 @@ export default function Footer() {
               referrerPolicy="no-referrer-when-downgrade"
             />
           </div>
-          
+
           <div className="hidden md:block absolute left-1/2 top-0 h-full w-[3px] bg-gray-400"></div>
 
           {/* Instagram Feed Section */}
@@ -88,23 +88,27 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 py-12 border-t border-gray-200">
           {/* Brand Section */}
           <div className="lg:col-span-1">
-            <Link href="/" className="flex items-center space-x-3 mr-3">
-              <Image
-                src={Logo || "/placeholder.svg"}
-                alt="logo"
-                width={40}
-                height={50}
-                className="opacity-90"
-                priority
-              />
-              <Image
-                src={LogoLetter || "/placeholder.svg"}
-                alt="logoletter"
-                width={90}
-                height={30}
-                className="opacity-90"
-                priority
-              />
+            <Link href="/" className="flex items-center mr-3 group">
+              <div className="flex items-center space-x-3 transform transition-transform duration-300 group-hover:scale-110">
+                <div className="flex items-center space-x-3">
+                  <Image
+                    src={Logo || "/placeholder.svg"}
+                    alt="logo"
+                    width={40}
+                    height={50}
+                    className="opacity-90 transition-opacity duration-300 group-hover:opacity-100"
+                    priority
+                  />
+                  <Image
+                    src={LogoLetter || "/placeholder.svg"}
+                    alt="logoletter"
+                    width={90}
+                    height={30}
+                    className="opacity-90 transition-opacity duration-300 group-hover:opacity-100"
+                    priority
+                  />
+                </div>
+              </div>
             </Link>
             <p className="text-gray-600 text-sm mt-10">
               We are a fashion brand that offers the best of contemporary,
@@ -116,78 +120,99 @@ export default function Footer() {
           <div>
             <h4 className="text-xl font-medium mb-4">Quick Links</h4>
             <ul className="space-y-2">
-              
-              <li>
+              <li className="group relative">
                 <Link
                   href="/collections"
-                  className="text-gray-600 hover:text-gray-900 text-lg"
+                  className="text-gray-600 group-hover:text-pink-600 text-lg relative inline-block"
                 >
-                  Collections
+                  <span className="relative">
+                    Collections
+                    <span className="absolute left-0 bottom-0 w-full h-0.5 bg-pink-400 transform scale-x-0 transition-transform duration-300 origin-left group-hover:scale-x-100"></span>
+                  </span>
                 </Link>
               </li>
-              <li>
+              <li className="group relative">
                 <Link
                   href="/about"
-                  className="text-gray-600 hover:text-gray-900 text-lg"
+                  className="text-gray-600 group-hover:text-pink-600 text-lg relative inline-block"
                 >
-                  About Us
+                  <span className="relative">
+                    About Us
+                    <span className="absolute left-0 bottom-0 w-full h-0.5 bg-pink-400 transform scale-x-0 transition-transform duration-300 origin-left group-hover:scale-x-100"></span>
+                  </span>
                 </Link>
               </li>
-              <li>
+              <li className="group relative">
                 <Link
                   href="/contact"
-                  className="text-gray-600 hover:text-gray-900 text-lg"
+                  className="text-gray-600 group-hover:text-pink-600 text-lg relative inline-block"
                 >
-                  Contact us
+                  <span className="relative">
+                    Contact us
+                    <span className="absolute left-0 bottom-0 w-full h-0.5 bg-pink-400 transform scale-x-0 transition-transform duration-300 origin-left group-hover:scale-x-100"></span>
+                  </span>
                 </Link>
               </li>
-              <li>
+              <li className="group relative">
                 <Link
                   href="/blog"
-                  className="text-gray-600 hover:text-gray-900 text-lg"
+                  className="text-gray-600 group-hover:text-pink-600 text-lg relative inline-block"
                 >
-                  Blog
+                  <span className="relative">
+                    Blog
+                    <span className="absolute left-0 bottom-0 w-full h-0.5 bg-pink-400 transform scale-x-0 transition-transform duration-300 origin-left group-hover:scale-x-100"></span>
+                  </span>
                 </Link>
               </li>
-              <li>
+              <li className="group relative">
                 <Link
                   href="/faq"
-                  className="text-gray-600 hover:text-gray-900 text-lg"
+                  className="text-gray-600 group-hover:text-pink-600 text-lg relative inline-block"
                 >
-                  FAQs
+                  <span className="relative">
+                    FAQs
+                    <span className="absolute left-0 bottom-0 w-full h-0.5 bg-pink-400 transform scale-x-0 transition-transform duration-300 origin-left group-hover:scale-x-100"></span>
+                  </span>
                 </Link>
               </li>
             </ul>
           </div>
 
-          
-
           {/* My Account */}
           <div>
             <h4 className="text-xl font-medium mb-4">My Account</h4>
             <ul className="space-y-2">
-              <li>
+              <li className="group relative">
                 <Link
                   href="/signin"
-                  className="text-gray-600 hover:text-gray-900 text-lg"
+                  className="text-gray-600 group-hover:text-pink-600 text-lg relative inline-block"
                 >
-                  Login
+                  <span className="relative">
+                    Login
+                    <span className="absolute left-0 bottom-0 w-full h-0.5 bg-pink-400 transform scale-x-0 transition-transform duration-300 origin-left group-hover:scale-x-100"></span>
+                  </span>
                 </Link>
               </li>
-              <li>
+              <li className="group relative">
                 <Link
                   href="/cart"
-                  className="text-gray-600 hover:text-gray-900 text-lg"
+                  className="text-gray-600 group-hover:text-pink-600 text-lg relative inline-block"
                 >
-                  Shopping Cart
+                  <span className="relative">
+                    Shopping Cart
+                    <span className="absolute left-0 bottom-0 w-full h-0.5 bg-pink-400 transform scale-x-0 transition-transform duration-300 origin-left group-hover:scale-x-100"></span>
+                  </span>
                 </Link>
               </li>
-              <li>
+              <li className="group relative">
                 <Link
                   href="/wishlist"
-                  className="text-gray-600 hover:text-gray-900 text-lg"
+                  className="text-gray-600 group-hover:text-pink-600 text-lg relative inline-block"
                 >
-                  Wishlist
+                  <span className="relative">
+                    Wishlist
+                    <span className="absolute left-0 bottom-0 w-full h-0.5 bg-pink-400 transform scale-x-0 transition-transform duration-300 origin-left group-hover:scale-x-100"></span>
+                  </span>
                 </Link>
               </li>
             </ul>
@@ -196,33 +221,49 @@ export default function Footer() {
           <div>
             <h4 className="text-xl font-medium mb-4">Contact</h4>
             <ul className="space-y-2">
-              <li className="flex items-center ">
-                <Mail className="w-6 h-6 text-gray-600" strokeWidth={2} />{" "}
-                {/* Increased size here */}
+              <li className="flex items-center group relative">
+                <Mail
+                  className="w-6 h-6 text-gray-600 transition-all duration-300 group-hover:text-pink-600 transform group-hover:scale-110"
+                  strokeWidth={2}
+                />
                 <Link
                   href="mailto:Kashvicreation10@gmail.com"
-                  className="text-gray-600 hover:text-gray-900 hover:underline text-lg"
+                  className="text-gray-600 group-hover:text-pink-600 text-lg ml-2 relative"
                 >
-                  Kashvicreation10@gmail.com
+                  <span className="relative">
+                    Kashvicreation10@gmail.com
+                    <span className="absolute left-0 bottom-0 w-full h-0.5 bg-pink-400 transform scale-x-0 transition-transform duration-300 origin-left group-hover:scale-x-100"></span>
+                  </span>
                 </Link>
               </li>
-              <li className="flex items-center space-x-2">
-                <Phone className="w-6 h-6 text-gray-600" />
-                <p className="text-gray-600 hover:text-gray-900 text-lg">
-                  <a href="tel:+919376421333" className="hover:text-gray-900">
-                    +91 9376421333
-                  </a>{" "}
-                  /
-                  <a href="tel:+917290909696" className="hover:text-gray-900">
-                    {" "}
-                    +91 7290909696
-                  </a>
+              <li className="flex items-center space-x-2 group relative">
+                <Phone className="w-6 h-6 text-gray-600 transition-all duration-300 group-hover:text-pink-600 transform group-hover:scale-110" />
+                <p className="text-gray-600 group-hover:text-pink-600 text-lg relative">
+                  <span className="relative">
+                    <a
+                      href="tel:+919376421333"
+                      className="hover:text-pink-600 transition-colors duration-300"
+                    >
+                      +91 9376421333
+                    </a>
+                    {" / "}
+                    <a
+                      href="tel:+917290909696"
+                      className="hover:text-pink-600 transition-colors duration-300"
+                    >
+                      +91 7290909696
+                    </a>
+                    <span className="absolute left-0 bottom-0 w-full h-0.5 bg-pink-400 transform scale-x-0 transition-transform duration-300 origin-left group-hover:scale-x-100"></span>
+                  </span>
                 </p>
               </li>
-              <li className="flex items-center space-x-2">
-                <Clock className="w-6 h-6 text-gray-600" />
-                <p className="text-gray-600 hover:text-gray-900 text-lg">
-                  10 AM - 7 PM, Monday - Saturday
+              <li className="flex items-center space-x-2 group relative">
+                <Clock className="w-6 h-6 text-gray-600 transition-all duration-300 group-hover:text-pink-600 transform group-hover:scale-110" />
+                <p className="text-gray-600 group-hover:text-pink-600 text-lg relative">
+                  <span className="relative">
+                    10 AM - 7 PM, Monday - Saturday
+                    <span className="absolute left-0 bottom-0 w-full h-0.5 bg-pink-400 transform scale-x-0 transition-transform duration-300 origin-left group-hover:scale-x-100"></span>
+                  </span>
                 </p>
               </li>
             </ul>
@@ -239,7 +280,6 @@ export default function Footer() {
           </p>
         </div>
       </div>
-      
     </footer>
   );
 }

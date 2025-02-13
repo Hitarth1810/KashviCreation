@@ -1,9 +1,6 @@
 import { NextResponse } from "next/server";
 import { verifyToken } from "@/lib/jwt";
 import { findUserByEmail } from "@/lib/user";
-interface Request {
-	headers: Headers;
-}
 
 export async function GET(req: Request): Promise<NextResponse> {
 	// Get token from headers

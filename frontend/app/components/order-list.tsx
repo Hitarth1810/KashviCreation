@@ -3,28 +3,16 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Badge } from "@/app/components/ui/badge";
 
-// Sample data - replace with your actual data fetching logic
-const orders = [
-	{
-		id: "ORD001",
-		customer: "Priya Sharma",
-		date: new Date(),
-		status: "Processing",
-		total: "₹15,999",
-	},
-	{
-		id: "ORD002",
-		customer: "Anita Patel",
-		date: new Date(),
-		status: "Delivered",
-		total: "₹24,999",
-	},
-	// Add more orders...
-];
+interface Invoice  {
+	id: number;
+	customer: string;
+	status: string;
+	total: string;
+}
 
 export function OrderList({ }) {
-	const [selectedOrder, setSelectedOrder] = useState<string | null>(null);
-	const [orders, setOrders] = useState([]);
+	const [selectedOrder, setSelectedOrder] = useState<number | null>(null);
+	const [orders, setOrders] = useState<Invoice[]>([]);
 
 	useEffect(() => {
 		axios.get("/api/protected/admin/orders").then((response) => {

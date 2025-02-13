@@ -6,7 +6,7 @@ import { useEffect, useState } from "react"
 import RangoliPattern from "./RangoliPattern"
 
 export default function ContactPage() {
-  const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 })
+  const [, setCursorPos] = useState({ x: 0, y: 0 })
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {

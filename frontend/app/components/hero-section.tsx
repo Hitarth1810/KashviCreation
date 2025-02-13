@@ -17,7 +17,7 @@ export function HeroSection() {
           playsInline
           className="absolute w-full h-full object-cover object-center"
         >
-          <source src="/sexy video.mp4" type="video/mp4" />
+          <source src="/chapri video.mp4" type="video/mp4" />
         </video>
 
         {/* Vignette effect */}
@@ -89,7 +89,7 @@ export function HeroSection() {
       </div>
       {/* SMUDGE EFFECT AT THE BOTTOM */}
       <div 
-        className="absolute bottom-0 w-full h-3 bg-gradient-to-t from-white  to-transparent blur-x1"
+        className="absolute bottom-0 w-full h-3 bg-gradient-to-t from-[#fff6e2]  to-transparent blur-x1"
       />
     </div>
   );

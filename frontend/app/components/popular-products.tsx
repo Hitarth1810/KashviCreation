@@ -6,41 +6,25 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { Eye, Heart, ShoppingBag } from "lucide-react";
 import type React from "react";
+import axios from "axios";
 
 interface Product {
   id: number;
   name: string;
-  image: string;
+  images: string[];
+  description: string;
+  price: number;
+  category: string;
 }
 
-const products: Product[] = [
-  {
-    id: 1,
-    name: "Multi Color Net Embroidered Set",
-    image:
-      "https://res.cloudinary.com/diujpbja7/image/upload/v1739209833/24341-2_ljehuw.jpg",
-  },
-  {
-    id: 2,
-    name: "Green Quilted Jacket And Pant Set",
-    image: "/dummy2.jpg",
-  },
-  {
-    id: 3,
-    name: "Yellow Silk Floral Embroidered Bundi",
-    image: "/dummy3.jpeg",
-  },
-  {
-    id: 4,
-    name: "Wine Pure Banarasi Silk Lehenga Choli",
-    image: "/dummy4.jpg",
-  },
-];
+
 
 export function PopularProducts() {
   const [cart, setCart] = useState<number[]>([]);
   const [wishlist, setWishlist] = useState<number[]>([]);
   const [hoveredProduct, setHoveredProduct] = useState<number | null>(null);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const savedCart = localStorage.getItem("cart");
@@ -56,6 +40,23 @@ export function PopularProducts() {
   useEffect(() => {
     localStorage.setItem("wishlist", JSON.stringify(wishlist));
   }, [wishlist]);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await axios.get("/api/product");
+        // Filter or limit products if needed
+        const featuredProducts = response.data.slice(0, 4); // Get first 4 products
+        setProducts(featuredProducts);
+        setIsLoading(false);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+        setIsLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
 
   const addToCart = (e: React.MouseEvent, id: number) => {
     e.preventDefault();
@@ -73,8 +74,9 @@ export function PopularProducts() {
     );
   };
 
+  
   return (
-    <div className="relative bg-gradient-to-b from-[#fef4dd] to-[#fae7bc] px-4 py-6 sm:px-6 sm:py-8 md:px-8 lg:px-12 xl:px-16 2xl:px-32">
+    <div className="relative bg-gradient-to-b from-[#fef4dd] to-[#fae7bc] px-4 py-5 sm:px-6 sm:py-8 md:px-8 lg:px-12 xl:px-16 2xl:px-32">
       {/* Simplified Indian-style heading */}
       <div className="flex flex-col sm:flex-row justify-between items-center mb-8 sm:mb-12">
         <div className="flex items-center gap-4 mb-4 sm:mb-0">
@@ -94,7 +96,7 @@ export function PopularProducts() {
             <path d="M12 0C8.5 0 6.5 2.5 6.5 5.5c0 2 1.5 4 3.5 5.5-2-1.5-3.5-3.5-3.5-5.5C6.5 2.5 8.5 0 12 0z"/>
           </svg>
         </div>
-        <Link href="/">
+        <Link href="/collections">
           <motion.button 
             whileHover={{ x: 5 }}
             className="text-sm sm:text-base text-gray-600 hover:text-[#8B1D3F] pl-0 hover:cursor-pointer"
@@ -114,7 +116,7 @@ export function PopularProducts() {
             onHoverEnd={() => setHoveredProduct(null)}
           >
             <div className="flex flex-col w-full">
-              <Link href={`/product/${product.id}`}>
+              <Link href={`/productpage/${product.id}`}>
                 <div className="relative w-full">
                   <svg
                     width="100%"
@@ -149,11 +151,11 @@ export function PopularProducts() {
                       <foreignObject width="100%" height="100%">
                         <div className="h-full relative">
                           <Image
-                            src={product.image}
+                            src={product.images[0]}
                             alt={product.name}
                             fill
                             className="object-cover"
-                            unoptimized={true}
+                            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                           />
                           {/* Centered action buttons */}
                           <motion.div 

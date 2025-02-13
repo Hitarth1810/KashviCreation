@@ -25,7 +25,7 @@ export default function ProductsPage() {
 	}, []);
 
 	return (
-		<div className='flex h-screen flex-col md:flex-row'>
+		<div className='flex h-screen flex-col md:flex-row overflow-hidden'>
 			<div className='flex-1 overflow-auto border-r'>
 				<div className='flex items-center justify-between border-b bg-muted/40 p-4'>
 					<h1 className='text-2xl font-semibold'>Products</h1>

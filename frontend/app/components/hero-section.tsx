@@ -89,7 +89,7 @@ export function HeroSection() {
       </div>
       {/* SMUDGE EFFECT AT THE BOTTOM */}
       <div 
-        className="absolute bottom-0 w-full h-3 bg-gradient-to-t from-[#fff6e2]  to-transparent blur-x1"
+        className="absolute bottom-0 w-full h-3 bg-gradient-to-t from-[#fef4dd]  to-transparent blur-x1"
       />
     </div>
   );

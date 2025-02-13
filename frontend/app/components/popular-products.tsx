@@ -74,7 +74,7 @@ export function PopularProducts() {
   };
 
   return (
-    <div className="relative bg-gradient-to-b from-white to-[#FFF5E9] px-4 py-6 sm:px-6 sm:py-8 md:px-8 lg:px-12 xl:px-16 2xl:px-32">
+    <div className="relative bg-gradient-to-b from-[#fef4dd] to-[#fae7bc] px-4 py-6 sm:px-6 sm:py-8 md:px-8 lg:px-12 xl:px-16 2xl:px-32">
       {/* Simplified Indian-style heading */}
       <div className="flex flex-col sm:flex-row justify-between items-center mb-8 sm:mb-12">
         <div className="flex items-center gap-4 mb-4 sm:mb-0">

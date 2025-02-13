@@ -9,6 +9,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import { Product } from "@/types/product"
 
 export default function Collections() {
+
   const [cart, setCart] = useState<number[]>([])
   const [wishlist, setWishlist] = useState<number[]>([])
   const [isLoading, setIsLoading] = useState(true)
@@ -44,7 +45,7 @@ export default function Collections() {
         setIsLoading(false)
       })
       .catch(error => console.error("Error fetching products:", error))
-  }, [])
+  },[])
 
   const addToCart = (e: React.MouseEvent, id: number) => {
     e.preventDefault()
@@ -82,7 +83,7 @@ export default function Collections() {
                 transition={{ duration: 0.3 }}
                 className="min-h-[450px] sm:min-h-[520px] h-full"
               >
-                <Link href="/productpage" className="block h-full">
+                <Link href={`/productpage/${saree.id}`} className="block h-full">
                   <div className="bg-white shadow-lg hover:shadow-2xl transition-shadow duration-300 overflow-hidden h-full flex flex-col rounded-lg">
                     {/* Image Container */}
                     <div className="relative group w-full ">

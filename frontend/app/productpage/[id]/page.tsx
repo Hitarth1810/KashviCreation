@@ -1,18 +1,14 @@
 "use client";
 
-import type { NextPage } from "next";
 import type React from "react";
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState,useEffect, use } from "react";
+import { motion} from "framer-motion";
 import { Star, Heart, Send, Minus, Plus } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { Product } from "@/types/product";
 
-// Types
-interface Color {
-  id: number;
-  color: string;
-}
+
 
 interface Review {
   id: number;
@@ -29,20 +25,8 @@ interface NewReview {
   rating: number;
 }
 
-// Constants
-const colors: Color[] = [
-  { id: 1, color: "bg-red-500" },
-  { id: 2, color: "bg-blue-500" },
-  { id: 3, color: "bg-green-500" },
-  { id: 4, color: "bg-purple-500" },
-];
 
-const thumbnails: string[] = [
-  "https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=800",
-  "https://images.unsplash.com/photo-1583391733956-6c78276477e2?w=800",
-  "https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=800",
-  "https://images.unsplash.com/photo-1583391733956-6c78276477e2?w=800",
-];
+
 
 const initialReviews: Review[] = [
   {
@@ -77,9 +61,17 @@ const initialReviews: Review[] = [
   },
 ];
 
-const ProductPage: NextPage = () => {
+const ProductPage = ({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) => {
+  const { id } = use(params);
   const router = useRouter();
-  const [selectedImage, setSelectedImage] = useState<string>(thumbnails[0]);
+  const [product, setProduct] = useState<Product>();
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [selectedImage, setSelectedImage] = useState<string>("");
   const [hoveredImage, setHoveredImage] = useState<string | null>(null);
   const [reviews, setReviews] = useState<Review[]>(initialReviews);
   const [newReview, setNewReview] = useState<NewReview>({
@@ -91,6 +83,28 @@ const ProductPage: NextPage = () => {
   const [isInCart, setIsInCart] = useState(false);
   const [isInWishlist, setIsInWishlist] = useState(false);
   const [quantity, setQuantity] = useState<number>(1);
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const response = await fetch(`/api/product/${id}`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch product');
+        }
+        const data = await response.json();
+        setProduct(data);
+        setSelectedImage(data.images[0]); // Set first image as selected
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'An error occurred');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (id) {
+      fetchProduct();
+    }
+  }, [id]);
 
   const handleQuantityChange = (type: "increment" | "decrement") => {
     setQuantity((prev) =>
@@ -123,58 +137,58 @@ const ProductPage: NextPage = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 h-screen">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Left Column - Images */}
-<div className="space-y-4 h-full flex flex-col items-center">
-  {/* Main Image Section - Now Bigger on Mobile */}
-  <motion.div
-    initial={{ opacity: 0 }}
-    animate={{ opacity: 1 }}
-    className="relative w-full h-[60vh] sm:h-[80vh] rounded-xl overflow-hidden bg-white flex items-center justify-center px-4"
-  >
-    <Image
-      src={hoveredImage || selectedImage || "/placeholder.svg"}
-      alt="Saree"
-      width={600} // Explicit width
-      height={600} // Explicit height
-      className="w-full h-full object-contain"
-      priority
-    />
-  </motion.div>
+          <div className="space-y-4">
+            {/* Main Image */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="relative w-full h-[60vh] sm:h-[80vh] rounded-xl overflow-hidden bg-white flex items-center justify-center px-4"
+            >
+              <Image
+                src={hoveredImage || selectedImage}
+                alt={product?.name || "Product Image"}
+                width={600}
+                height={600}
+                className="w-full h-full object-contain"
+                priority
+              />
+            </motion.div>
 
-  {/* Thumbnails Section - Now Scrollable on Mobile */}
-  <div className="flex gap-2 overflow-x-auto sm:overflow-hidden sm:grid sm:grid-cols-4 px-2">
-    {thumbnails.map((thumb, idx) => (
-      <motion.button
-        key={idx}
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-        onClick={() => setSelectedImage(thumb)}
-        onMouseEnter={() => setHoveredImage(thumb)}
-        onMouseLeave={() => setHoveredImage(null)}
-        className={`w-20 h-20 rounded-md overflow-hidden border-2 flex-shrink-0 ${
-          (hoveredImage || selectedImage) === thumb ? "border-blue-500" : "border-gray-200"
-        }`}
-      >
-        <Image
-          src={thumb || "/placeholder.svg"}
-          alt={`Thumbnail ${idx + 1}`}
-          width={80}
-          height={80}
-          className="w-full h-full object-cover"
-        />
-      </motion.button>
-    ))}
-  </div>
-</div>
-
+            {/* Thumbnails */}
+            <div className="flex gap-2 overflow-x-auto sm:overflow-hidden sm:grid sm:grid-cols-4 px-2">
+              {product?.images?.map((image, idx) => (
+                <motion.button
+                  key={idx}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => setSelectedImage(image)}
+                  onMouseEnter={() => setHoveredImage(image)}
+                  onMouseLeave={() => setHoveredImage(null)}
+                  className={`w-20 h-20 rounded-md overflow-hidden border-2 flex-shrink-0 ${
+                    (hoveredImage || selectedImage) === image
+                      ? "border-blue-500"
+                      : "border-gray-200"
+                  }`}
+                >
+                  <Image
+                    src={image}
+                    alt={`${product.name} ${idx + 1}`}
+                    width={80}
+                    height={80}
+                    className="w-full h-full object-cover"
+                  />
+                </motion.button>
+              ))}
+            </div>
+          </div>
 
           {/* Right Column - Product Details */}
-          <div className="space-y-4 overflow-y-auto h-full pr-4">
+          <div className="space-y-4">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">
-                Traditional Silk Saree
-              </h1>
+              <h1 className="text-3xl font-bold text-gray-900">{product?.name}</h1>
+              
             </div>
 
             {/* Reviews Summary */}
@@ -193,50 +207,29 @@ const ProductPage: NextPage = () => {
               <span className="text-sm text-gray-600">4.0 (128 reviews)</span>
             </div>
 
-            {/* About This Item Tab */}
-            <div className="border-b border-gray-200">
-              <div className="flex">
-                <button className="py-4 text-sm font-medium border-b-2 border-blue-500 text-blue-600">
-                  About This Item
-                </button>
-              </div>
+            {/* Description */}
+            <div className="prose prose-sm text-gray-600">
+              <p>{product?.description}</p>
             </div>
 
-            <AnimatePresence>
-              <motion.div
-                key="about"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                className="space-y-6"
-              >
-                {/* Description */}
-                <div className="prose prose-sm text-gray-600">
-                  <p>
-                    Handcrafted with the finest silk, this traditional saree
-                    features intricate zari work and a stunning border design.
-                    Perfect for special occasions and celebrations, this piece
-                    embodies timeless elegance and cultural heritage.
-                  </p>
+            {/* Color Selection */}
+            {product?.colors && (
+              <div>
+                <h3 className="text-sm font-medium text-gray-900">Color</h3>
+                <div className="flex space-x-3 mt-2">
+                  {product.colors.map((color,i) => (
+                    <motion.button
+                      key={i}
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.9 }}
+                      className={`w-8 h-8 rounded-full ${color} border-2 border-white shadow-md`}
+                    />
+                  ))}
                 </div>
+              </div>
+            )}
 
-                {/* Color Selection */}
-                <div>
-                  <h3 className="text-sm font-medium text-gray-900">Color</h3>
-                  <div className="flex space-x-3 mt-2">
-                    {colors.map((color) => (
-                      <motion.button
-                        key={color.id}
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.9 }}
-                        className={`w-8 h-8 rounded-full ${color.color} border-2 border-white shadow-md`}
-                      />
-                    ))}
-                  </div>
-                </div>
-              </motion.div>
-            </AnimatePresence>
-            {/*Quantity Selection*/}
+            {/* Quantity Selection */}
             <div>
               <h3 className="text-sm font-medium text-gray-900">Quantity</h3>
               <div className="flex items-center mt-2 border border-gray-300 rounded-lg w-max p-2">
@@ -255,6 +248,7 @@ const ProductPage: NextPage = () => {
                 </motion.button>
               </div>
             </div>
+
             {/* Action Buttons */}
             <div className="flex space-x-4 py-4">
               <motion.button

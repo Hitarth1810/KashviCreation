@@ -4,16 +4,40 @@ import { useState, useEffect } from "react"
 import axios from "axios"
 import Image from "next/image"
 import Link from "next/link"
-import { Heart } from "lucide-react"
+import { Heart, X } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
-import { Product } from "@/types/product"
+import type { Product } from "@/types/product"
+import type React from "react" // Added import for React
 
+interface FilterState {
+  categories: string[]
+  colors: string[]
+}
+interface CategoryCount {
+  name: string
+  count: number
+}
+
+interface ColorCount {
+  name: string
+  count: number
+}
 export default function Collections() {
   const [cart, setCart] = useState<string[]>([])
   const [wishlist, setWishlist] = useState<string[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [sarees, setSarees] = useState<Product[]>([])
+  const [allSarees, setAllSarees] = useState<Product[]>([])
+  const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false)
+  const [categories, setCategories] = useState<CategoryCount[]>([])
+  const [colors, setColors] = useState<ColorCount[]>([])
+  const [filters, setFilters] = useState<FilterState>({
+    categories: [],
+    colors: [],
+  })
 
+  const baseURL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'
+  
   useEffect(() => {
     setTimeout(() => setIsLoading(false), 1000)
   }, [])
@@ -33,14 +57,70 @@ export default function Collections() {
     if (savedWishlist) setWishlist(JSON.parse(savedWishlist))
   }, [])
 
+  // Fetch products and update filter counts
   useEffect(() => {
-    axios.get("/api/product")
-      .then(response => {
-        setSarees(response.data)
+    const fetchProducts = async () => {
+      try {
+        const response = await axios.get(`${baseURL}/api/product`)
+        const products = response.data
+
+        // Set all sarees first
+        setAllSarees(products)
+        setSarees(products)
+
+        // Generate category counts
+        const categoryMap = new Map<string, number>()
+        products.forEach((product: Product) => {
+          const count = categoryMap.get(product.category) || 0
+          categoryMap.set(product.category, count + 1)
+        })
+        
+        const categoryList: CategoryCount[] = Array.from(categoryMap.entries())
+          .map(([name, count]) => ({
+            name,
+            count
+          }))
+          .sort((a, b) => a.name.localeCompare(b.name))
+        
+        setCategories(categoryList)
+
+        // Generate color counts
+        const colorMap = new Map<string, number>()
+        products.forEach((product: Product) => {
+          product.colors.forEach(color => {
+            const count = colorMap.get(color) || 0
+            colorMap.set(color, count + 1)
+          })
+        })
+        
+        const colorList: ColorCount[] = Array.from(colorMap.entries())
+          .map(([name, count]) => ({
+            name,
+            count
+          }))
+          .sort((a, b) => a.name.localeCompare(b.name))
+        
+        setColors(colorList)
         setIsLoading(false)
-      })
-      .catch(error => console.error("Error fetching products:", error))
-  }, [])
+      } catch (error) {
+        console.error("Error fetching products:", error)
+        setIsLoading(false)
+      }
+    }
+
+    fetchProducts()
+  }, []) // Empty dependency array means this runs once on mount
+
+   // Apply filters
+   useEffect(() => {
+    const filteredSarees = allSarees.filter((saree: Product) => {
+      const categoryMatch = filters.categories.length === 0 || filters.categories.includes(saree.category)
+      const colorMatch = filters.colors.length === 0 || saree.colors.some((color) => filters.colors.includes(color))
+      return categoryMatch && colorMatch
+    })
+    setSarees(filteredSarees)
+  }, [filters, allSarees])
+
 
   const addToCart = (e: React.MouseEvent, id: string) => {
     e.preventDefault()
@@ -50,9 +130,21 @@ export default function Collections() {
   const toggleWishlist = (e: React.MouseEvent, id: string) => {
     e.preventDefault()
     e.stopPropagation()
-    setWishlist(prev => 
-      prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]
-    )
+    setWishlist((prev) => (prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]))
+  }
+
+  const toggleFilter = (type: keyof FilterState, value: string) => {
+    setFilters((prev) => {
+      const updatedFilters = {
+        ...prev,
+        [type]: prev[type].includes(value) ? prev[type].filter((item) => item !== value) : [...prev[type], value],
+      }
+      return updatedFilters
+    })
+  }
+
+  const clearFilters = () => {
+    setFilters({ categories: [], colors: [] })
   }
 
   return (
@@ -63,9 +155,7 @@ export default function Collections() {
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.6, ease: "easeOut" }}
         >
-          <h1 className="text-5xl font-serif tracking-wide text-gray-800">
-            Our Collection
-          </h1>
+          <h1 className="text-5xl font-serif tracking-wide text-gray-800">Our Collection</h1>
           <motion.div
             initial={{ width: 0 }}
             animate={{ width: "180px" }}
@@ -75,104 +165,306 @@ export default function Collections() {
         </motion.div>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-2 max-w-[2000px] mx-auto">
-        <AnimatePresence>
-          {!isLoading && sarees.map((saree) => (
-            <motion.div
-              key={saree.id}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="relative group bg-white shadow-xl hover:shadow-2xl transition-shadow duration-300"
-            >
-              <Link href={`/productpage/${saree.id}`}>
-                <div className="relative">
-                  <div className="aspect-[3/4] relative overflow-hidden">
-                    <Image
-                      src={saree.images[0] || "/placeholder.svg"}
-                      alt={saree.name}
-                      fill
-                      className="object-cover transform group-hover:scale-105 transition-transform duration-300"
-                      sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                    />
-                  </div>
+      {/* Mobile Filter Button */}
+      <div className="md:hidden px-4 mb-4">
+        <button
+          onClick={() => setIsMobileFilterOpen(true)}
+          className="flex items-center gap-2 text-gray-700 font-medium px-4 py-2 rounded-lg bg-white shadow-sm hover:shadow-md transition-all duration-300"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <line x1="21" y1="4" x2="14" y2="4"></line>
+            <line x1="10" y1="4" x2="3" y2="4"></line>
+            <line x1="21" y1="12" x2="12" y2="12"></line>
+            <line x1="8" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="20" x2="16" y2="20"></line>
+            <line x1="12" y1="20" x2="3" y2="20"></line>
+            <line x1="14" y1="2" x2="14" y2="6"></line>
+            <line x1="8" y1="10" x2="8" y2="14"></line>
+            <line x1="16" y1="18" x2="16" y2="22"></line>
+          </svg>
+          <span>Filters</span>
+        </button>
+      </div>
 
-                  {/* Desktop Hover Overlay - Hidden on Mobile */}
-                  <div className="absolute inset-0 bg-black bg-opacity-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 md:block hidden">
-                    <button
-                      onClick={(e) => toggleWishlist(e, saree.id)}
-                      className="absolute top-2 left-2 p-2"
-                    >
-                      <Heart
-                        size={24}
-                        className={`${wishlist.includes(saree.id) 
-                          ? "fill-[#8B1D3F] stroke-[#8B1D3F]" 
-                          : "stroke-white"}`}
-                      />
-                    </button>
-                  </div>
+      <div className="max-w-[2000px] mx-auto px-4">
+        <div className="flex flex-col md:flex-row gap-6">
+          {/* Filter Sidebar - Desktop */}
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="hidden md:block w-72 flex-shrink-0"
+          >
+            <div className="bg-white rounded-xl shadow-md overflow-hidden">
+              <div className="p-6">
+                <h2 className="text-2xl font-serif tracking-wide text-gray-800 mb-6 text-center">Filters</h2>
+
+                <div className="space-y-8">
+                  {/* Category Section */}
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.2 }}
+                    className="space-y-4"
+                  >
+                    <h3 className="text-lg font-medium text-gray-800">Category</h3>
+                    <div className="h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent" />
+                    <div className="space-y-3 pt-2">
+                      {categories.map((category) => (
+                        <label key={category.name} className="flex items-center gap-3 cursor-pointer group">
+                          <input
+                            type="checkbox"
+                            checked={filters.categories.includes(category.name)}
+                            onChange={() => toggleFilter("categories", category.name)}
+                            className="h-5 w-5 rounded border-gray-300 text-[#8B1D3F] focus:ring-[#8B1D3F]"
+                          />
+                          <span className="text-gray-600 group-hover:text-gray-800 transition-colors duration-200">
+                            {category.name}
+                            <span className="text-gray-400 ml-1 text-sm">({category.count})</span>
+                          </span>
+                        </label>
+                      ))}
+                    </div>
+                  </motion.div>
+
+                  {/* Color Section */}
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.3 }}
+                    className="space-y-4"
+                  >
+                    <h3 className="text-lg font-medium text-gray-800">Colour</h3>
+                    <div className="h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent" />
+                    <div className="space-y-3 pt-2">
+                      {colors.map((color) => (
+                        <label key={color.name} className="flex items-center gap-3 cursor-pointer group">
+                          <div className="relative">
+                            <input
+                              type="checkbox"
+                              checked={filters.colors.includes(color.name)}
+                              onChange={() => toggleFilter("colors", color.name)}
+                              className="peer h-5 w-5 rounded border-gray-300 text-[#8B1D3F] focus:ring-[#8B1D3F]"
+                            />
+                          </div>
+                          <span
+                            className="w-5 h-5 rounded-full border border-gray-200 shadow-sm"
+                            style={{ backgroundColor: color.name }}
+                          />
+                          <span className="text-gray-600 group-hover:text-gray-800 transition-colors duration-200">
+                            {color.name}
+                            <span className="text-gray-400 ml-1 text-sm">({color.count})</span>
+                          </span>
+                        </label>
+                      ))}
+                    </div>
+                  </motion.div>
                 </div>
 
-                <div className="pl-1.5 pr-1.5 pt-2 pb-1.5 bg-[#fcfbf7]">
-                  <h2 className="text-gray-800 text-base font-medium mb-1 truncate">
-                    {saree.name}
-                  </h2>
-                  <p className="text-gray-600 text-sm line-height-0.5 mb-2 line-clamp-3">
-                    D.No.{saree.id}
-                  </p>
-                  
-                  {/* Mobile Button Layout */}
-                  <div className="flex gap-2 md:hidden">
-                    {cart.includes(saree.id) ? (
-                      <Link href="/cart" className="flex-1">
-                        <button className="w-full bg-[#8B1D3F] text-white border border-[#8B1D3F] py-2 px-4 rounded-sm text-sm hover:bg-[#8B1D3F] hover:text-white transition-colors duration-300">
-                          View Cart
-                        </button>
-                      </Link>
-                    ) : (
-                      <button
-                        onClick={(e) => addToCart(e, saree.id)}
-                        className="flex-1 bg-white text-[#8B1D3F] border border-[#8B1D3F] py-2 px-4 rounded-sm text-sm hover:bg-[#8B1D3F] hover:text-white transition-colors duration-300"
-                      >
-                        Add to Cart
-                      </button>
-                    )}
-                    <button
-                      onClick={(e) => toggleWishlist(e, saree.id)}
-                      className="bg-white border border-[#8B1D3F] p-2 rounded-sm hover:text-white transition-colors duration-300"
-                    >
-                      <Heart
-                        size={20}
-                        className={`${wishlist.includes(saree.id) 
-                          ? "fill-red-500 stroke-red-500" 
-                          : "stroke-[#8B1D3F]"}`}
-                      />
+                {(filters.categories.length > 0 || filters.colors.length > 0) && (
+                  <motion.button
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    onClick={clearFilters}
+                    className="mt-8 w-full py-2 px-4 text-sm text-[#8B1D3F] hover:text-white border border-[#8B1D3F] hover:bg-[#8B1D3F] rounded-lg transition-all duration-300 flex items-center justify-center gap-2"
+                  >
+                    <X size={16} />
+                    Clear all filters
+                  </motion.button>
+                )}
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Mobile Filter Sidebar */}
+          <AnimatePresence>
+            {isMobileFilterOpen && (
+              <motion.div
+                initial={{ x: "-100%" }}
+                animate={{ x: 0 }}
+                exit={{ x: "-100%" }}
+                transition={{ type: "tween" }}
+                className="fixed inset-0 z-50 bg-white md:hidden"
+              >
+                <div className="flex flex-col h-full">
+                  <div className="flex items-center justify-between p-4 border-b">
+                    <h2 className="text-lg font-medium">Filters</h2>
+                    <button onClick={() => setIsMobileFilterOpen(false)} className="p-2 hover:bg-gray-100 rounded-full">
+                      <X size={24} />
                     </button>
                   </div>
 
-                  {/* Desktop Button Layout */}
-                  <div className="hidden md:block">
-                    {cart.includes(saree.id) ? (
-                      <Link href="/cart">
-                        <button className="w-full bg-white text-[#8B1D3F] border border-[#8B1D3F] py-2 px-4 rounded-sm text-sm hover:bg-[#8B1D3F] hover:text-white transition-colors duration-300">
-                          View Cart
-                        </button>
-                      </Link>
-                    ) : (
+                  <div className="flex-1 overflow-y-auto p-4">
+                    <div className="mb-6">
+                      <h3 className="text-lg font-medium mb-3">Category</h3>
+                      <div className="space-y-3">
+                        {categories.map((category) => (
+                          <label key={category.name} className="flex items-center gap-2">
+                            <input
+                              type="checkbox"
+                              checked={filters.categories.includes(category.name)}
+                              onChange={() => toggleFilter("categories", category.name)}
+                              className="rounded border-gray-300 text-[#8B1D3F] focus:ring-[#8B1D3F]"
+                            />
+                            <span className="text-sm text-gray-600">
+                              {category.name}
+                              <span className="text-gray-400 ml-1">({category.count})</span>
+                            </span>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div>
+                      <h3 className="text-lg font-medium mb-3">Colour</h3>
+                      <div className="space-y-3">
+                        {colors.map((color) => (
+                          <label key={color.name} className="flex items-center gap-2">
+                            <input
+                              type="checkbox"
+                              checked={filters.colors.includes(color.name)}
+                              onChange={() => toggleFilter("colors", color.name)}
+                              className="rounded border-gray-300 text-[#8B1D3F] focus:ring-[#8B1D3F]"
+                            />
+                            <span className="w-4 h-4 rounded-full" style={{ backgroundColor: color.name}} />
+                            <span className="text-sm text-gray-600">
+                              {color.name}
+                              <span className="text-gray-400 ml-1">({color.count})</span>
+                            </span>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="border-t p-4">
+                    <div className="flex gap-4">
                       <button
-                        onClick={(e) => addToCart(e, saree.id)}
-                        className="w-full bg-white text-[#8B1D3F] border border-[#8B1D3F] py-2 px-4 rounded-sm text-sm hover:bg-[#8B1D3F] hover:text-white transition-colors duration-300"
+                        onClick={clearFilters}
+                        className="flex-1 py-2 border border-gray-300 rounded-md text-gray-600"
                       >
-                        Add to Cart
+                        Clear all
                       </button>
-                    )}
+                      <button
+                        onClick={() => setIsMobileFilterOpen(false)}
+                        className="flex-1 py-2 bg-[#8B1D3F] text-white rounded-md"
+                      >
+                        Apply
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </Link>
-            </motion.div>
-          ))}
-        </AnimatePresence>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Product Grid */}
+          <div className="flex-1">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
+              <AnimatePresence>
+                {!isLoading &&
+                  sarees.map((saree) => (
+                    <motion.div
+                      key={saree.id}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      className="relative group bg-white shadow-xl hover:shadow-2xl transition-shadow duration-300"
+                    >
+                      <Link href={`/productpage/${saree.id}`}>
+                        <div className="relative">
+                          <div className="aspect-[3/4] relative overflow-hidden">
+                            <Image
+                              src={saree.images[0] || "/placeholder.svg"}
+                              alt={saree.name}
+                              fill
+                              className="object-cover transform group-hover:scale-105 transition-transform duration-300"
+                              sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                            />
+                          </div>
+
+                          {/* Desktop Hover Overlay */}
+                          <div className="absolute inset-0 bg-black bg-opacity-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 md:block hidden">
+                            <button onClick={(e) => toggleWishlist(e, saree.id)} className="absolute top-2 left-2 p-2">
+                              <Heart
+                                size={24}
+                                className={`${
+                                  wishlist.includes(saree.id) ? "fill-[#8B1D3F] stroke-[#8B1D3F]" : "stroke-white"
+                                }`}
+                              />
+                            </button>
+                          </div>
+                        </div>
+
+                        <div className="p-3 bg-[#fcfbf7]">
+                          <h2 className="text-gray-800 text-sm font-medium mb-1 truncate">{saree.name}</h2>
+                          <p className="text-gray-600 text-xs mb-2">D.No.{saree.id}</p>
+
+                          {/* Mobile Button Layout */}
+                          <div className="flex gap-2 md:hidden">
+                            {cart.includes(saree.id) ? (
+                              <Link href="/cart" className="flex-1">
+                                <button className="w-full bg-[#8B1D3F] text-white border border-[#8B1D3F] py-2 px-4 rounded-sm text-sm hover:bg-[#8B1D3F] hover:text-white transition-colors duration-300">
+                                  View Cart
+                                </button>
+                              </Link>
+                            ) : (
+                              <button
+                                onClick={(e) => addToCart(e, saree.id)}
+                                className="flex-1 bg-white text-[#8B1D3F] border border-[#8B1D3F] py-2 px-4 rounded-sm text-sm hover:bg-[#8B1D3F] hover:text-white transition-colors duration-300"
+                              >
+                                Add to Cart
+                              </button>
+                            )}
+                            <button
+                              onClick={(e) => toggleWishlist(e, saree.id)}
+                              className="bg-white border border-[#8B1D3F] p-2 rounded-sm hover:text-white transition-colors duration-300"
+                            >
+                              <Heart
+                                size={20}
+                                className={`${
+                                  wishlist.includes(saree.id) ? "fill-red-500 stroke-red-500" : "stroke-[#8B1D3F]"
+                                }`}
+                              />
+                            </button>
+                          </div>
+
+                          {/* Desktop Button Layout */}
+                          <div className="hidden md:block">
+                            {cart.includes(saree.id) ? (
+                              <Link href="/cart">
+                                <button className="w-full bg-white text-[#8B1D3F] border border-[#8B1D3F] py-2 px-4 rounded-sm text-sm hover:bg-[#8B1D3F] hover:text-white transition-colors duration-300">
+                                  View Cart
+                                </button>
+                              </Link>
+                            ) : (
+                              <button
+                                onClick={(e) => addToCart(e, saree.id)}
+                                className="w-full bg-white text-[#8B1D3F] border border-[#8B1D3F] py-2 px-4 rounded-sm text-sm hover:bg-[#8B1D3F] hover:text-white transition-colors duration-300"
+                              >
+                                Add to Cart
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                      </Link>
+                    </motion.div>
+                  ))}
+              </AnimatePresence>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   )
 }
+

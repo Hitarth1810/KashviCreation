@@ -17,7 +17,7 @@ export function HeroSection() {
           playsInline
           className="absolute w-full h-full object-cover object-center"
         >
-          <source src="/chapri video.mp4" type="video/mp4" />
+          <source src="https://res.cloudinary.com/diujpbja7/video/upload/v1739466050/zacpxhraphrfmfzmsmh1.mp4" type="video/mp4" />
         </video>
 
         {/* Vignette effect */}

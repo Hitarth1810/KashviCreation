@@ -74,7 +74,7 @@ export default function BlogPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#f9f3ea] to-[#FAEBD7]">
       {/* Hero Slider Section */}
-      <div className="relative h-[45vh] md:h-[70vh] border-b-2 border-[#8B1D3F]/20">
+      <div className="relative h-[33vh] md:h-[70vh] border-b-2 border-[#8B1D3F]/20">
         <AnimatePresence initial={false}>
           <motion.div
             key={currentSlide}

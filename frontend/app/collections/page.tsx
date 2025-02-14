@@ -9,8 +9,8 @@ import { motion, AnimatePresence } from "framer-motion"
 import { Product } from "@/types/product"
 
 export default function Collections() {
-  const [cart, setCart] = useState<number[]>([])
-  const [wishlist, setWishlist] = useState<number[]>([])
+  const [cart, setCart] = useState<string[]>([])
+  const [wishlist, setWishlist] = useState<string[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [sarees, setSarees] = useState<Product[]>([])
 
@@ -42,12 +42,12 @@ export default function Collections() {
       .catch(error => console.error("Error fetching products:", error))
   }, [])
 
-  const addToCart = (e: React.MouseEvent, id: number) => {
+  const addToCart = (e: React.MouseEvent, id: string) => {
     e.preventDefault()
     setCart([...cart, id])
   }
 
-  const toggleWishlist = (e: React.MouseEvent, id: number) => {
+  const toggleWishlist = (e: React.MouseEvent, id: string) => {
     e.preventDefault()
     e.stopPropagation()
     setWishlist(prev => 
@@ -57,7 +57,7 @@ export default function Collections() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#f9f3ea] to-[#FAEBD7]">
-      <div className="pt-16 pb-8 text-center">
+      <div className="pt-6 pb-12 text-center">
         <motion.div
           initial={{ y: -20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
@@ -75,7 +75,7 @@ export default function Collections() {
         </motion.div>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-0.5 max-w-[2000px] mx-auto">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-2 max-w-[2000px] mx-auto">
         <AnimatePresence>
           {!isLoading && sarees.map((saree) => (
             <motion.div
@@ -83,7 +83,7 @@ export default function Collections() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="relative group bg-white shadow-lg hover:shadow-2xl transition-shadow duration-300"
+              className="relative group bg-white shadow-xl hover:shadow-2xl transition-shadow duration-300"
             >
               <Link href={`/productpage/${saree.id}`}>
                 <div className="relative">
@@ -100,12 +100,12 @@ export default function Collections() {
                   {/* Desktop Hover Overlay - Hidden on Mobile */}
                   <div className="absolute inset-0 bg-black bg-opacity-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 md:block hidden">
                     <button
-                      onClick={(e) => toggleWishlist(e, Number(saree.id))}
+                      onClick={(e) => toggleWishlist(e, saree.id)}
                       className="absolute top-2 left-2 p-2"
                     >
                       <Heart
                         size={24}
-                        className={`${wishlist.includes(Number(saree.id)) 
+                        className={`${wishlist.includes(saree.id) 
                           ? "fill-[#8B1D3F] stroke-[#8B1D3F]" 
                           : "stroke-white"}`}
                       />
@@ -113,17 +113,17 @@ export default function Collections() {
                   </div>
                 </div>
 
-                <div className="pl-1.5 pr-1.5 pt-1 pb-1.5 bg-[#fcfbf7]">
-                  <h2 className="text-gray-800 text-sm line-height-0.5 font-medium mb-1 truncate">
+                <div className="pl-1.5 pr-1.5 pt-2 pb-1.5 bg-[#fcfbf7]">
+                  <h2 className="text-gray-800 text-base font-medium mb-1 truncate">
                     {saree.name}
                   </h2>
-                  <p className="text-gray-600 text-xs line-height-0.5 mb-2 line-clamp-3">
-                    {saree.description}
+                  <p className="text-gray-600 text-sm line-height-0.5 mb-2 line-clamp-3">
+                    D.No.{saree.id}
                   </p>
                   
                   {/* Mobile Button Layout */}
                   <div className="flex gap-2 md:hidden">
-                    {cart.includes(Number(saree.id)) ? (
+                    {cart.includes(saree.id) ? (
                       <Link href="/cart" className="flex-1">
                         <button className="w-full bg-[#8B1D3F] text-white border border-[#8B1D3F] py-2 px-4 rounded-sm text-sm hover:bg-[#8B1D3F] hover:text-white transition-colors duration-300">
                           View Cart
@@ -131,19 +131,19 @@ export default function Collections() {
                       </Link>
                     ) : (
                       <button
-                        onClick={(e) => addToCart(e, Number(saree.id))}
+                        onClick={(e) => addToCart(e, saree.id)}
                         className="flex-1 bg-white text-[#8B1D3F] border border-[#8B1D3F] py-2 px-4 rounded-sm text-sm hover:bg-[#8B1D3F] hover:text-white transition-colors duration-300"
                       >
                         Add to Cart
                       </button>
                     )}
                     <button
-                      onClick={(e) => toggleWishlist(e, Number(saree.id))}
+                      onClick={(e) => toggleWishlist(e, saree.id)}
                       className="bg-white border border-[#8B1D3F] p-2 rounded-sm hover:text-white transition-colors duration-300"
                     >
                       <Heart
                         size={20}
-                        className={`${wishlist.includes(Number(saree.id)) 
+                        className={`${wishlist.includes(saree.id) 
                           ? "fill-red-500 stroke-red-500" 
                           : "stroke-[#8B1D3F]"}`}
                       />
@@ -152,7 +152,7 @@ export default function Collections() {
 
                   {/* Desktop Button Layout */}
                   <div className="hidden md:block">
-                    {cart.includes(Number(saree.id)) ? (
+                    {cart.includes(saree.id) ? (
                       <Link href="/cart">
                         <button className="w-full bg-white text-[#8B1D3F] border border-[#8B1D3F] py-2 px-4 rounded-sm text-sm hover:bg-[#8B1D3F] hover:text-white transition-colors duration-300">
                           View Cart
@@ -160,7 +160,7 @@ export default function Collections() {
                       </Link>
                     ) : (
                       <button
-                        onClick={(e) => addToCart(e, Number(saree.id))}
+                        onClick={(e) => addToCart(e, saree.id)}
                         className="w-full bg-white text-[#8B1D3F] border border-[#8B1D3F] py-2 px-4 rounded-sm text-sm hover:bg-[#8B1D3F] hover:text-white transition-colors duration-300"
                       >
                         Add to Cart

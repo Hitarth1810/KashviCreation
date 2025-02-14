@@ -1,11 +1,13 @@
 "use client"
-import { useState, useEffect, useRef, MouseEvent } from 'react'
+
+import type React from "react"
+
+import { useState, useEffect, useRef, type MouseEvent, type FormEvent } from "react"
 import Link from "next/link"
-import Menu from "./Menu"
-import SearchBar from "./SearchBar"
+import { useRouter } from "next/navigation"
 import NavIcons from "./NavIcons"
 import Image from "next/image"
-import { Menu as MenuIcon, X, Search } from 'lucide-react'
+import { MenuIcon, X, Search } from "lucide-react"
 import Logo from "@/public/KCLogo.png"
 import LogoLetter from "@/public/KCLogoLetter.png"
 
@@ -13,31 +15,32 @@ const Navbar = () => {
   const [scrolled, setScrolled] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false)
-  const [searchQuery, setSearchQuery] = useState('')
+  const [searchQuery, setSearchQuery] = useState("")
   const searchContainerRef = useRef<HTMLDivElement>(null)
   const mobileMenuRef = useRef<HTMLDivElement>(null)
   const menuButtonRef = useRef<HTMLButtonElement>(null)
+  const router = useRouter()
 
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 20)
     }
 
-    const handleClickOutside = (event: MouseEvent | any) => {
+    const handleClickOutside = (event: MouseEvent | Event) => {
       // Handle search container click outside
       if (
-        searchContainerRef.current && 
-        event.target instanceof Node && 
+        searchContainerRef.current &&
+        event.target instanceof Node &&
         !searchContainerRef.current.contains(event.target)
       ) {
         setMobileSearchOpen(false)
       }
-      
+
       // Handle mobile menu click outside
       if (
-        mobileMenuRef.current && 
+        mobileMenuRef.current &&
         menuButtonRef.current &&
-        event.target instanceof Node && 
+        event.target instanceof Node &&
         !mobileMenuRef.current.contains(event.target) &&
         !menuButtonRef.current.contains(event.target)
       ) {
@@ -45,21 +48,30 @@ const Navbar = () => {
       }
     }
 
-    window.addEventListener('scroll', handleScroll)
-    document.addEventListener('mousedown', handleClickOutside)
+    window.addEventListener("scroll", handleScroll)
+    document.addEventListener("mousedown", handleClickOutside)
 
     return () => {
-      window.removeEventListener('scroll', handleScroll)
-      document.removeEventListener('mousedown', handleClickOutside)
+      window.removeEventListener("scroll", handleScroll)
+      document.removeEventListener("mousedown", handleClickOutside)
     }
   }, [])
 
-  const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
+  useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search)
+    const query = searchParams.get("search")
+    if (query) {
+      setSearchQuery(decodeURIComponent(query))
+    }
+  }, [])
+
+  const handleSearch = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    // Implement your search logic here
-    console.log('Searching for:', searchQuery)
-    setSearchQuery('')
-    setMobileSearchOpen(false)
+    if (searchQuery.trim()) {
+      router.push(`/collections?search=${encodeURIComponent(searchQuery.trim())}`)
+      setSearchQuery("")
+      setMobileSearchOpen(false)
+    }
   }
 
   const handleMobileNavClick = () => {
@@ -73,61 +85,51 @@ const Navbar = () => {
 
   return (
     <div className="sticky top-0 z-50">
-      <nav className={`relative w-full transition-all duration-300 ${
-        scrolled 
-          ? 'h-14 bg-gradient-to-r from-[#D84C7B]/90 via-[#B0325C]/90 to-[#9B2D4F]/90 shadow-lg backdrop-blur-sm' 
-          : 'h-16 bg-gradient-to-r from-[#D84C7B] via-[#B0325C] to-[#9B2D4F]'
-      }`}>
+      <nav
+        className={`relative w-full transition-all duration-300 ${
+          scrolled
+            ? "h-14 bg-gradient-to-r from-[#D84C7B]/90 via-[#B0325C]/90 to-[#9B2D4F]/90 shadow-lg backdrop-blur-sm"
+            : "h-16 bg-gradient-to-r from-[#D84C7B] via-[#B0325C] to-[#9B2D4F]"
+        }`}
+      >
         {/* MOBILE AND TABLET NAVBAR (up to lg breakpoint) */}
         <div className="h-full px-4 flex items-center justify-between lg:hidden">
-          <Link 
-            href="/" 
-            className="flex items-center space-x-2 group"
-          >
-            <Image 
-              src={Logo}
-              alt="logo" 
-              width={35} 
-              height={35} 
-              className="transition-all duration-300 group-hover:scale-110" 
-              priority 
+          <Link href="/" className="flex items-center space-x-2 group">
+            <Image
+              src={Logo || "/placeholder.svg"}
+              alt="logo"
+              width={35}
+              height={35}
+              className="transition-all duration-300 group-hover:scale-110"
+              priority
             />
-            <span className="font-playfair text-xl font-semibold tracking-wide text-white">
-              Kashvi
-            </span>
+            <span className="font-playfair text-xl font-semibold tracking-wide text-white">Kashvi</span>
           </Link>
-          
+
           <div className="flex items-center space-x-4">
-            <button
-              onClick={handleSearchButtonClick}
-              className="p-2 hover:bg-white/10 rounded-full transition-colors"
-            >
+            <button onClick={handleSearchButtonClick} className="p-2 hover:bg-white/10 rounded-full transition-colors">
               <Search className="w-6 h-6 text-white" />
             </button>
             <div className="flex items-center space-x-2">
-              <NavIcons/>
+              <NavIcons />
             </div>
-            <button 
+            <button
               ref={menuButtonRef}
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="p-2 hover:bg-white/10 rounded-full transition-colors"
             >
-              {mobileMenuOpen ? (
-                <X className="w-6 h-6 text-white" />
-              ) : (
-                <MenuIcon className="w-6 h-6 text-white" />
-              )}
+              {mobileMenuOpen ? <X className="w-6 h-6 text-white" /> : <MenuIcon className="w-6 h-6 text-white" />}
             </button>
           </div>
         </div>
 
         {/* Mobile/Tablet Search Bar - Below navbar */}
-        <div 
+        <div
           ref={searchContainerRef}
           className={`
             absolute w-full bg-gradient-to-r from-[#D84C7B] via-[#B0325C] to-[#9B2D4F]
             transition-all duration-300 transform 
-            ${mobileSearchOpen ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0 pointer-events-none'}
+            ${mobileSearchOpen ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0 pointer-events-none"}
             lg:hidden
           `}
         >
@@ -151,20 +153,30 @@ const Navbar = () => {
         </div>
 
         {/* Mobile/Tablet Menu Dropdown */}
-        <div 
+        <div
           ref={mobileMenuRef}
           className={`
             lg:hidden absolute top-full left-0 w-full bg-gradient-to-b from-[#8B1D3F] to-[#D84C7B] shadow-lg
             transition-all duration-300 ease-in-out transform
-            ${mobileMenuOpen ? 'translate-y-0 opacity-100' : '-translate-y-4 opacity-0 pointer-events-none'}
+            ${mobileMenuOpen ? "translate-y-0 opacity-100" : "-translate-y-4 opacity-0 pointer-events-none"}
           `}
         >
           <div className="px-4 py-6 space-y-4">
-            <MobileNavLink href="/" onClick={handleMobileNavClick}>Home</MobileNavLink>
-            <MobileNavLink href="/collections" onClick={handleMobileNavClick}>Collections</MobileNavLink>
-            <MobileNavLink href="/about" onClick={handleMobileNavClick}>About</MobileNavLink>
-            <MobileNavLink href="/contact" onClick={handleMobileNavClick}>Contact</MobileNavLink>
-            <MobileNavLink href="/blog" onClick={handleMobileNavClick}>Blog</MobileNavLink>
+            <MobileNavLink href="/" onClick={handleMobileNavClick}>
+              Home
+            </MobileNavLink>
+            <MobileNavLink href="/collections" onClick={handleMobileNavClick}>
+              Collections
+            </MobileNavLink>
+            <MobileNavLink href="/about" onClick={handleMobileNavClick}>
+              About
+            </MobileNavLink>
+            <MobileNavLink href="/contact" onClick={handleMobileNavClick}>
+              Contact
+            </MobileNavLink>
+            <MobileNavLink href="/blog" onClick={handleMobileNavClick}>
+              Blog
+            </MobileNavLink>
           </div>
         </div>
 
@@ -172,20 +184,17 @@ const Navbar = () => {
         <div className="hidden lg:flex items-center justify-between h-full px-8 xl:px-16 2xl:px-24">
           {/* LEFT SIDE */}
           <div className="flex items-center space-x-12">
-            <Link 
-              href="/" 
-              className="flex items-center space-x-3 group"
-            >
-              <Image 
-                src={Logo}
-                alt="logo" 
-                width={35} 
-                height={45} 
-                className="transition-all duration-300 group-hover:scale-110" 
-                priority 
+            <Link href="/" className="flex items-center space-x-3 group">
+              <Image
+                src={Logo || "/placeholder.svg"}
+                alt="logo"
+                width={35}
+                height={45}
+                className="transition-all duration-300 group-hover:scale-110"
+                priority
               />
               <Image
-                src={LogoLetter}
+                src={LogoLetter || "/placeholder.svg"}
                 alt="logoletter"
                 width={80}
                 height={25}
@@ -217,7 +226,7 @@ const Navbar = () => {
                            px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-white/30
                            transition-all duration-300 focus:bg-white/25"
                 />
-                <button 
+                <button
                   type="submit"
                   className="absolute right-2 p-1.5 hover:bg-white/10 rounded-full transition-colors"
                 >
@@ -225,17 +234,19 @@ const Navbar = () => {
                 </button>
               </form>
             </div>
-            
+
             <div className="flex items-center space-x-3">
-              <NavIcons  />
+              <NavIcons />
             </div>
           </div>
         </div>
 
         {/* Animated Golden Line */}
         <div className="absolute bottom-0 left-0 w-full h-[2px] overflow-hidden">
-          <div className="w-full h-full bg-gradient-to-r from-[#FFD700]/40 via-[#FFD700] to-[#FFD700]/40
-                         animate-shimmer" />
+          <div
+            className="w-full h-full bg-gradient-to-r from-[#FFD700]/40 via-[#FFD700] to-[#FFD700]/40
+                         animate-shimmer"
+          />
         </div>
       </nav>
     </div>
@@ -248,12 +259,22 @@ const NavLink = ({ href, children }: { href: string; children: React.ReactNode }
     className="relative font-playfair text-white hover:text-[#FFD700] transition-colors duration-300 group"
   >
     <span>{children}</span>
-    <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#FFD700] transition-all duration-300 
-                   group-hover:w-full opacity-0 group-hover:opacity-100" />
+    <span
+      className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#FFD700] transition-all duration-300 
+                   group-hover:w-full opacity-0 group-hover:opacity-100"
+    />
   </Link>
 )
 
-const MobileNavLink = ({ href, children, onClick }: { href: string; children: React.ReactNode; onClick: () => void }) => (
+const MobileNavLink = ({
+  href,
+  children,
+  onClick,
+}: {
+  href: string
+  children: React.ReactNode
+  onClick: () => void
+}) => (
   <Link
     href={href}
     onClick={onClick}
@@ -265,3 +286,4 @@ const MobileNavLink = ({ href, children, onClick }: { href: string; children: Re
 )
 
 export default Navbar
+

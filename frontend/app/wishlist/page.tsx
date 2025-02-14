@@ -81,7 +81,7 @@ export default function WishlistPage() {
 						Your Wishlist
 					</motion.h1>
 					<motion.div
-						className='h-1 w-24 bg-purple-800 mx-auto rounded-full'
+						className='h-1 w-24 bg-purple-800 mx-auto'
 						initial={{ width: 0 }}
 						animate={{ width: 96 }}
 						transition={{ delay: 0.4, duration: 0.8 }}
@@ -89,7 +89,7 @@ export default function WishlistPage() {
 				</header>
 
 				<motion.div
-					className='bg-white/80 backdrop-blur-sm rounded-2xl shadow-2xl p-6 md:p-8'
+					className='bg-white/80 backdrop-blur-sm shadow-2xl p-6 md:p-8'
 					initial={{ opacity: 0, y: 20 }}
 					animate={{ opacity: 1, y: 0 }}
 					transition={{ delay: 0.3 }}
@@ -116,16 +116,18 @@ export default function WishlistPage() {
 										animate={{ opacity: 1, y: 0 }}
 										exit={{ opacity: 0, y: -20 }}
 										transition={{ delay: index * 0.1 }}
-										className='bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300'
+										className='bg-white shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300'
 									>
-										<div className='relative aspect-square'>
+										{/* Rectangular image container */}
+										<div className='relative w-full h-64'>
 											<Image
 												src={item.images[0] || "/placeholder.svg"}
 												alt={item.name}
 												fill
-												className='object-cover transition-transform duration-300 hover:scale-105'
+												className='object-contain'
 											/>
 										</div>
+
 										<div className='p-4 space-y-2'>
 											<h3 className='text-lg font-semibold text-gray-900 truncate'>
 												{item.name}
@@ -133,15 +135,13 @@ export default function WishlistPage() {
 											<p className='text-purple-600 font-medium'>
 												Category: {item.category}
 											</p>
-											<p className='text-xs text-gray-500 line-clamp-2'>
-												{item.description}
-											</p>
+											
 											<div className='flex justify-between items-center mt-4'>
 												<motion.button
 													whileHover={{ scale: 1.05 }}
 													whileTap={{ scale: 0.95 }}
 													onClick={() => addToCart(item.id)}
-													className='px-3 py-2 bg-purple-600 text-white rounded-full flex items-center space-x-1 text-sm hover:bg-purple-700 transition-colors'
+													className='px-3 py-2 bg-purple-600 text-white flex items-center space-x-1 text-sm hover:bg-purple-700 transition-colors'
 												>
 													<ShoppingCart size={16} />
 													<span>Add to Cart</span>
@@ -151,7 +151,7 @@ export default function WishlistPage() {
 														whileHover={{ scale: 1.1, color: "rgb(220 38 38)" }}
 														whileTap={{ scale: 0.9 }}
 														onClick={() => removeItem(item.id)}
-														className='text-red-400 p-2 hover:bg-red-50 rounded-full transition-colors'
+														className='text-red-400 p-2 hover:bg-red-50 transition-colors'
 													>
 														<Trash2 size={20} />
 													</motion.button>
@@ -162,7 +162,7 @@ export default function WishlistPage() {
 																color: "rgb(79 70 229)",
 															}}
 															whileTap={{ scale: 0.9 }}
-															className='text-indigo-400 p-2 hover:bg-indigo-50 rounded-full transition-colors'
+															className='text-indigo-400 p-2 hover:bg-indigo-50 transition-colors'
 														>
 															<ExternalLink size={20} />
 														</motion.a>

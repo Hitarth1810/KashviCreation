@@ -9,7 +9,7 @@ const categories = [
 
 export function PopularCategories() {
   return (
-    <div className="relative bg-gradient-to-b from-[#fae7bc] to-[#fef4dd] px-4 py-5 sm:px-6 sm:py-8 md:px-8 lg:px-12 xl:px-16 2xl:px-32">
+    <div className="relative bg-gradient-to-b from-[#FAEBD7] to-[#f9f3ea] px-4 py-5 sm:px-6 sm:py-8 md:px-8 lg:px-12 xl:px-16 2xl:px-32">
       {/* Your specified header */}
       <div className="flex flex-col sm:flex-row justify-between items-center mb-8 sm:mb-12">
         <div className="flex items-center gap-4 mb-4 sm:mb-0">

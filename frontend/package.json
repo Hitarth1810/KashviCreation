@@ -35,6 +35,7 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-intersection-observer": "^9.15.1",
+    "react-medium-image-zoom": "^5.2.13",
     "swiper": "^11.2.3",
     "tailwind-merge": "^3.0.1",
     "tailwindcss-animate": "^1.0.7"

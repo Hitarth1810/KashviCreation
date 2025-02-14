@@ -221,6 +221,7 @@ export default function Footer() {
           <div>
             <h4 className="text-xl font-medium mb-4">Contact</h4>
             <ul className="space-y-2">
+              
               <li className="flex items-center group relative">
                 <Mail
                   className="w-6 h-6 text-gray-600 transition-all duration-300 group-hover:text-pink-600 transform group-hover:scale-110"

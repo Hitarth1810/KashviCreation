@@ -204,84 +204,84 @@ export default function AboutPage() {
 
       {/* Journey Section */}
       <motion.section
-        variants={sectionVariants}
-        className="py-20 bg-white"
-      >
-        <div className="max-w-7xl mx-auto px-4">
-          <motion.h2
-            variants={sectionVariants}
-            className="text-4xl md:text-5xl font-serif text-center text-gray-900 mb-16"
-          >
-            Our Journey
-          </motion.h2>
+  variants={sectionVariants}
+  className="py-20 bg-white"
+>
+  <div className="max-w-7xl mx-auto px-4">
+    <motion.h2
+      variants={sectionVariants}
+      className="text-4xl md:text-5xl font-serif text-center text-gray-900 mb-16"
+    >
+      Our Journey
+    </motion.h2>
 
-          <div className="relative">
-            <div className="absolute left-1/2 transform -translate-x-1/2 h-full w-px bg-rose-200" />
-            
-            {[
-              {
-                year: "2018",
-                title: "The Beginning",
-                description: "Founded with a vision to revolutionize traditional saree craftsmanship",
-                image: "https://images.unsplash.com/photo-1610030244570-3b6d4b7a7c0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-                icon: <Globe2 className="w-6 h-6" />,
-              },
-              {
-                year: "2020",
-                title: "Digital Evolution",
-                description: "Expanded our reach to global audiences through digital innovation",
-                image: "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-                icon: <Users className="w-6 h-6" />,
-              },
-              {
-                year: "2023",
-                title: "Sustainable Future",
-                description: "Launched our sustainable collection supporting local artisans",
-                image: "https://images.unsplash.com/photo-1590735213920-68192a57bc5c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-                icon: <Leaf className="w-6 h-6" />,
-              },
-            ].map((milestone, index) => (
-              <motion.div
-                key={milestone.year}
-                custom={index}
-                variants={cardVariants}
-                className={`relative flex items-center mb-24 ${
-                  index % 2 === 0 ? "flex-row" : "flex-row-reverse"
-                }`}
-              >
-                <div className={`w-1/2 ${index % 2 === 0 ? "pr-12" : "pl-12"}`}>
-                  <motion.div
-                    whileHover={{ scale: 1.05 }}
-                    className="relative h-64 rounded-xl overflow-hidden shadow-lg"
-                  >
-                    <Image
-                      src={milestone.image}
-                      alt={milestone.title}
-                      fill
-                      className="object-cover"
-                    />
-                  </motion.div>
-                </div>
-
-                <div className="absolute left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10">
-                  <motion.div
-                    whileHover={{ scale: 1.2 }}
-                    className="w-12 h-12 rounded-full bg-rose-100 border-4 border-white shadow-lg flex items-center justify-center text-rose-500"
-                  >
-                    {milestone.icon}
-                  </motion.div>
-                </div>
-
-                <div className={`w-1/2 ${index % 2 === 0 ? "pl-12" : "pr-12"}`}>
-                  <span className="text-sm font-bold text-rose-500">{milestone.year}</span>
-                  <h3 className="text-2xl font-serif text-gray-900 mt-2 mb-4">{milestone.title}</h3>
-                  <p className="text-gray-600">{milestone.description}</p>
-                </div>
-              </motion.div>
-            ))}
+    <div className="relative">
+      <div className="absolute left-1/2 transform -translate-x-1/2 h-full w-px bg-rose-200 hidden md:block" />
+      
+      {[
+        {
+          year: "2018",
+          title: "The Beginning",
+          description: "Founded with a vision to revolutionize traditional saree craftsmanship",
+          image: "https://images.unsplash.com/photo-1610030244570-3b6d4b7a7c0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+          icon: <Globe2 className="w-6 h-6" />,
+        },
+        {
+          year: "2020",
+          title: "Digital Evolution",
+          description: "Expanded our reach to global audiences through digital innovation",
+          image: "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+          icon: <Users className="w-6 h-6" />,
+        },
+        {
+          year: "2023",
+          title: "Sustainable Future",
+          description: "Launched our sustainable collection supporting local artisans",
+          image: "https://images.unsplash.com/photo-1590735213920-68192a57bc5c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+          icon: <Leaf className="w-6 h-6" />,
+        },
+      ].map((milestone, index) => (
+        <motion.div
+          key={milestone.year}
+          custom={index}
+          variants={cardVariants}
+          className={`relative flex flex-col md:flex-row items-center mb-24 ${
+            index % 2 === 0 ? "md:flex-row" : "md:flex-row-reverse"
+          }`}
+        >
+          <div className={`w-full md:w-1/2 ${index % 2 === 0 ? "md:pr-12" : "md:pl-12"} mb-6 md:mb-0`}>
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              className="relative h-48 md:h-64 rounded-xl overflow-hidden shadow-lg"
+            >
+              <Image
+                src={milestone.image}
+                alt={milestone.title}
+                fill
+                className="object-cover"
+              />
+            </motion.div>
           </div>
-        </div>
-      </motion.section>
+
+          <div className="md:absolute relative left-auto md:left-1/2 transform md:-translate-x-1/2 md:-translate-y-1/2 z-10 my-4 md:my-0">
+            <motion.div
+              whileHover={{ scale: 1.2 }}
+              className="w-12 h-12 rounded-full bg-rose-100 border-4 border-white shadow-lg flex items-center justify-center text-rose-500 mx-auto"
+            >
+              {milestone.icon}
+            </motion.div>
+          </div>
+
+          <div className={`w-full md:w-1/2 ${index % 2 === 0 ? "md:pl-12" : "md:pr-12"} text-center md:text-left`}>
+            <span className="text-sm font-bold text-rose-500">{milestone.year}</span>
+            <h3 className="text-2xl font-serif text-gray-900 mt-2 mb-4">{milestone.title}</h3>
+            <p className="text-gray-600">{milestone.description}</p>
+          </div>
+        </motion.div>
+      ))}
+    </div>
+  </div>
+</motion.section>
 
       {/* Call to Action */}
       <motion.section

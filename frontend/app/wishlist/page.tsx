@@ -7,6 +7,7 @@ import axios from "axios";
 import { ShoppingCart, Trash2, ExternalLink, Heart } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useUser } from "@/context/UserProvider";
+import { useRouter } from "next/navigation";
 
 interface Product {
   id: string;
@@ -18,6 +19,7 @@ interface Product {
 
 export default function WishlistPage() {
   const { wishlist, removeFromWishlist, addToCart } = useUser();
+  const router = useRouter();
   const [wishlistItems, setWishlistItems] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -47,8 +49,11 @@ export default function WishlistPage() {
 
   const removeItem = (id: string) => {
     removeFromWishlist(id);
-    setWishlistItems((prevItems) => prevItems.filter((item) => item.id !== id));
-  };
+    setWishlistItems((prevItems) => {
+        const updatedItems = prevItems.filter((item) => item.id !== id);
+        return updatedItems.length === 0 ? [] : updatedItems;
+    });
+};
 
   if (isLoading) {
     return (
@@ -106,6 +111,12 @@ export default function WishlistPage() {
                 <p className="text-xl text-purple-800/50 font-medium">
                   Your wishlist is empty
                 </p>
+				<button
+                  onClick={() => router.push("/collections")}
+                  className="px-6 py-3 bg-amber-600 text-white rounded-full hover:bg-amber-700 transition-colors duration-300"
+                >
+                  Continue Shopping
+                </button>
               </motion.div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">

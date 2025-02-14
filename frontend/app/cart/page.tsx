@@ -48,8 +48,16 @@ function CartPage() {
   }
 
   const removeItem = (id: string) => {
-    removeFromCart(id)
-  }
+	const updatedCart = cartItems.filter(item => item.id !== id);
+	setCartItems(updatedCart);
+	removeFromCart(id);
+  
+	// Ensure "Your cart is empty" message appears immediately
+	if (updatedCart.length === 0) {
+	  setTimeout(() => setCartItems([]), 100); 
+	}
+  };
+  
 
   const handleBuyNow = () => {
     clearCart()

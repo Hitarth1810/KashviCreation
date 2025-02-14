@@ -7,9 +7,10 @@ import { motion } from "framer-motion";
 import { Heart, ShoppingBag } from "lucide-react";
 import type React from "react";
 import axios from "axios";
+import { useUser } from "@/context/UserProvider"; // Add this import
 
 interface Product {
-  id: number;
+  id: string;
   name: string;
   images: string[];
   description: string;
@@ -18,25 +19,9 @@ interface Product {
 }
 
 export function FeaturedProducts() {
-  const [cart, setCart] = useState<number[]>([]);
-  const [wishlist, setWishlist] = useState<number[]>([]);
+  const { cart, addToCart, addToWishlist, removeFromWishlist, wishlist } = useUser(); // Use the context
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const savedCart = localStorage.getItem("cart");
-    const savedWishlist = localStorage.getItem("wishlist");
-    if (savedCart) setCart(JSON.parse(savedCart));
-    if (savedWishlist) setWishlist(JSON.parse(savedWishlist));
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem("cart", JSON.stringify(cart));
-  }, [cart]);
-
-  useEffect(() => {
-    localStorage.setItem("wishlist", JSON.stringify(wishlist));
-  }, [wishlist]);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -54,20 +39,20 @@ export function FeaturedProducts() {
     fetchProducts();
   }, []);
 
-  const addToCart = (e: React.MouseEvent, id: number) => {
+  const toggleWishlist = (e: React.MouseEvent, id: string) => {
     e.preventDefault();
     e.stopPropagation();
-    if (!cart.includes(id)) {
-      setCart([...cart, id]);
+    if (wishlist.includes(id)) {
+      removeFromWishlist(id);
+    } else {
+      addToWishlist(id);
     }
   };
 
-  const toggleWishlist = (e: React.MouseEvent, id: number) => {
+  const handleAddToCart = (e: React.MouseEvent, id: string) => {
     e.preventDefault();
     e.stopPropagation();
-    setWishlist((prev) =>
-      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
-    );
+    addToCart(id);
   };
 
   return (
@@ -169,7 +154,7 @@ export function FeaturedProducts() {
                     <motion.button
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
-                      onClick={(e) => addToCart(e, product.id)}
+                      onClick={(e) => handleAddToCart(e, product.id)}
                       className="flex-1 px-4 py-2.5 rounded-lg bg-white text-[#8B1D3F] text-sm 
                       border border-[#8B1D3F] hover:bg-[#8B1D3F] hover:text-white 
                       transition-all duration-300 flex items-center justify-center gap-2"
@@ -185,7 +170,7 @@ export function FeaturedProducts() {
                     className={`px-4 py-2.5 rounded-lg border transition-all duration-300 flex items-center justify-center ${
                       wishlist.includes(product.id)
                         ? "bg-white text-red-500 border-red-500"
-                        : "bg-white text-[#8B1D3F] border-[#8B1D3F]  hover:text-[#8B1D3F]"
+                        : "bg-white text-[#8B1D3F] border-[#8B1D3F] hover:text-[#8B1D3F]"
                     }`}
                   >
                     <Heart

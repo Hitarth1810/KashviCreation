@@ -1,17 +1,20 @@
 import { NextResponse } from "next/server";
-import { getUserCart, insertUserCart, deleteUserCart } from "@/lib/user";
+import {
+	getUserWishlist,
+	insertUserWishlist,
+	deleteUserWishlist,
+} from "@/lib/user";
 export async function POST(req: Request): Promise<NextResponse> {
 	try {
 		const body = await req.json();
+
 		const { productId } = body;
-		console.log(productId)
 		if (!productId) {
 			return NextResponse.json(
 				{ message: "Product ID are required" },
 				{ status: 400 }
 			);
 		}
-
 		const token = req.headers.get("cookie")?.split("=")[1];
 		if (!token) {
 			return NextResponse.json(
@@ -19,8 +22,8 @@ export async function POST(req: Request): Promise<NextResponse> {
 				{ status: 400 }
 			);
 		}
-		const cart = await insertUserCart(token, productId);
-		return NextResponse.json(cart, { status: 200 });
+		const wishlist = await insertUserWishlist(token, productId);
+		return NextResponse.json(wishlist, { status: 200 });
 	} catch (error) {
 		console.error("Error updating cart:", error);
 		return NextResponse.json(
@@ -41,12 +44,11 @@ export async function GET(req: Request): Promise<NextResponse> {
 			);
 		}
 
-		const cart = await getUserCart(userId);
-		if (!cart) {
-			return NextResponse.json({ message: "User not found" }, { status: 404 });
-		}
-
-		return NextResponse.json(cart, { status: 200 });
+		const wishlist = await getUserWishlist(userId);
+    if (!wishlist) {
+      return NextResponse.json({ message: "User not found" }, { status: 404 });
+    }
+		return NextResponse.json(wishlist, { status: 200 });
 	} catch (error) {
 		console.error("Error fetching cart:", error);
 		return NextResponse.json(
@@ -66,16 +68,16 @@ export async function DELETE(req: Request): Promise<NextResponse> {
 				{ status: 400 }
 			);
 		}
-		const token = req.headers.get("cookie")?.split("=")[1];
-		if (!token) {
-			return NextResponse.json(
-				{ message: "Cookie is required" },
-				{ status: 400 }
-			);
-		}
+    const token = req.headers.get("cookie")?.split("=")[1];
+    if (!token) {
+      return NextResponse.json(
+        { message: "Cookie is required" },
+        { status: 400 }
+      );
+    }
 
-		const cart = await deleteUserCart(token, productId);
-		return NextResponse.json(cart, { status: 200 });
+		const wishlist = await deleteUserWishlist(token, productId);
+		return NextResponse.json(wishlist, { status: 200 });
 	} catch (error) {
 		console.error("Error deleting cart:", error);
 		return NextResponse.json(

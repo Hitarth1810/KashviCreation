@@ -1,6 +1,6 @@
 import { prisma } from "./prisma";
 import bcrypt from "bcryptjs";
-import { getProduct } from "./products";
+import { verifyToken } from "./jwt";
 
 export type CreateUserInput = {
 	email: string;
@@ -70,7 +70,7 @@ export async function updateUser(id: string, data: UpdateUserInput) {
 
 // export async function generatePasswordResetToken(email: string) {
 // 	const token = window.crypto.getRandomValues(new Uint32Array(1))[0].toString(16);
-	
+
 // 	const expires = new Date(Date.now() + 3600000); // 1 hour
 
 // 	await prisma.user.update({
@@ -112,26 +112,89 @@ export async function verifyPasswordResetToken(token: string) {
 // 	return token;
 // }
 
-export async function updateUserCart(id:string,productid:string){
+export async function insertUserCart(token: string, productid: string) {
+	const data = verifyToken(token);
+	const existingUser = await prisma.user.findUnique({
+		where: { id: data.userId },
+	});
+	if (!existingUser) {
+		throw new Error("User not found");
+	}
+
 	const user = await prisma.user.update({
-		where: { id },
+		where: { id: data.userId },
 		data: {
 			Cart: {
+				set: [...(existingUser.Cart || []), productid], // Ensure Cart exists before pushing
+			},
+		},
+	});
+	return user.Cart
+}
+
+export async function deleteUserCart(token: string, productid: string) {
+	const data = verifyToken(token);
+	const oldUser = await prisma.user.findUnique({
+		where: { id: data.userId },
+	});
+	if (!oldUser || !oldUser.Cart) {
+		throw new Error("User not found or Cart is empty");
+	}
+	const user = await prisma.user.update({
+		where: { id: data.userId },
+		data: {
+			Cart: {
+				set: oldUser.Cart.filter((p) => p !== productid),
+			},
+		},
+	});
+	return user.Cart;
+}
+
+export async function getUserCart(id: string) {
+	const user = await prisma.user.findUnique({
+		where: { id },
+	});
+	if (!user?.Cart) return null;
+	return user.Cart;
+}
+
+export async function insertUserWishlist(token: string, productid: string) {
+	const data = verifyToken(token);
+	const user = await prisma.user.update({
+		where: { id: data.userId },
+		data: {
+			Wishlist: {
 				push: productid,
 			},
 		},
 	});
-	return user;
+	return user.Wishlist;
 }
 
-export async function getUserCart(id:string){
+export async function deleteUserWishlist(token: string, productid: string) {
+	const data = verifyToken(token);
+	const oldUser = await prisma.user.findUnique({
+		where: { id: data.userId },
+	});
+	if (!oldUser || !oldUser.Wishlist) {
+		throw new Error("User not found or Wishlist is empty");
+	}
+	const user = await prisma.user.update({
+		where: { id: data.userId },
+		data: {
+			Wishlist: {
+				set: oldUser.Wishlist.filter((p) => p !== productid),
+			},
+		},
+	});
+	return user.Wishlist;
+}
+
+export async function getUserWishlist(id: string) {
 	const user = await prisma.user.findUnique({
 		where: { id },
-		
 	});
-	if(!user?.Cart) return null
-	const cart=user.Cart.map(async id=>{
-		return await getProduct(id)
-	})
-	return cart;
+	if (!user?.Wishlist) return null;
+	return user.Wishlist;
 }

@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation"
 import Navbar from "./components/Navbar"
 import Footer from "./components/Footer"
 import "./globals.css"
+import { UserProvider } from '@/context/UserProvider'
 
 // Initialize Kalam font
 const kalam = Kalam({
@@ -21,17 +22,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   const isAdminRoute = pathname.startsWith("/admin")
 
   return (
-    <html lang="en" className={`${kalam.variable}`}>
-      <body>
-        <AuthProvider>
-          {!isAdminRoute && <Navbar />}
-          {!isAdminRoute && (
-            <div className="w-full h-[2px] bg-gradient-to-r from-transparent via-[#ff9933] to-transparent"></div>
-          )}
-          <main>{children}</main>
-          {!isAdminRoute && <Footer />}
-        </AuthProvider>
-      </body>
-    </html>
-  );
+		<html lang='en' className={`${kalam.variable}`}>
+			<body>
+				<AuthProvider>
+					<UserProvider>
+						{!isAdminRoute && <Navbar />}
+						{!isAdminRoute && (
+							<div className='w-full h-[2px] bg-gradient-to-r from-transparent via-[#ff9933] to-transparent'></div>
+						)}
+						<main>{children}</main>
+						{!isAdminRoute && <Footer />}
+					</UserProvider>
+				</AuthProvider>
+			</body>
+		</html>
+	);
 }

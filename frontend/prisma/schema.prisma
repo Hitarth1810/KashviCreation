@@ -24,8 +24,8 @@ model User {
   sessions          Session[]
   Blog              Blog[]
   Review            Review[]
-  Cart              String[]  @default([]) @db.ObjectId
-  Wishlist          String[]  @default([]) @db.ObjectId 
+  Cart              String[]  @default([]) 
+  Wishlist          String[]  @default([]) 
 
   @@map("users")
 }

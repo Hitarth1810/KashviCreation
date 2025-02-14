@@ -1,14 +1,13 @@
 "use client";
-
+import Zoom from "react-medium-image-zoom";
+import "react-medium-image-zoom/dist/styles.css";
 import type React from "react";
-import { useState,useEffect, use } from "react";
-import { motion} from "framer-motion";
+import { useState, useEffect, use } from "react";
+import { motion } from "framer-motion";
 import { Star, Heart, Send, Minus, Plus } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Product } from "@/types/product";
-
-
 
 interface Review {
   id: number;
@@ -24,9 +23,6 @@ interface NewReview {
   comment: string;
   rating: number;
 }
-
-
-
 
 const initialReviews: Review[] = [
   {
@@ -61,11 +57,7 @@ const initialReviews: Review[] = [
   },
 ];
 
-const ProductPage = ({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) => {
+const ProductPage = ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = use(params);
   const router = useRouter();
   const [product, setProduct] = useState<Product>();
@@ -89,13 +81,13 @@ const ProductPage = ({
       try {
         const response = await fetch(`/api/product/${id}`);
         if (!response.ok) {
-          throw new Error('Failed to fetch product');
+          throw new Error("Failed to fetch product");
         }
         const data = await response.json();
         setProduct(data);
         setSelectedImage(data.images[0]); // Set first image as selected
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'An error occurred');
+        setError(err instanceof Error ? err.message : "An error occurred");
       } finally {
         setLoading(false);
       }
@@ -146,14 +138,16 @@ const ProductPage = ({
               animate={{ opacity: 1 }}
               className="relative w-full h-[60vh] sm:h-[80vh] rounded-xl overflow-hidden bg-white flex items-center justify-center px-4"
             >
-              <Image
-                src={hoveredImage || selectedImage}
-                alt={product?.name || "Product Image"}
-                width={600}
-                height={600}
-                className="w-full h-full object-contain"
-                priority
-              />
+              <Zoom>
+                <Image
+                  src={hoveredImage || selectedImage}
+                  alt={product?.name || "Product Image"}
+                  width={600}
+                  height={600}
+                  className="w-full h-full object-contain"
+                  priority
+                />
+              </Zoom>
             </motion.div>
 
             {/* Thumbnails */}
@@ -187,8 +181,9 @@ const ProductPage = ({
           {/* Right Column - Product Details */}
           <div className="space-y-4">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">{product?.name}</h1>
-              
+              <h1 className="text-3xl font-bold text-gray-900">
+                {product?.name}
+              </h1>
             </div>
 
             {/* Reviews Summary */}
@@ -217,7 +212,7 @@ const ProductPage = ({
               <div>
                 <h3 className="text-sm font-medium text-gray-900">Color</h3>
                 <div className="flex space-x-3 mt-2">
-                  {product.colors.map((color,i) => (
+                  {product.colors.map((color, i) => (
                     <motion.button
                       key={i}
                       whileHover={{ scale: 1.1 }}

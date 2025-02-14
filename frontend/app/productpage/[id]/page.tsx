@@ -142,8 +142,8 @@ const ProductPage = ({ params }: { params: Promise<{ id: string }> }) => {
                 <Image
                   src={hoveredImage || selectedImage}
                   alt={product?.name || "Product Image"}
-                  width={600}
-                  height={600}
+                  width={360}
+                  height={500}
                   className="w-full h-full object-contain"
                   priority
                 />
@@ -160,7 +160,7 @@ const ProductPage = ({ params }: { params: Promise<{ id: string }> }) => {
                   onClick={() => setSelectedImage(image)}
                   onMouseEnter={() => setHoveredImage(image)}
                   onMouseLeave={() => setHoveredImage(null)}
-                  className={`w-20 h-20 rounded-md overflow-hidden border-2 flex-shrink-0 ${
+                  className={`w-24 h-24 rounded-md overflow-hidden border-2 flex-shrink-0 ${
                     (hoveredImage || selectedImage) === image
                       ? "border-blue-500"
                       : "border-gray-200"
@@ -168,7 +168,7 @@ const ProductPage = ({ params }: { params: Promise<{ id: string }> }) => {
                 >
                   <Image
                     src={image}
-                    alt={`${product.name} ${idx + 1}`}
+                    alt={`${product?.name} ${idx + 1}`}
                     width={80}
                     height={80}
                     className="w-full h-full object-cover"

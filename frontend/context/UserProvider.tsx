@@ -3,10 +3,23 @@
 import axios from "axios";
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { useAuth } from "./AuthProvider";
-
+interface Address {
+	
+		pincode: string
+		address: string
+		area: string
+		landmark: string
+		city: string,
+		state: string,
+		isDefault: boolean,
+		instructions: string | null,
+	
+}
 interface UserContextType {
 	cart: string[];
 	wishlist: string[];
+	getShippingAddress: (id: string) => Promise<Address[] | null>;
+	setShippingAddress: (address: Address) => Promise<boolean>;
 	addToCart: (productId: string) => Promise<void>;
 	removeFromCart: (productId: string) => Promise<void>;
 	clearCart: () => void;
@@ -121,6 +134,30 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
 		}
 	};
 
+	const getShippingAddress = async () => {
+		try {
+			const res = await axios.get("/api/protected/user/shipping-address");
+			if (res.status === 200) {
+				return res.data;
+			}
+		} catch (error) {
+			console.error("Error fetching shipping address:", error);
+		}
+		return null;
+	};
+
+	const setShippingAddress = async (address: Address) => {
+		try {
+		  const res = await axios.post("/api/protected/user/shipping-address", address);
+			if (res.status === 200) {
+				return true;
+			}
+		} catch (error) {
+			console.error("Error setting shipping address:", error);
+		}
+		return false;
+	}
+
 	return (
 		<UserContext.Provider
 			value={{
@@ -131,6 +168,8 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
 				clearCart,
 				addToWishlist,
 				removeFromWishlist,
+				getShippingAddress,
+				setShippingAddress
 			}}
 		>
 			{children}

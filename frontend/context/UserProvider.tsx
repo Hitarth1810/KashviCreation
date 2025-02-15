@@ -57,7 +57,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
 
 	const addToCart = async (productId: string) => {
 		try {
-			const res = await axios.post("/api/protected/user/cart", {productId});
+			const res = await axios.post("/api/protected/user/cart", {productId,quantity: 1 });
 			console.log(res)
 			if (res.status === 200) {
 				const data = res.data

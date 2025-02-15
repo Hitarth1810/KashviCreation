@@ -1,58 +1,82 @@
-"use client"
+"use client";
 
-import { Phone, Mail, Users, MessageSquare, Video } from "lucide-react"
-import { motion } from "framer-motion"
-import { useEffect, useState } from "react"
-import RangoliPattern from "./RangoliPattern"
+import { Phone, Mail, Users, MessageSquare, Video } from "lucide-react";
+import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
+import RangoliPattern from "./RangoliPattern";
 
 export default function ContactPage() {
-  const [, setCursorPos] = useState({ x: 0, y: 0 })
+  const [, setCursorPos] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
-      setCursorPos({ x: e.clientX, y: e.clientY })
-    }
-    window.addEventListener("mousemove", handleMouseMove)
-    return () => window.removeEventListener("mousemove", handleMouseMove)
-  }, [])
+      setCursorPos({ x: e.clientX, y: e.clientY });
+    };
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-amber-50 to-orange-50 py-12 px-4 sm:px-6 lg:px-8">
       <RangoliPattern />
-      
+
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-16 relative z-10">
         {/* Left Column */}
         <div className="space-y-12">
           <div>
-            <h1 className="text-5xl font-bold text-orange-800 mb-4">Contact Us</h1>
+            <h1 className="text-5xl font-bold text-orange-800 mb-4">
+              Contact Us
+            </h1>
             <p className="text-gray-600">
-              Email, call, or complete the form to learn how we can solve your needs.
+              Email, call, or complete the form to learn how we can solve your
+              needs.
             </p>
           </div>
 
           <div className="space-y-6">
-            <motion.div 
+            <motion.div
               className="flex items-center space-x-3 group"
               whileHover={{ x: 4 }}
             >
               <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center group-hover:bg-orange-200 transition-colors">
                 <Mail className="w-5 h-5 text-orange-600 group-hover:text-orange-700" />
               </div>
-              <a href="mailto:contact@sareestore.com" className="text-gray-700 hover:text-orange-600 transition-colors">
-                contact@sareestore.com
+              <a
+                href="mailto:Kashvicreation10@gmail.com"
+                className="text-gray-700 hover:text-orange-600 transition-colors"
+              >
+                kashvicreation10@gmail.com
               </a>
             </motion.div>
-            
-            <motion.div 
+
+            <motion.div
               className="flex items-center space-x-3 group"
               whileHover={{ x: 4 }}
             >
-              <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center group-hover:bg-orange-200 transition-colors">
-                <Phone className="w-5 h-5 text-orange-600 group-hover:text-orange-700" />
+              <div className="flex flex-col gap-2">
+                <div className="flex items-center gap-2">
+                  <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center group-hover:bg-orange-200 transition-colors">
+                    <Phone className="w-5 h-5 text-orange-600 group-hover:text-orange-700" />
+                  </div>
+                  <div className="flex flex-col">
+                  <a
+                    href="tel:+917290909696"
+                    className="text-gray-700 hover:text-orange-600 transition-colors"
+                  >
+                    +91 7290909696
+                  </a>
+                  
+                  <a
+                    href="tel:+919376421333"
+                    className="text-gray-700 hover:text-orange-600 transition-colors"
+                  >
+                    +91 9376421333
+                  </a>
+                  </div>
+                  
+                </div>
+                
               </div>
-              <a href="tel:+911234567890" className="text-gray-700 hover:text-orange-600 transition-colors">
-                +91 123 456 7890
-              </a>
             </motion.div>
           </div>
 
@@ -65,7 +89,9 @@ export default function ContactPage() {
               <div className="mb-3">
                 <Users className="w-8 h-8 text-orange-600 group-hover:text-orange-700 transition-colors" />
               </div>
-              <h3 className="text-lg font-semibold text-orange-800 mb-2 group-hover:text-orange-900">Customer Support</h3>
+              <h3 className="text-lg font-semibold text-orange-800 mb-2 group-hover:text-orange-900">
+                Customer Support
+              </h3>
               <p className="text-gray-600 text-sm">
                 Available 24/7 to address your concerns and queries.
               </p>
@@ -78,7 +104,9 @@ export default function ContactPage() {
               <div className="mb-3">
                 <MessageSquare className="w-8 h-8 text-orange-600 group-hover:text-orange-700 transition-colors" />
               </div>
-              <h3 className="text-lg font-semibold text-orange-800 mb-2 group-hover:text-orange-900">Feedback</h3>
+              <h3 className="text-lg font-semibold text-orange-800 mb-2 group-hover:text-orange-900">
+                Feedback
+              </h3>
               <p className="text-gray-600 text-sm">
                 Share your thoughts to help us improve.
               </p>
@@ -91,7 +119,9 @@ export default function ContactPage() {
               <div className="mb-3">
                 <Video className="w-8 h-8 text-orange-600 group-hover:text-orange-700 transition-colors" />
               </div>
-              <h3 className="text-lg font-semibold text-orange-800 mb-2 group-hover:text-orange-900">Media Inquiries</h3>
+              <h3 className="text-lg font-semibold text-orange-800 mb-2 group-hover:text-orange-900">
+                Media Inquiries
+              </h3>
               <p className="text-gray-600 text-sm">
                 Press and media related questions.
               </p>
@@ -102,7 +132,9 @@ export default function ContactPage() {
         {/* Right Column */}
         <div className="bg-white rounded-lg shadow-xl p-8">
           <div className="mb-8">
-            <h2 className="text-3xl font-semibold text-orange-800 mb-2">Get in Touch</h2>
+            <h2 className="text-3xl font-semibold text-orange-800 mb-2">
+              Get in Touch
+            </h2>
             <p className="text-gray-600">You can reach us anytime</p>
           </div>
 
@@ -198,5 +230,5 @@ export default function ContactPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

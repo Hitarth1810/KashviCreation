@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo } from "react"
 import axios from "axios"
 import Image from "next/image"
 import Link from "next/link"
@@ -15,6 +15,7 @@ interface FilterState {
   categories: string[]
   colors: string[]
 }
+
 interface CategoryCount {
   name: string
   count: number
@@ -24,12 +25,13 @@ interface ColorCount {
   name: string
   count: number
 }
+
 export default function Collections() {
   const { cart, addToCart, addToWishlist, removeFromWishlist, wishlist } = useUser()
   const searchParams = useSearchParams()
+  const keywords = searchParams.getAll('keywords')
 
   const [isLoading, setIsLoading] = useState(true)
-  const [sarees, setSarees] = useState<Product[]>([])
   const [allSarees, setAllSarees] = useState<Product[]>([])
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false)
   const [categories, setCategories] = useState<CategoryCount[]>([])
@@ -38,30 +40,14 @@ export default function Collections() {
     categories: [],
     colors: [],
   })
-  const [searchQuery, setSearchQuery] = useState("")
 
-  const baseURL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"
-
-  useEffect(() => {
-    const query = searchParams.get("search")
-    if (query) {
-      setSearchQuery(query)
-    }
-  }, [searchParams])
-
-  useEffect(() => {
-    setTimeout(() => setIsLoading(false), 1000)
-  }, [])
-
+  // Fetch products only once on component mount
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get(`${baseURL}/api/product`)
+        const response = await axios.get(`/api/product`)
         const products = response.data
-
-        // Set all sarees first
         setAllSarees(products)
-        setSarees(products)
 
         // Generate category counts
         const categoryMap = new Map<string, number>()
@@ -104,22 +90,48 @@ export default function Collections() {
     }
 
     fetchProducts()
-  }, [baseURL])
+  }, []) // Empty dependency array means this only runs once on mount
 
-  // Apply filters and search
-  useEffect(() => {
-    const filteredSarees = allSarees.filter((saree: Product) => {
+  // Use useMemo to filter sarees based on keywords and filters
+  const filteredSarees = useMemo(() => {
+    return allSarees.filter((saree: Product) => {
+      // Handle category and color filters
       const categoryMatch = filters.categories.length === 0 || filters.categories.includes(saree.category)
       const colorMatch = filters.colors.length === 0 || saree.colors.some((color) => filters.colors.includes(color))
-      const searchMatch =
-        searchQuery === "" ||
-        saree.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        saree.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        saree.colors.some((color) => color.toLowerCase().includes(searchQuery.toLowerCase()))
-      return categoryMatch && colorMatch && searchMatch
+  
+      // Handle keyword search
+      let keywordMatch = true
+      if (keywords.length > 0) {
+        const searchableText = [
+          saree.name,
+          saree.id, 
+          saree.description,
+          saree.category,
+          ...saree.colors,
+        ]
+          .filter(Boolean)
+          .join(' ')
+          .toLowerCase()
+  
+        // Split the searchable text into words
+        const searchableWords = searchableText.split(/\s+/)
+        
+        // Check if EACH keyword is found within ANY word in the searchable text
+        // This allows for partial word matches
+        keywordMatch = keywords.every(encodedKeyword => {
+          const keyword = decodeURIComponent(encodedKeyword).toLowerCase()
+          return searchableWords.some(word => word.includes(keyword))
+        })
+      }
+  
+      return categoryMatch && colorMatch && keywordMatch
     })
-    setSarees(filteredSarees)
-  }, [filters, allSarees, searchQuery])
+  }, [allSarees, filters, keywords])
+
+  // Loading effect
+  useEffect(() => {
+    setTimeout(() => setIsLoading(false), 1000)
+  }, [])
 
   const toggleWishlist = (e: React.MouseEvent, id: string) => {
     e.preventDefault()
@@ -143,7 +155,6 @@ export default function Collections() {
   const clearFilters = () => {
     setFilters({ categories: [], colors: [] })
   }
-
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#f9f3ea] to-[#FAEBD7]">
       <div className="pt-6 pb-12 text-center">
@@ -369,7 +380,7 @@ export default function Collections() {
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
               <AnimatePresence>
                 {!isLoading &&
-                  sarees.map((saree) => (
+                  filteredSarees.map((saree) => (
                     <motion.div
                       key={saree.id}
                       initial={{ opacity: 0 }}

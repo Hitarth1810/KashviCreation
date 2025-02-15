@@ -59,16 +59,28 @@ const Navbar = () => {
 
   useEffect(() => {
     const searchParams = new URLSearchParams(window.location.search)
-    const query = searchParams.get("search")
-    if (query) {
-      setSearchQuery(decodeURIComponent(query))
+    const keywords = searchParams.getAll('keywords')
+    if (keywords.length > 0) {
+      setSearchQuery(keywords.map(k => decodeURIComponent(k)).join(' '))
     }
   }, [])
 
   const handleSearch = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     if (searchQuery.trim()) {
-      router.push(`/collections?search=${encodeURIComponent(searchQuery.trim())}`)
+      // Convert the search query into individual keywords
+      const keywords = searchQuery
+        .trim()
+        .split(' ')
+        .filter(keyword => keyword.length > 0)
+        
+      // Create the URL with individual keywords
+      const searchParams = new URLSearchParams()
+      keywords.forEach(keyword => {
+        searchParams.append('keywords', keyword)
+      })
+      
+      router.push(`/collections?${searchParams.toString()}`)
       setSearchQuery("")
       setMobileSearchOpen(false)
     }

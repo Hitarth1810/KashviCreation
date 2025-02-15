@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Mail, Phone, Clock } from "lucide-react";
+import { Mail, Phone, Clock, MapPin } from "lucide-react";
 import Logo from "@/public/KCLogo.png";
 import LogoLetter from "@/public/KCLogoLetter.png";
 
@@ -220,23 +220,61 @@ export default function Footer() {
           {/* Contact */}
           <div>
             <h4 className="text-xl font-medium mb-4">Contact</h4>
-            <ul className="space-y-2">
-              
+            <ul className="space-y-4">
+              {/* Sales Office Location */}
+              <li className="flex items-start space-x-2 group relative">
+                <MapPin className="w-10 h-10 text-gray-600 transition-all duration-300 group-hover:text-pink-600 transform group-hover:scale-110" />
+                <div>
+                  <p className="text-gray-800 font-semibold">Sales Office:</p>
+                  <p className="text-gray-600">
+                    Shop No. 113, Millennium Textile Market - 2, Ring Road,
+                    Surat - 395002.
+                  </p>
+                  <a
+                    href="https://www.google.com/maps/search/?api=1&query=Millennium+Textile+Market+2+Surat"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-pink-600 hover:underline"
+                  >
+                    View on Map
+                  </a>
+                </div>
+              </li>
+
+              {/* Head Office Location */}
+              <li className="flex items-start space-x-2 group relative">
+                <MapPin className="w-10 h-10 text-gray-600 transition-all duration-300 group-hover:text-pink-600 transform group-hover:scale-110" />
+                <div>
+                  <p className="text-gray-800 font-semibold">Head Office:</p>
+                  <p className="text-gray-600">
+                    Shop No. 6115 To 6124, Millennium Textile Market - 4,
+                    Bhathena, Surat - 395002.
+                  </p>
+                  <a
+                    href="https://www.google.com/maps/search/?api=1&query=Millennium+Textile+Market+4+Surat"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-pink-600 hover:underline"
+                  >
+                    View on Map
+                  </a>
+                </div>
+              </li>
+              {/* Email */}
               <li className="flex items-center group relative">
-                <Mail
-                  className="w-6 h-6 text-gray-600 transition-all duration-300 group-hover:text-pink-600 transform group-hover:scale-110"
-                  strokeWidth={2}
-                />
+                <Mail className="w-6 h-6 text-gray-600 transition-all duration-300 group-hover:text-pink-600 transform group-hover:scale-110" />
                 <Link
-                  href="mailto:Kashvicreation10@gmail.com"
+                  href="mailto:kashvicreation10@gmail.com"
                   className="text-gray-600 group-hover:text-pink-600 text-lg ml-2 relative"
                 >
                   <span className="relative">
-                    Kashvicreation10@gmail.com
+                    kashvicreation10@gmail.com
                     <span className="absolute left-0 bottom-0 w-full h-0.5 bg-pink-400 transform scale-x-0 transition-transform duration-300 origin-left group-hover:scale-x-100"></span>
                   </span>
                 </Link>
               </li>
+
+              {/* Phone Numbers */}
               <li className="flex items-center space-x-2 group relative">
                 <Phone className="w-6 h-6 text-gray-600 transition-all duration-300 group-hover:text-pink-600 transform group-hover:scale-110" />
                 <p className="text-gray-600 group-hover:text-pink-600 text-lg relative">
@@ -247,22 +285,13 @@ export default function Footer() {
                     >
                       +91 9376421333
                     </a>
-                    {" / "}
+                    <br />
                     <a
                       href="tel:+917290909696"
                       className="hover:text-pink-600 transition-colors duration-300"
                     >
                       +91 7290909696
                     </a>
-                    <span className="absolute left-0 bottom-0 w-full h-0.5 bg-pink-400 transform scale-x-0 transition-transform duration-300 origin-left group-hover:scale-x-100"></span>
-                  </span>
-                </p>
-              </li>
-              <li className="flex items-center space-x-2 group relative">
-                <Clock className="w-6 h-6 text-gray-600 transition-all duration-300 group-hover:text-pink-600 transform group-hover:scale-110" />
-                <p className="text-gray-600 group-hover:text-pink-600 text-lg relative">
-                  <span className="relative">
-                    10 AM - 7 PM, Monday - Saturday
                     <span className="absolute left-0 bottom-0 w-full h-0.5 bg-pink-400 transform scale-x-0 transition-transform duration-300 origin-left group-hover:scale-x-100"></span>
                   </span>
                 </p>

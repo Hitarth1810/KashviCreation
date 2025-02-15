@@ -16,8 +16,8 @@ function CartPage() {
 		{
 			id: string;
 			name: string;
-			image: string;
-			color: string;
+			images: string[];
+			colors: string[];
 			quantity: number;
 		}[]
 	>([]);
@@ -176,7 +176,7 @@ function CartPage() {
 									>
 										<div className='relative w-32 aspect-[3/4]'>
 											<Image
-												src={item.image || "/placeholder.svg"}
+												src={item.images[0]}
 												alt={item.name}
 												fill
 												className='object-cover rounded-xl'
@@ -187,7 +187,7 @@ function CartPage() {
 												{item.name}
 											</h3>
 											<p className='text-amber-700 font-medium'>
-												Color: {item.color}
+												Color: {item.colors[0]}
 											</p>
 											<div className='flex items-center gap-4'>
 												<div className='flex items-center border-2 border-amber-500 rounded-full overflow-hidden'>

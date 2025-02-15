@@ -133,7 +133,7 @@ export function FeaturedProducts() {
               </Link>
 
               <div className="mt-4 flex flex-col h-17 pl-1">
-                <h3 className="font-medium text-base sm:text-base text-gray-800 line-clamp-2 mb-3 group-hover:text-[#8B1D3F] transition-colors duration-300 flex-grow">
+                <h3 className="font-medium text-lg sm:text-base text-gray-800 line-clamp-2 mb-3 group-hover:text-[#8B1D3F] transition-colors duration-300 flex-grow">
                   {product.name}
                 </h3>
                 <div className="flex gap-2 mt-auto">
@@ -146,7 +146,7 @@ export function FeaturedProducts() {
                         hover:bg-white hover:text-[#8B1D3F] hover:border-[#8B1D3F] border 
                         transition-all duration-300 flex items-center justify-center gap-2"
                       >
-                        <ShoppingBag className="w-4 h-4" />
+                        <ShoppingBag className="w-4 h-4"/>
                         View Cart
                       </motion.button>
                     </Link>

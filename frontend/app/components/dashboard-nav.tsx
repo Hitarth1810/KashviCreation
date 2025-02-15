@@ -34,14 +34,14 @@ const navItems = [
 	},
 ];
 
-export function DashboardNav() {
+export function DashboardNav({ closeSidebar }: { closeSidebar: () => void }){
 	const pathname = usePathname();
 
 	return (
 		<div className='flex w-64 flex-col border-r bg-muted/40'>
 			<div className='flex h-14 items-center border-b px-4'>
 				<Link href='/dashboard' className='flex items-center gap-2'>
-					<span className='font-semibold'>Kashavi Creation Admin Panel</span>
+					<span className='font-semibold'>Kashvi Creation Admin Panel</span>
 				</Link>
 			</div>
 			<nav className='flex-1 space-y-1 p-4'>
@@ -54,6 +54,7 @@ export function DashboardNav() {
 							"w-full justify-start gap-2",
 							pathname === item.href && "bg-secondary"
 						)}
+						onClick={closeSidebar} // Close sidebar when link is clicked
 					>
 						<Link href={item.href}>
 							<item.icon className='h-4 w-4' />

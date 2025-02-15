@@ -4,11 +4,8 @@ import { useState } from "react";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthProvider";
 import Popup from "@/app/components/popup";
-import { useRouter } from "next/router";
 
-export default function SignInPage() {
-  const router = useRouter(); 
-  const { redirect } = router.query;
+export default function SignInPage() { 
   const { login } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -19,8 +16,8 @@ export default function SignInPage() {
     setPopup({ message: "", type: "success", isVisible: false });
 
     try {
-      await login(email, password, redirect as string | undefined);
-      setPopup({ message: "Saign in successsful!", type: "success", isVisible: true });
+      await login(email, password);
+      setPopup({ message: "Sign in successful!", type: "success", isVisible: true });
       setTimeout(() => {
         setPopup({ ...popup, isVisible: false });
       }, 3000);

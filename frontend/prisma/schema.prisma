@@ -24,10 +24,29 @@ model User {
   sessions          Session[]
   Blog              Blog[]
   Review            Review[]
-  Cart              String[]  @default([]) 
-  Wishlist          String[]  @default([]) 
+  Cart              String[]  @default([])
+  Wishlist          String[]  @default([])
+  shippingAddress   Address[]
 
   @@map("users")
+}
+
+model Address {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId       String   @db.ObjectId
+  address      String
+  area         String
+  landmark     String
+  city         String
+  state        String
+  pincode      String
+  instructions String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  isDefault    Boolean  @default(false)
+  user         User     @relation(fields: [userId], references: [id])
+
+  @@map("addresses")
 }
 
 model Session {
@@ -59,7 +78,7 @@ model Blog {
 }
 
 model Product {
-  id          String   @id @map("_id") 
+  id          String   @id @map("_id")
   name        String
   description String
   images      String[]
@@ -67,7 +86,7 @@ model Product {
   updatedAt   DateTime @updatedAt
   colors      String[]
   stock       Int
-  reviews     Review[] 
+  reviews     Review[]
   category    String
 
   @@map("products")
@@ -76,7 +95,7 @@ model Product {
 model Review {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   userId    String   @db.ObjectId
-  productId String   
+  productId String
   rating    Int
   comment   String
   createdAt DateTime @default(now())

@@ -1,6 +1,7 @@
 import { prisma } from "./prisma";
 import bcrypt from "bcryptjs";
 import { verifyToken } from "./jwt";
+import { shippingAddress } from "@/types/user";
 
 export type CreateUserInput = {
 	email: string;
@@ -197,4 +198,26 @@ export async function getUserWishlist(id: string) {
 	});
 	if (!user?.Wishlist) return null;
 	return user.Wishlist;
+}
+
+export async function getShippingAddress(token: string) {
+	const data = verifyToken(token);
+	const user = await prisma.user.findUnique({
+		where: { id: data.userId },
+		select: { shippingAddress: true },
+	});
+	return user?.shippingAddress;
+}
+
+export async function setShippingAddress(token: string, address: shippingAddress) {
+	const { userId } = verifyToken(token);
+	const shippingAddress = await prisma.address.create({
+		data: {
+			...address,
+			user: {
+				connect: { id: userId },
+			},
+		},
+	});
+	return shippingAddress;
 }

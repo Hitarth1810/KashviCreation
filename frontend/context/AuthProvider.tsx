@@ -6,7 +6,7 @@ import { UserData } from "@/types/auth";
 
 interface AuthContextType {
 	user: UserData | null;
-	login: (email: string, password: string) => Promise<void>;
+	login: (email: string, password: string, redirect: string | undefined) => Promise<void>;
 	signup: (
 		email: string,
 		password: string,
@@ -21,7 +21,6 @@ const AuthContext = createContext<AuthContextType | null>(null);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
 	const [user, setUser] = useState<UserData | null>(null);
 	const router = useRouter();
-
 	useEffect(() => {
 		// Check auth status on mount
 		checkAuth();
@@ -47,7 +46,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 		}
 	};
 
-	const login = async (email: string, password: string) => {
+	const login = async (email: string, password: string, redirect: string | undefined) => {
 		try {
 			const res = await axios.post(
 				"/api/auth/login",
@@ -63,9 +62,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 				throw new Error("Login failed");
 			}
 
-			const { role } = res.data.user
+			const { role } = res.data.user;
 			await checkAuth();
-
+			if(redirect) router.push(redirect);
 			if (role === "ADMIN") {
 				router.push("/admin/dashboard");
 			} else {

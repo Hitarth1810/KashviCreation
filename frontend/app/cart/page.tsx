@@ -22,8 +22,8 @@ function CartPage() {
     {
       id: string;
       name: string;
-      image: string;
-      color: string;
+      images: string[];
+      colors: string[];
       quantity: number;
     }[]
   >([]);
@@ -139,7 +139,7 @@ function CartPage() {
                 Your cart is empty
               </h2>
               <p className="text-black mb-8">
-                Looks like you haven't added anything to your cart yet.
+                Looks like you haven&apos;t added anything to your cart yet.
                 Start shopping to fill it with amazing products!
               </p>
               <motion.button
@@ -174,10 +174,10 @@ function CartPage() {
                     <div className="p-6 flex flex-col sm:flex-row gap-6">
                       <div className="relative w-full sm:w-48 aspect-square rounded-lg overflow-hidden">
                         <Image
-                          src={item.image || "/placeholder.svg"}
+                          src={item.images[0] || "/placeholder.svg"}
                           alt={item.name}
                           fill
-                          className="object-cover transition-transform duration-300 hover:scale-105"
+                          className="object-contain transition-transform duration-300 hover:scale-105"
                         />
                       </div>
                       <div className="flex-1 flex flex-col justify-between">
@@ -186,7 +186,7 @@ function CartPage() {
                             {item.name}
                           </h3>
                           <p className="text-black mb-4">
-                            Color: {item.color}
+                            Color: {item.colors[0]}
                           </p>
                         </div>
                         <div className="flex flex-wrap items-center gap-4">

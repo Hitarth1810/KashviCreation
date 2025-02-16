@@ -41,7 +41,6 @@ export default function Collections() {
     colors: [],
   })
 
-  // Fetch products only once on component mount
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -49,7 +48,6 @@ export default function Collections() {
         const products = response.data
         setAllSarees(products)
 
-        // Generate category counts
         const categoryMap = new Map<string, number>()
         products.forEach((product: Product) => {
           const count = categoryMap.get(product.category) || 0
@@ -65,7 +63,6 @@ export default function Collections() {
 
         setCategories(categoryList)
 
-        // Generate color counts
         const colorMap = new Map<string, number>()
         products.forEach((product: Product) => {
           product.colors.forEach((color) => {
@@ -90,16 +87,13 @@ export default function Collections() {
     }
 
     fetchProducts()
-  }, []) // Empty dependency array means this only runs once on mount
+  }, [])
 
-  // Use useMemo to filter sarees based on keywords and filters
   const filteredSarees = useMemo(() => {
     return allSarees.filter((saree: Product) => {
-      // Handle category and color filters
       const categoryMatch = filters.categories.length === 0 || filters.categories.includes(saree.category)
       const colorMatch = filters.colors.length === 0 || saree.colors.some((color) => filters.colors.includes(color))
   
-      // Handle keyword search
       let keywordMatch = true
       if (keywords.length > 0) {
         const searchableText = [
@@ -113,11 +107,8 @@ export default function Collections() {
           .join(' ')
           .toLowerCase()
   
-        // Split the searchable text into words
         const searchableWords = searchableText.split(/\s+/)
         
-        // Check if EACH keyword is found within ANY word in the searchable text
-        // This allows for partial word matches
         keywordMatch = keywords.every(encodedKeyword => {
           const keyword = decodeURIComponent(encodedKeyword).toLowerCase()
           return searchableWords.some(word => word.includes(keyword))
@@ -128,7 +119,6 @@ export default function Collections() {
     })
   }, [allSarees, filters, keywords])
 
-  // Loading effect
   useEffect(() => {
     setTimeout(() => setIsLoading(false), 1000)
   }, [])
@@ -155,6 +145,7 @@ export default function Collections() {
   const clearFilters = () => {
     setFilters({ categories: [], colors: [] })
   }
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#f9f3ea] to-[#FAEBD7]">
       <div className="pt-6 pb-12 text-center">
@@ -174,7 +165,7 @@ export default function Collections() {
       </div>
 
       {/* Mobile Filter Button */}
-      <div className="md:hidden px-4 mb-4">
+      <div className="md:hidden px-2 mb-4">
         <button
           onClick={() => setIsMobileFilterOpen(true)}
           className="flex items-center gap-2 text-gray-700 font-medium px-4 py-2 rounded-lg bg-white shadow-sm hover:shadow-md transition-all duration-300"
@@ -204,7 +195,7 @@ export default function Collections() {
         </button>
       </div>
 
-      <div className="max-w-[2000px] mx-auto px-4">
+      <div className="max-w-[2000px] mx-auto px-2 md:px-4">
         <div className="flex flex-col md:flex-row gap-6">
           {/* Filter Sidebar - Desktop */}
           <motion.div
@@ -481,4 +472,3 @@ export default function Collections() {
     </div>
   )
 }
-

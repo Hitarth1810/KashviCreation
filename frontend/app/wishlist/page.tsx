@@ -24,14 +24,14 @@ export default function WishlistPage() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (wishlist.length === 0) {
-      setWishlistItems([]);
-      setIsLoading(false);
-      return;
-    }
-
     const fetchWishlistItems = async () => {
       try {
+        if (wishlist.length === 0) {
+          setWishlistItems([]);
+          setIsLoading(false);
+          return;
+        }
+
         const productRequests = wishlist.map((id) =>
           axios.get(`/api/product/${id}`).then((res) => res.data)
         );
@@ -47,148 +47,164 @@ export default function WishlistPage() {
     fetchWishlistItems();
   }, [wishlist]);
 
-  const removeItem = (id: string) => {
+  const removeItem = async (id: string) => {
     removeFromWishlist(id);
-    setWishlistItems((prevItems) => {
-        const updatedItems = prevItems.filter((item) => item.id !== id);
-        return updatedItems.length === 0 ? [] : updatedItems;
-    });
-};
+    const updatedItems = wishlistItems.filter((item) => item.id !== id);
+    setWishlistItems(updatedItems);
+
+    if (updatedItems.length === 0) {
+      setWishlistItems([]);
+    }
+  };
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-pink-50 to-purple-100 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-b from-[#f9f3ea] to-[#FAEBD7] flex items-center justify-center">
         <motion.div
-          initial={{ scale: 0.5, opacity: 0 }}
+          initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          className="text-purple-800"
+          className="text-[#8B1D3F]"
         >
-          <Heart className="w-12 h-12 animate-pulse" />
+          <Heart className="w-24 h-24 animate-pulse" />
         </motion.div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#FFF8F0] to-[#FFF5E9] p-4 md:p-8">
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="max-w-6xl mx-auto"
-      >
-        <header className="text-center mb-12">
-          <motion.h1
-            className="text-4xl md:text-5xl font-bold text-purple-800 mb-4"
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-          >
-            Your Wishlist
-          </motion.h1>
-          <motion.div
-            className="h-1 w-24 bg-purple-800 mx-auto"
-            initial={{ width: 0 }}
-            animate={{ width: 96 }}
-            transition={{ delay: 0.4, duration: 0.8 }}
-          />
-        </header>
-
+    <div className="min-h-screen bg-gradient-to-b from-[#f9f3ea] to-[#FAEBD7]">
+      <div className="pt-6 pb-12 text-center">
         <motion.div
-          className="bg-white/80 backdrop-blur-sm shadow-2xl p-6 md:p-8 flex justify-center"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
+          initial={{ y: -20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
         >
-          <AnimatePresence mode="wait">
-            {wishlistItems.length === 0 ? (
+          <h1 className="text-5xl font-serif tracking-wide text-gray-800">Your Wishlist</h1>
+          <motion.div
+            initial={{ width: 0 }}
+            animate={{ width: "180px" }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+            className="h-0.5 bg-[#8B1D3F] mx-auto mt-3"
+          />
+        </motion.div>
+      </div>
+
+      <div className="max-w-[2000px] mx-auto px-1 sm:px-4">
+        <AnimatePresence mode="wait">
+          {wishlistItems.length === 0 ? (
+            <motion.div
+              key="empty-state"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="flex flex-col items-center justify-center py-20"
+            >
               <motion.div
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.8 }}
-                className="text-center py-12"
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ delay: 0.2 }}
+                className="text-center"
               >
-                <Heart className="w-16 h-16 mx-auto text-purple-800/30 mb-4" />
-                <p className="text-xl text-purple-800/50 font-medium">
+                <Heart className="w-24 h-24 mx-auto text-[#8B1D3F] mb-4" strokeWidth={1.5} />
+                <h2 className="text-3xl text-[#8B1D3F] font-medium mb-3">
                   Your wishlist is empty
+                </h2>
+                <p className="text-gray-500 mb-6 max-w-md mx-auto">
+                  Add items to your wishlist to keep track of products you love.
                 </p>
-				<button
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
                   onClick={() => router.push("/collections")}
-                  className="px-6 py-3 bg-amber-600 text-white rounded-full hover:bg-amber-700 transition-colors duration-300"
+                  className="px-8 py-3 bg-[#8B1D3F] text-white text-lg font-medium rounded-lg hover:bg-[#7a1935] transition-colors duration-300"
                 >
-                  Continue Shopping
-                </button>
+                  Explore Collections
+                </motion.button>
               </motion.div>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
-                {wishlistItems.map((item, index) => (
+            </motion.div>
+          ) : (
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-1 sm:gap-2">
+              <AnimatePresence>
+                {wishlistItems.map((item) => (
                   <motion.div
                     key={item.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -20 }}
-                    transition={{ delay: index * 0.1 }}
-                    className="bg-white shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 w-60 h-85 mx-auto"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="relative group bg-white shadow-xl hover:shadow-2xl transition-shadow duration-300"
                   >
-                    {/* Rectangular image container */}
-                    <div className="relative w-full h-52 flex justify-center">
-                      <Image
-                        src={item.images[0] || "/placeholder.svg"}
-                        alt={item.name}
-                        fill
-                        className="object-cover"
-                        style={{ objectPosition: "top" }}
-                      />
-                    </div>
+                    <Link href={`/productpage/${item.id}`}>
+                      <div className="relative">
+                        <div className="aspect-[3/4] relative overflow-hidden">
+                          <Image
+                            src={item.images[0] || "/placeholder.svg"}
+                            alt={item.name}
+                            fill
+                            className="object-cover transform group-hover:scale-105 transition-transform duration-300"
+                            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                          />
+                        </div>
 
-                    <div className="p-4 space-y-2">
-                      <h3 className="text-lg font-semibold text-gray-900 truncate">
-                        {item.name}
-                      </h3>
-                      <p className="text-purple-600 font-medium">
-                        Category: {item.category}
-                      </p>
-
-                      <div className="flex justify-between items-center mt-4">
-                        <motion.button
-                          whileHover={{ scale: 1.05 }}
-                          whileTap={{ scale: 0.95 }}
-                          onClick={() => addToCart(item.id)}
-                          className="px-3 py-2 bg-purple-600 text-white flex items-center space-x-1 text-sm hover:bg-purple-700 transition-colors"
-                        >
-                          <ShoppingCart size={16} />
-                          <span>Add to Cart</span>
-                        </motion.button>
-                        <div className="flex space-x-2">
-                          <motion.button
-                            whileHover={{ scale: 1.1, color: "rgb(220 38 38)" }}
-                            whileTap={{ scale: 0.9 }}
-                            onClick={() => removeItem(item.id)}
-                            className="text-red-400 p-2 hover:bg-red-50 transition-colors"
+                        <div className="absolute inset-0 bg-black bg-opacity-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                          <button 
+                            onClick={(e) => {
+                              e.preventDefault();
+                              removeItem(item.id);
+                            }} 
+                            className="absolute top-2 right-2 p-2 text-white hover:text-red-500 transition-colors"
                           >
-                            <Trash2 size={20} />
-                          </motion.button>
-                          <Link href={`/productpage/${item.id}`} passHref>
-                            <motion.a
-                              whileHover={{
-                                scale: 1.1,
-                                color: "rgb(79 70 229)",
-                              }}
-                              whileTap={{ scale: 0.9 }}
-                              className="text-indigo-400 p-2 hover:bg-indigo-50 transition-colors"
-                            >
-                              <ExternalLink size={20} />
-                            </motion.a>
-                          </Link>
+                            <Trash2 size={24} />
+                          </button>
                         </div>
                       </div>
-                    </div>
+
+                      <div className="p-3 bg-[#fcfbf7]">
+                        <h2 className="text-gray-800 text-sm font-medium mb-1 truncate">{item.name}</h2>
+                        <p className="text-gray-600 text-xs mb-2">D.No.{item.id}</p>
+
+                        {/* Mobile Button Layout */}
+                        <div className="flex gap-2 md:hidden">
+                          <button
+                            onClick={(e) => {
+                              e.preventDefault();
+                              addToCart(item.id);
+                            }}
+                            className="flex-1 bg-white text-[#8B1D3F] border border-[#8B1D3F] py-2 px-4 rounded-sm text-sm hover:bg-[#8B1D3F] hover:text-white transition-colors duration-300"
+                          >
+                            Add to Cart
+                          </button>
+                          <button
+                            onClick={(e) => {
+                              e.preventDefault();
+                              removeItem(item.id);
+                            }}
+                            className="bg-white border border-[#8B1D3F] p-2 rounded-sm hover:bg-[#8B1D3F] hover:text-white transition-colors duration-300"
+                          >
+                            <Trash2 size={20} className="stroke-[#8B1D3F] group-hover:stroke-white" />
+                          </button>
+                        </div>
+
+                        {/* Desktop Button Layout */}
+                        <div className="hidden md:block">
+                          <button
+                            onClick={(e) => {
+                              e.preventDefault();
+                              addToCart(item.id);
+                            }}
+                            className="w-full bg-white text-[#8B1D3F] border border-[#8B1D3F] py-2 px-4 rounded-sm text-sm hover:bg-[#8B1D3F] hover:text-white transition-colors duration-300"
+                          >
+                            Add to Cart
+                          </button>
+                        </div>
+                      </div>
+                    </Link>
                   </motion.div>
                 ))}
-              </div>
-            )}
-          </AnimatePresence>
-        </motion.div>
-      </motion.div>
+              </AnimatePresence>
+            </div>
+          )}
+        </AnimatePresence>
+      </div>
     </div>
   );
 }

@@ -93,7 +93,7 @@ function CartPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#F9F3EA] to-[#FAEBD7]">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#FDF7F3] to-rose-50">
         <motion.div
           initial={{ scale: 0.5, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
@@ -106,7 +106,7 @@ function CartPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#F9F3EA] to-[#FAEBD7]">
+    <div className="min-h-screen bg-gradient-to-br from-[#FDF7F3] to-rose-50">
       <div className="max-w-7xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
         <motion.header 
           className="text-center mb-12"

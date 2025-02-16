@@ -140,7 +140,7 @@ const ProductPage = ({ params }: { params: Promise<{ id: string }> }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-b from-[#FDF7F3] to-rose-50">
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Left Column - Images */}
@@ -240,7 +240,7 @@ const ProductPage = ({ params }: { params: Promise<{ id: string }> }) => {
             {/* Quantity Selection */}
             <div>
               <h3 className="text-sm font-medium text-gray-900">Quantity</h3>
-              <div className="flex items-center mt-2 border border-gray-300 rounded-lg w-max p-2">
+              <div className="flex items-center mt-2 border border-gray-300 bg-white rounded-lg w-max p-2">
                 <motion.button
                   whileTap={{ scale: 0.9 }}
                   onClick={() => handleQuantityChange("decrement")}
@@ -268,7 +268,7 @@ const ProductPage = ({ params }: { params: Promise<{ id: string }> }) => {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={handleCartClick}
-                className="flex-1 bg-indigo-600 text-white px-8 py-4 font-medium hover:bg-indigo-700 transition-colors duration-300 shadow-lg hover:shadow-xl flex items-center justify-center space-x-2"
+                className="flex-1 bg-[#8B1D3F] text-white px-8 py-4 font-medium hover:bg-[#7a1936] transition-colors duration-300 shadow-lg hover:shadow-xl flex items-center justify-center space-x-2"
               >
                 <ShoppingCart className="w-5 h-5" />
                 <span>{cart.includes(id) ? "View Cart" : "Add to Cart"}</span>
@@ -318,7 +318,7 @@ const ProductPage = ({ params }: { params: Promise<{ id: string }> }) => {
                   onChange={(e) =>
                     setNewReview({ ...newReview, name: e.target.value })
                   }
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#8B1D3F] focus:ring-[#7a1936]"
                   required
                 />
               </div>
@@ -370,7 +370,7 @@ const ProductPage = ({ params }: { params: Promise<{ id: string }> }) => {
                   onChange={(e) =>
                     setNewReview({ ...newReview, comment: e.target.value })
                   }
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#8B1D3F] focus:ring-[#7a1936]"
                   required
                 />
               </div>
@@ -379,7 +379,7 @@ const ProductPage = ({ params }: { params: Promise<{ id: string }> }) => {
                 type="submit"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-[#8B1D3F] hover:bg-[#7a1936] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
               >
                 <Send className="w-4 h-4 mr-2" />
                 Submit Review

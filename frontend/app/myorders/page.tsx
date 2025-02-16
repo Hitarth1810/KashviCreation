@@ -49,7 +49,7 @@ export default function OrdersPage() {
       <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="max-w-4xl mx-auto">
         <header className="text-center mb-12">
           <motion.h1
-            className="text-4xl md:text-5xl font-bold text-amber-800 mb-4"
+            className="text-4xl md:text-5xl font-serif text-black mb-4"
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
@@ -57,7 +57,7 @@ export default function OrdersPage() {
             My Orders
           </motion.h1>
           <motion.div
-            className="h-1 w-24 bg-amber-800 mx-auto rounded-full"
+            className="h-0.5 w-24 bg-[#8B1D3F] mx-auto rounded-full"
             initial={{ width: 0 }}
             animate={{ width: 96 }}
             transition={{ delay: 0.4, duration: 0.8 }}
@@ -79,7 +79,7 @@ export default function OrdersPage() {
                 className="text-center py-12"
               >
                 <ShoppingBag className="w-16 h-16 mx-auto text-amber-800/30 mb-4" />
-                <p className="text-xl text-amber-800/50 font-medium">You have no orders</p>
+                <p className="text-xl text-[#8B1D3F] font-medium">You have no orders</p>
               </motion.div>
             ) : (
               <div className="space-y-6">
@@ -107,7 +107,7 @@ export default function OrdersPage() {
                     <div className="flex-1 space-y-4">
                       <div>
                         <h3 className="text-xl font-semibold text-gray-900 mb-2 tracking-tight">{order.name}</h3>
-                        <p className="text-amber-700 font-medium">Color: {order.color}</p>
+                        <p className="text-[#8B1D3F] font-medium">Color: {order.color}</p>
                       </div>
 
                       {/* Order Status */}

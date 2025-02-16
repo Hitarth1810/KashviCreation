@@ -47,7 +47,7 @@ export default function AboutPage() {
   // Card variants - increased delays between items
   const cardVariants = {
     hidden: { opacity: 0, y: 20 },
-    visible: index => ({
+    visible: (index: number) => ({
       opacity: 1,
       y: 0,
       transition: {
@@ -73,7 +73,7 @@ export default function AboutPage() {
         {/* Hero content remains the same */}
         <div className="absolute inset-0 w-full h-full">
           <Image
-            src="https://images.unsplash.com/photo-1583922606661-0822ed0bd916?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80"
+            src="https://res.cloudinary.com/diujpbja7/image/upload/v1739730190/xbq37vna5pxac9tbmgm4.jpg"
             alt="Kashvi Creation Artistry"
             fill
             className="object-cover"
@@ -91,7 +91,7 @@ export default function AboutPage() {
           </motion.div>
           <motion.h1
             variants={sectionVariants}
-            className="text-5xl md:text-7xl font-serif text-white mb-6"
+            className="text-5xl md:text-7xl font-serif text-[#FDF7F3] mb-6"
           >
             Our Legacy of Beauty
           </motion.h1>

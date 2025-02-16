@@ -56,7 +56,7 @@ export function FeaturedProducts() {
   };
 
   return (
-    <div className="relative bg-gradient-to-b from-[#f9f3ea] to-[#FAEBD7] px-4 py-5 sm:px-6 sm:py-8 md:px-8 lg:px-12 xl:px-16 2xl:px-32">
+    <div className="relative bg-gradient-to-b from-[#FDF7F3] to-rose-50 px-4 py-5 sm:px-6 sm:py-8 md:px-8 lg:px-12 xl:px-16 2xl:px-32">
       <div className="flex flex-col sm:flex-row justify-between items-center mb-8 sm:mb-12">
         <div className="flex items-center gap-4 mb-4 sm:mb-0">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="#8B1D3F" className="hidden sm:block">

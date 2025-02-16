@@ -59,7 +59,7 @@ export default function WishlistPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-[#f9f3ea] to-[#FAEBD7] flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-[#FDF7F3] to-rose-50 flex items-center justify-center">
         <motion.div
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
@@ -72,7 +72,7 @@ export default function WishlistPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#f9f3ea] to-[#FAEBD7]">
+    <div className="min-h-screen bg-gradient-to-br from-[#FDF7F3] to-rose-50">
       <div className="pt-6 pb-12 text-center">
         <motion.div
           initial={{ y: -20, opacity: 0 }}

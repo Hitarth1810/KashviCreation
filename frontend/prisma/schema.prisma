@@ -27,14 +27,15 @@ model User {
   Cart              String[]  @default([])
   Wishlist          String[]  @default([])
   shippingAddress   Address[]
-  Invoice           Invoice[]
+  invoices          Invoice[]
+  order             Order[]
 
   @@map("users")
 }
 
 model Address {
-  id           String   @id @default(auto()) @map("_id") @db.ObjectId
-  userId       String   @db.ObjectId
+  id           String    @id @default(auto()) @map("_id") @db.ObjectId
+  userId       String    @db.ObjectId
   address      String
   area         String
   landmark     String
@@ -42,10 +43,11 @@ model Address {
   state        String
   pincode      String
   instructions String?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  isDefault    Boolean  @default(false)
-  user         User     @relation(fields: [userId], references: [id])
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  isDefault    Boolean   @default(false)
+  user         User      @relation(fields: [userId], references: [id])
+  Invoice      Invoice[]
 
   @@map("addresses")
 }
@@ -89,7 +91,7 @@ model Product {
   stock       Int
   reviews     Review[]
   category    String
-
+  
   @@map("products")
 }
 
@@ -107,14 +109,32 @@ model Review {
   @@map("reviews")
 }
 
-model Invoice {
-  id        String   @id @map("_id")
-  userId    String   @db.ObjectId
+model Order {
+  id        String    @id @map("_id")
+  userId    String    @db.ObjectId
   products  String[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  status    Status   @default(PENDING)
-  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  status    Status    @default(PENDING)
+  user      User      @relation(fields: [userId], references: [id])
+  Invoice   Invoice[]
+
+  @@map("orders")
+}
+
+model Invoice {
+  id         String    @id @map("_id")
+  orderId    String
+  customerId String    @db.ObjectId
+  billing    Address   @relation(fields: [addressId], references: [id])
+  notes      String?
+  customer   User      @relation(fields: [customerId], references: [id])
+  products   String[]
+  total      Float
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  order      Order     @relation(fields: [orderId], references: [id])
+  addressId  String    @db.ObjectId
 
   @@map("invoices")
 }

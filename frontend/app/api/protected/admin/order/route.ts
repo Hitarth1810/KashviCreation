@@ -1,45 +1,48 @@
 import { getCustomer } from "@/lib/customer";
 import {
-	createInvoice,
-	getInvoice,
-	getInvoices,
-	updateInvoiceStatus,
-} from "@/lib/invoice";
+	createOrder,
+	getOrder,
+	getOrders,
+	updateOrderStatus,
+} from "@/lib/order";
 import { getProduct } from "@/lib/products";
 import { NextResponse } from "next/server";
 
 export async function GET(req: Request): Promise<NextResponse> {
 	try {
 		const { searchParams } = new URL(req.url);
-		if (!searchParams.has("invoiceId")) {
-			const invoices = await getInvoices();
-			return NextResponse.json(invoices);
+		if (!searchParams.has("orderId")) {
+			const orders = await getOrders();
+			return NextResponse.json(orders);
 		}
-		const invoiceId = searchParams.get("invoiceId");
-		if (!invoiceId) {
+		const orderId = searchParams.get("orderId");
+		if (!orderId) {
 			return NextResponse.json({
 				status: 400,
-				body: "Bad Request: Missing invoiceId",
+				body: "Bad Request: Missing orderId",
 			});
 		}
 
-		const invoices = await getInvoice(invoiceId);
-		const customer = await getCustomer(invoices!.customerId);
-		console.log(invoices?.products);
+		const order = await getOrder(orderId);
+		const customer = await getCustomer(order!.userId);
+		console.log(order?.products);
+
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		let products: any = [];
-		if (invoices?.products) {
+		if (order?.products) {
 			await Promise.all(
-				invoices.products.map(async (product: string) => {
+				order.products.map(async (product: string) => {
 					const data = await getProduct(product);
 					products.push({ id: data?.id, name: data?.name });
 				})
 			);
 		}
-		products = mergeDuplicateProducts(products)
+
+		products = mergeDuplicateProducts(products);
 		console.log(products);
+
 		const data = {
-			...invoices,
+			id: order!.id,
 			user: {
 				name: customer?.name,
 				email: customer!.email,
@@ -47,6 +50,7 @@ export async function GET(req: Request): Promise<NextResponse> {
 				image: customer!.image,
 			},
 			products: products,
+			status: order!.status,
 		};
 
 		return NextResponse.json(data);
@@ -61,9 +65,9 @@ export async function GET(req: Request): Promise<NextResponse> {
 export async function POST(req: Request): Promise<NextResponse> {
 	try {
 		const data = await req.json();
-		const { invoiceId, userId, products } = data;
-		const invoice = await createInvoice(invoiceId, userId, products);
-		return NextResponse.json({ status: 200, body: invoice });
+		const { orderId, userId, products } = data;
+		const order = await createOrder(orderId, userId, products);
+		return NextResponse.json({ status: 200, body: order });
 	} catch (error) {
 		return NextResponse.json({
 			status: 500,
@@ -75,9 +79,9 @@ export async function POST(req: Request): Promise<NextResponse> {
 export async function PUT(req: Request): Promise<NextResponse> {
 	try {
 		const data = await req.json();
-		const { invoiceId, status } = data;
-		const invoice = await updateInvoiceStatus(invoiceId, status);
-		return NextResponse.json({ status: 200, body: invoice });
+		const { orderId, status } = data;
+		const order = await updateOrderStatus(orderId, status);
+		return NextResponse.json({ status: 200, body: order });
 	} catch (error) {
 		return NextResponse.json({
 			status: 500,
@@ -85,7 +89,6 @@ export async function PUT(req: Request): Promise<NextResponse> {
 		});
 	}
 }
-
 
 function mergeDuplicateProducts(products: { id: string; name: string }[]) {
 	const productMap = new Map<

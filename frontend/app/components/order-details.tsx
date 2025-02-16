@@ -1,8 +1,7 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import Image from "next/image";
-import { Phone, Mail } from "lucide-react";
+import { Phone, Mail, CircleUserRound } from "lucide-react";
 
 import { Card, CardContent } from "@/app/components/ui/card";
 import { Badge } from "@/app/components/ui/badge";
@@ -10,6 +9,8 @@ import { Separator } from "@/app/components/ui/separator";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import axios from "axios";
+import { Button } from "./ui/button";
+import { Label } from "./ui/label";
 
 interface Invoice {
 	id: string;
@@ -22,24 +23,76 @@ interface Invoice {
 	products: {
 		id: string;
 		name: string;
+		quantity: number;
 	}[];
 	status: string;
 }
 
 export function OrderDetails() {
 	const [details, setDetails] = useState<Invoice | null>(null);
+	const [loading, setLoading] = useState(true);
 	const searchParams = useSearchParams();
 	const selectedId = searchParams.get("id");
 
 	useEffect(() => {
 		if (!selectedId) return;
 		const fetchData = async () => {
-			const response = await axios.get(`/api/protected/admin/invoice?invoiceId=${selectedId}`);
+			const response = await axios.get(
+				`/api/protected/admin/order?orderId=${selectedId}`
+			);
 			setDetails(response.data);
 			console.log(response.data);
+			setLoading(false);
 		};
 		fetchData();
 	}, [selectedId]);
+
+	if (!selectedId)
+		return (
+			<div className='flex h-full items-center justify-center p-8 text-center text-muted-foreground'>
+				Select a order to view its details
+			</div>
+		);
+
+	if (loading) {
+		return (
+			<div className='flex h-full items-center justify-center p-8 text-center'>
+				Loading order details...
+			</div>
+		);
+	}
+	const handleOnConfirm: React.MouseEventHandler<HTMLButtonElement> = async (
+		e
+	) => {
+		e.preventDefault();
+		const res = await axios.put(`/api/protected/admin/order`, {
+			orderId: selectedId,
+			status: "confirmed",
+		});
+		setDetails(res.data);
+	};
+
+	const handleOnComplete: React.MouseEventHandler<HTMLButtonElement> = async (
+		e
+	) => {
+		e.preventDefault();
+		const res = await axios.put(`/api/protected/admin/order`, {
+			orderId: selectedId,
+			status: "completed",
+		});
+		setDetails(res.data);
+	};
+
+	const handleOnCancel: React.MouseEventHandler<HTMLButtonElement> = async (
+		e
+	) => {
+		e.preventDefault();
+		const res = await axios.put(`/api/protected/admin/order`, {
+			orderId: selectedId,
+			status: "cancelled",
+		});
+		setDetails(res.data);
+	};
 
 	return (
 		<div className='h-full border-l'>
@@ -48,17 +101,26 @@ export function OrderDetails() {
 					<h2 className='text-lg font-semibold'>Order Details</h2>
 					<Badge variant='secondary'>{details?.status}</Badge>
 				</div>
-				<p className='text-sm text-muted-foreground'>Invoice #{details?.id}</p>
+				<p className='text-sm text-muted-foreground'>Order #{details?.id}</p>
 			</div>
 			<div className='p-4'>
 				<div className='flex items-center gap-4'>
-					<Image
-						src={details?.user.image || "/placeholder.svg"}
-						alt={details?.user.name || "User"}
-						width={64}
-						height={64}
-						className='rounded-full'
-					/>
+					{details?.user.image ? (
+						<>
+							<Image
+								src={details?.user.image}
+								alt={details?.user.name || "User"}
+								width={64}
+								height={64}
+								className='rounded-full'
+							/>
+						</>
+					) : (
+						<>
+							<CircleUserRound height={64} width={64} strokeWidth={"1px"} color="black"/>
+						</>
+					)}
+
 					<div>
 						<h3 className='font-semibold'>{details?.user.name || "Unknown"}</h3>
 						<div className='mt-1 space-y-1 text-sm text-muted-foreground'>
@@ -81,14 +143,58 @@ export function OrderDetails() {
 							<Card key={item.id}>
 								<CardContent className='flex items-center justify-between p-4'>
 									<div>
+										<p className='text-sm text-muted-foreground'>
+											Product ID: {item.id}
+										</p>
 										<p className='font-medium'>{item.name}</p>
 									</div>
+									<Badge variant='secondary'>{item.quantity}</Badge>
 								</CardContent>
 							</Card>
 						))}
 					</div>
 				</div>
 				<Separator className='my-4' />
+				<div className='flex flex-col gap-1'>
+					{details?.status.toLocaleLowerCase() === "pending" ? (
+						<>
+							<Button
+								size='default'
+								variant='outline'
+								onClick={handleOnConfirm}
+							>
+								CONFIRM
+							</Button>
+							<Button size='lg' variant='default' onClick={handleOnComplete}>
+								COMPLETE
+							</Button>
+							<Button
+								size='default'
+								variant='destructive'
+								onClick={handleOnCancel}
+							>
+								CANCEL
+							</Button>
+						</>
+					) : details?.status.toLocaleLowerCase() === "confirmed" ? (
+						<>
+							<Button size='lg' variant='default' onClick={handleOnComplete}>
+								COMPLETE
+							</Button>
+							<Button
+								size='default'
+								variant='destructive'
+								onClick={handleOnCancel}
+							>
+								CANCEL
+							</Button>
+						</>
+					) : details?.status.toLocaleLowerCase() === "completed" ? (
+						<Label>Order Completed</Label>
+					) : (
+						<Label>Order Cancelled</Label>
+					)}
+				</div>
 			</div>
 		</div>
 	);

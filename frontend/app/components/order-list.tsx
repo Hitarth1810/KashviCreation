@@ -2,7 +2,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Badge } from "@/app/components/ui/badge";
-import { Invoice } from "@prisma/client";
+import { Order } from "@prisma/client";
 import { useRouter } from "next/navigation";
 
 interface InvoiceData {
@@ -18,16 +18,19 @@ export function OrderList({}) {
 
 	useEffect(() => {
 		const fetchInvoices = async () => {
-			const invoices = await axios.get("/api/protected/admin/invoice");
-			const data = invoices.data.map((invoice: Invoice) => ({
-				id: invoice.id,
-				customer: axios
-					.get(`/api/protected/admin/customer?customerId=${invoice.userId}`)
-					.then((res) => {
-						return res.data.name;
-					}),
-				status: invoice.status,
-			}));
+			const orders = await axios.get("/api/protected/admin/order");
+			console.log(orders);
+			const data = await Promise.all(
+				orders.data.map((order: Order) => ({
+					id: order.id,
+					customer: axios
+						.get(`/api/protected/admin/customer?customerId=${order.userId}`)
+						.then((res) => {
+							return res.data.name;
+						}),
+					status: order.status,
+				}))
+			);
 			console.log(data);
 			setOrders(data);
 		};

@@ -36,7 +36,7 @@ export default function OrdersPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-100 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-[#FDF7F3] to-rose-50 flex items-center justify-center">
         <motion.div initial={{ scale: 0.5, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="text-amber-800">
           <ShoppingBag className="w-12 h-12 animate-bounce" />
         </motion.div>
@@ -45,7 +45,7 @@ export default function OrdersPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-100 p-4 md:p-8">
+    <div className="min-h-screen bg-gradient-to-br from-[#FDF7F3] to-rose-50 p-4 md:p-8">
       <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="max-w-4xl mx-auto">
         <header className="text-center mb-12">
           <motion.h1

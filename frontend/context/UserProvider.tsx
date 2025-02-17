@@ -18,6 +18,7 @@ interface Address {
 interface UserContextType {
 	cart: string[];
 	wishlist: string[];
+	shippingAddress: Address | null;
 	getShippingAddress: (id: string) => Promise<Address[] | null>;
 	setShippingAddress: (address: Address) => Promise<boolean>;
 	addToCart: (productId: string) => Promise<void>;
@@ -32,8 +33,18 @@ const UserContext = createContext<UserContextType | null>(null);
 export const UserProvider = ({ children }: { children: React.ReactNode }) => {
 	const [cart, setCart] = useState([]);
 	const [wishlist, setWishlist] = useState([]);
+	const [shippingAddress, setShippingAddressState] = useState<Address | null>(null);
+
 	const { user } = useAuth();
 	// Load cart from API on mount
+	useEffect(() => {
+		if (user) {
+			getShippingAddress().then((address) => {
+				if (address) setShippingAddressState(address);
+			});
+		}
+	}, [user]);
+	
 	useEffect(() => {
 		if (!user) return;
 
@@ -133,12 +144,15 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
 			console.error("Error removing from cart:", error);
 		}
 	};
+	
 
 	const getShippingAddress = async () => {
 		try {
 			const res = await axios.get("/api/protected/user/shipping-address");
 			if (res.status === 200) {
-				return res.data;
+				const address = res.data;
+			setShippingAddressState(address); // Store in state
+			return address;
 			}
 		} catch (error) {
 			console.error("Error fetching shipping address:", error);
@@ -148,21 +162,44 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
 
 	const setShippingAddress = async (address: Address) => {
 		try {
-		  const res = await axios.post("/api/protected/user/shipping-address", address);
-			if (res.status === 200) {
-				return true;
-			}
+		  console.log('Sending address data:', address); // Debug log
+		  const res = await axios.post("/api/protected/user/shipping-address", address, {
+			headers: {
+			  'Content-Type': 'application/json'
+			},
+			withCredentials: true
+		  });
+		  
+		  if (res.status === 200) {
+			setShippingAddressState(address); // Update state with new address
+			return true;
+		  }
+		  return false;
 		} catch (error) {
-			console.error("Error setting shipping address:", error);
+		  if (axios.isAxiosError(error)) {
+			console.error('Axios error details:', {
+			  message: error.message,
+			  response: error.response?.data,
+			  status: error.response?.status
+			});
+			
+			// Handle specific error cases
+			if (error.response?.status === 400) {
+				throw new Error(error.response.data.message || 'Invalid address data');
+			  } else if (error.response?.status === 401) {
+				throw new Error('Please login to save address');
+			  }
+			}
+			throw new Error('Failed to save address');
 		}
-		return false;
-	}
+	  };
 
 	return (
 		<UserContext.Provider
 			value={{
 				cart,
 				wishlist,
+				shippingAddress,
 				addToCart,
 				removeFromCart,
 				clearCart,

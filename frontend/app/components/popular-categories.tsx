@@ -1,15 +1,15 @@
 import Image from "next/image";
 
 const categories = [
-  { name: "TRADITIONAL", image: "https://res.cloudinary.com/diujpbja7/image/upload/v1739209841/24341-4_xuiw47.jpg" },
+  { name: "TRADITIONAL", image: "https://res.cloudinary.com/diujpbja7/image/upload/v1739209801/19591-7_ybplnl.png" },
   { name: "BRIDAL", image: "https://res.cloudinary.com/diujpbja7/image/upload/v1739209826/19635-2_airf6b.png" },
-  { name: "FESTIVE", image: "https://res.cloudinary.com/diujpbja7/image/upload/v1739209822/19633-2_whi3xm.png" },
-  { name: "CASUAL", image: "https://res.cloudinary.com/diujpbja7/image/upload/v1739209801/19591-7_ybplnl.png" },
+  { name: "FESTIVE", image: "https://res.cloudinary.com/diujpbja7/image/upload/v1739209805/19593-4_qjomfv.png" },
+  { name: "CASUAL", image: "https://res.cloudinary.com/diujpbja7/image/upload/v1739209841/24341-4_xuiw47.jpg" },
 ];
 
 export function PopularCategories() {
   return (
-    <div className="relative bg-gradient-to-b from-[#FAEBD7] to-[#f9f3ea] px-4 py-5 sm:px-6 sm:py-8 md:px-8 lg:px-12 xl:px-16 2xl:px-32">
+    <div className="relative bg-gradient-to-b from-rose-50 to-[#FDF7F3] px-4 py-5 sm:px-6 sm:py-8 md:px-8 lg:px-12 xl:px-16 2xl:px-32">
       {/* Your specified header */}
       <div className="flex flex-col sm:flex-row justify-between items-center mb-8 sm:mb-12">
         <div className="flex items-center gap-4 mb-4 sm:mb-0">

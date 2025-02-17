@@ -21,11 +21,11 @@ export function HeroSection() {
         </video>
 
         {/* Vignette effect */}
-        <div className="absolute inset-0 pointer-events-none bg-gradient-to-b from-black/70 via-black/10 to-black/70" />
+        <div className="absolute inset-0 pointer-events-none bg-gradient-to-b from-black/70 via-black/30 to-black/70" />
       </div>
 
       {/* Content */}
-      <div className="absolute  inset-0 flex flex-col justify-center items-center text-[#FFF5E6] px-6 md:px-[9%]">
+      <div className="absolute  inset-0 flex flex-col justify-center items-center text-[#f8e3d5] px-6 md:px-[9%]">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -56,7 +56,7 @@ export function HeroSection() {
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.9, duration: 0.8 }}
-            className="text-lg md:text-2xl text-[#F5E6E0] font-light tracking-wide mt-4"
+            className="text-lg md:text-2xl text-[#f8e3d5]font-lighttracking-wide mt-4"
           >
             Discover the elegance of traditional Indian craftsmanship
           </motion.p>

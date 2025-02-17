@@ -47,7 +47,7 @@ export default function AboutPage() {
   // Card variants - increased delays between items
   const cardVariants = {
     hidden: { opacity: 0, y: 20 },
-    visible: index => ({
+    visible: (index: number) => ({
       opacity: 1,
       y: 0,
       transition: {
@@ -65,63 +65,63 @@ export default function AboutPage() {
       className="min-h-screen bg-gradient-to-b from-rose-50 to-white"
     >
       {/* Hero Section */}
-      <motion.section
-        variants={sectionVariants}
-        className="relative h-screen flex items-center justify-center overflow-hidden"
-        style={{ opacity, scale }}
-      >
-        {/* Hero content remains the same */}
-        <div className="absolute inset-0 w-full h-full">
-          <Image
-            src="https://images.unsplash.com/photo-1583922606661-0822ed0bd916?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80"
-            alt="Kashvi Creation Artistry"
-            fill
-            className="object-cover"
-            priority
-          />
-          <div className="absolute inset-0 bg-black/30 backdrop-blur-[2px]" />
-        </div>
-        
-        <div className="relative z-10 text-center px-4">
-          <motion.div
-            variants={sectionVariants}
-            className="mb-6"
-          >
-            <Sparkles className="w-16 h-16 text-rose-300 mx-auto mb-4" />
-          </motion.div>
-          <motion.h1
-            variants={sectionVariants}
-            className="text-5xl md:text-7xl font-serif text-white mb-6"
-          >
-            Our Legacy of Beauty
-          </motion.h1>
-          <motion.p
-            variants={sectionVariants}
-            className="text-xl text-rose-100 max-w-2xl mx-auto"
-          >
-            Crafting timeless elegance through traditional artistry and modern innovation
-          </motion.p>
-        </div>
+<motion.section
+  variants={sectionVariants}
+  className="relative h-screen flex items-center justify-center overflow-hidden px-4 md:px-8"
+  style={{ opacity, scale }}
+>
+  {/* Hero content remains the same */}
+  <div className="absolute inset-0 w-full h-full">
+    <Image
+      src="https://res.cloudinary.com/diujpbja7/image/upload/v1739730190/xbq37vna5pxac9tbmgm4.jpg"
+      alt="Kashvi Creation Artistry"
+      fill
+      className="object-cover"
+      priority
+    />
+    <div className="absolute inset-0 bg-black/30 backdrop-blur-[2px]" />
+  </div>
+  
+  <div className="relative z-10 text-center px-4 md:px-8">
+    <motion.div
+      variants={sectionVariants}
+      className="mb-6"
+    >
+      <Sparkles className="w-12 h-12 sm:w-16 sm:h-16 text-rose-300 mx-auto mb-4" />
+    </motion.div>
+    <motion.h1
+      variants={sectionVariants}
+      className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-serif text-[#FDF7F3] mb-6"
+    >
+      Our Legacy of Beauty
+    </motion.h1>
+    <motion.p
+      variants={sectionVariants}
+      className="text-lg sm:text-xl md:text-2xl text-rose-100 max-w-2xl mx-auto"
+    >
+      Crafting timeless elegance through traditional artistry and modern innovation
+    </motion.p>
+  </div>
 
-        <motion.div
-          variants={sectionVariants}
-          className="absolute bottom-10 left-1/2 transform -translate-x-1/2 text-white cursor-pointer"
-        >
-          <div className="w-6 h-10 border-2 border-white rounded-full flex items-start justify-center p-1">
-            <motion.div
-              animate={{
-                y: [0, 12, 0],
-              }}
-              transition={{
-                duration: 1.5,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
-              className="w-1 h-3 bg-white rounded-full"
-            />
-          </div>
-        </motion.div>
-      </motion.section>
+  <motion.div
+    variants={sectionVariants}
+    className="absolute bottom-10 left-1/2 transform -translate-x-1/2 text-white cursor-pointer"
+  >
+    <div className="w-6 h-10 border-2 border-white rounded-full flex items-start justify-center p-1">
+      <motion.div
+        animate={{
+          y: [0, 12, 0],
+        }}
+        transition={{
+          duration: 1.5,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+        className="w-1 h-3 bg-white rounded-full"
+      />
+    </div>
+  </motion.div>
+</motion.section>
 
       {/* Vision Section */}
 <motion.section
@@ -137,7 +137,7 @@ export default function AboutPage() {
       <p className="text-lg text-gray-600 max-w-3xl mx-auto">
         At Kashvi Creation, we envision a world where traditional Indian craftsmanship meets contemporary fashion. 
         Our mission is to preserve and promote the rich heritage of Indian textiles while creating modern, 
-        sustainable, and elegant designs that resonate with today's fashion-conscious individuals.
+        sustainable, and elegant designs that resonate with today&apos;s fashion-conscious individuals.
       </p>
     </motion.div>
 

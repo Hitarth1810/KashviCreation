@@ -204,7 +204,9 @@ export async function getShippingAddress(token: string) {
 	const data = verifyToken(token);
 	const user = await prisma.user.findUnique({
 		where: { id: data.userId },
-		select: { shippingAddress: true },
+		include: {
+			shippingAddress: true, // ✅ Correct way to include related records
+		  },
 	});
 	return user?.shippingAddress;
 }

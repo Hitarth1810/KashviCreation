@@ -147,7 +147,7 @@ export default function Collections() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#f9f3ea] to-[#FAEBD7]">
+    <div className="min-h-screen bg-gradient-to-b from-[#FDF7F3] to-rose-50">
       <div className="pt-6 pb-12 text-center">
         <motion.div
           initial={{ y: -20, opacity: 0 }}
@@ -196,93 +196,95 @@ export default function Collections() {
       </div>
 
       <div className="max-w-[2000px] mx-auto px-2 md:px-4">
-        <div className="flex flex-col md:flex-row gap-6">
+        <div className="flex flex-col md:flex-row gap-6 relative">
           {/* Filter Sidebar - Desktop */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             className="hidden md:block w-72 flex-shrink-0"
           >
-            <div className="bg-white rounded-xl shadow-md overflow-hidden">
-              <div className="p-6">
-                <h2 className="text-2xl font-serif tracking-wide text-gray-800 mb-6 text-center">Filters</h2>
+            <div className="sticky top-20 bottom-16 max-h-[calc(100vh-2rem)] overflow-y-auto">
+              <div className="bg-white rounded-xl shadow-md overflow-hidden">
+                <div className="p-6">
+                  <h2 className="text-2xl font-serif tracking-wide text-gray-800 mb-6 text-center">Filters</h2>
 
-                <div className="space-y-8">
-                  {/* Category Section */}
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.2 }}
-                    className="space-y-4"
-                  >
-                    <h3 className="text-lg font-medium text-gray-800">Category</h3>
-                    <div className="h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent" />
-                    <div className="space-y-3 pt-2">
-                      {categories.map((category) => (
-                        <label key={category.name} className="flex items-center gap-3 cursor-pointer group">
-                          <input
-                            type="checkbox"
-                            checked={filters.categories.includes(category.name)}
-                            onChange={() => toggleFilter("categories", category.name)}
-                            className="h-5 w-5 rounded border-gray-300 text-[#8B1D3F] focus:ring-[#8B1D3F]"
-                          />
-                          <span className="text-gray-600 group-hover:text-gray-800 transition-colors duration-200">
-                            {category.name}
-                            <span className="text-gray-400 ml-1 text-sm">({category.count})</span>
-                          </span>
-                        </label>
-                      ))}
-                    </div>
-                  </motion.div>
-
-                  {/* Color Section */}
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.3 }}
-                    className="space-y-4"
-                  >
-                    <h3 className="text-lg font-medium text-gray-800">Colour</h3>
-                    <div className="h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent" />
-                    <div className="space-y-3 pt-2">
-                      {colors.map((color) => (
-                        <label key={color.name} className="flex items-center gap-3 cursor-pointer group">
-                          <div className="relative">
+                  <div className="space-y-8">
+                    {/* Category Section */}
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 0.2 }}
+                      className="space-y-4"
+                    >
+                      <h3 className="text-lg font-medium text-gray-800">Category</h3>
+                      <div className="h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent" />
+                      <div className="space-y-3 pt-2">
+                        {categories.map((category) => (
+                          <label key={category.name} className="flex items-center gap-3 cursor-pointer group">
                             <input
                               type="checkbox"
-                              checked={filters.colors.includes(color.name)}
-                              onChange={() => toggleFilter("colors", color.name)}
-                              className="peer h-5 w-5 rounded border-gray-300 text-[#8B1D3F] focus:ring-[#8B1D3F]"
+                              checked={filters.categories.includes(category.name)}
+                              onChange={() => toggleFilter("categories", category.name)}
+                              className="h-5 w-5 rounded border-gray-300 text-[#8B1D3F] focus:ring-[#8B1D3F]"
                             />
-                          </div>
-                          <span
-                            className="w-5 h-5 rounded-full border border-gray-200 shadow-sm"
-                            style={{ backgroundColor: color.name }}
-                          />
-                          <span className="text-gray-600 group-hover:text-gray-800 transition-colors duration-200">
-                            {color.name}
-                            <span className="text-gray-400 ml-1 text-sm">({color.count})</span>
-                          </span>
-                        </label>
-                      ))}
-                    </div>
-                  </motion.div>
-                </div>
+                            <span className="text-gray-600 group-hover:text-gray-800 transition-colors duration-200">
+                              {category.name}
+                              <span className="text-gray-400 ml-1 text-sm">({category.count})</span>
+                            </span>
+                          </label>
+                        ))}
+                      </div>
+                    </motion.div>
 
-                {(filters.categories.length > 0 || filters.colors.length > 0) && (
-                  <motion.button
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    onClick={clearFilters}
-                    className="mt-8 w-full py-2 px-4 text-sm text-[#8B1D3F] hover:text-white border border-[#8B1D3F] hover:bg-[#8B1D3F] rounded-lg transition-all duration-300 flex items-center justify-center gap-2"
-                  >
-                    <X size={16} />
-                    Clear all filters
-                  </motion.button>
-                )}
+                    {/* Color Section */}
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 0.3 }}
+                      className="space-y-4"
+                    >
+                      <h3 className="text-lg font-medium text-gray-800">Colour</h3>
+                      <div className="h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent" />
+                      <div className="space-y-3 pt-2">
+                        {colors.map((color) => (
+                          <label key={color.name} className="flex items-center gap-3 cursor-pointer group">
+                            <div className="relative">
+                              <input
+                                type="checkbox"
+                                checked={filters.colors.includes(color.name)}
+                                onChange={() => toggleFilter("colors", color.name)}
+                                className="peer h-5 w-5 rounded border-gray-300 text-[#8B1D3F] focus:ring-[#8B1D3F]"
+                              />
+                            </div>
+                            <span
+                              className="w-5 h-5 rounded-full border border-gray-200 shadow-sm"
+                              style={{ backgroundColor: color.name }}
+                            />
+                            <span className="text-gray-600 group-hover:text-gray-800 transition-colors duration-200">
+                              {color.name}
+                              <span className="text-gray-400 ml-1 text-sm">({color.count})</span>
+                            </span>
+                          </label>
+                        ))}
+                      </div>
+                    </motion.div>
+                  </div>
+
+                  {(filters.categories.length > 0 || filters.colors.length > 0) && (
+                    <motion.button
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      onClick={clearFilters}
+                      className="mt-8 w-full py-2 px-4 text-sm text-[#8B1D3F] hover:text-white border border-[#8B1D3F] hover:bg-[#8B1D3F] rounded-lg transition-all duration-300 flex items-center justify-center gap-2"
+                    >
+                      <X size={16} />
+                      Clear all filters
+                    </motion.button>
+                  )}
+                </div>
               </div>
             </div>
-          </motion.div>
+          </motion.div> 
 
           {/* Mobile Filter Sidebar */}
           <AnimatePresence>
@@ -368,7 +370,7 @@ export default function Collections() {
 
           {/* Product Grid */}
           <div className="flex-1">
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
+            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-2">
               <AnimatePresence>
                 {!isLoading &&
                   filteredSarees.map((saree) => (
@@ -397,7 +399,7 @@ export default function Collections() {
                               <Heart
                                 size={24}
                                 className={`${
-                                  wishlist.includes(saree.id) ? "fill-[#8B1D3F] stroke-[#8B1D3F]" : "stroke-white"
+                                  wishlist.includes(saree.id) ? "fill-[#fd0202] stroke-[#8b1d1d00]" : "stroke-white"
                                 }`}
                               />
                             </button>

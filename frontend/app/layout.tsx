@@ -7,6 +7,7 @@ import Navbar from "./components/Navbar"
 import Footer from "./components/Footer"
 import "./globals.css"
 import { UserProvider } from '@/context/UserProvider'
+import WhatsAppButton from './components/WhatsappButton'
 
 // Initialize Kalam font
 const kalam = Kalam({
@@ -32,6 +33,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 						)}
 						<main>{children}</main>
 						{!isAdminRoute && <Footer />}
+						{!isAdminRoute && <WhatsAppButton/>}
 					</UserProvider>
 				</AuthProvider>
 			</body>

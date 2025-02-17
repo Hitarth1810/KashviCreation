@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import axios from "axios";
-import { ShoppingCart, Trash2, ExternalLink, Heart } from "lucide-react";
+import { Trash2, Heart } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useUser } from "@/context/UserProvider";
 import { useRouter } from "next/navigation";

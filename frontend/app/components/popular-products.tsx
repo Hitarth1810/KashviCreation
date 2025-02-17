@@ -21,7 +21,7 @@ interface Product {
 export function PopularProducts() {
   const { cart, addToCart, addToWishlist, removeFromWishlist, wishlist } = useUser(); // Use the context
   const [products, setProducts] = useState<Product[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchProducts = async () => {

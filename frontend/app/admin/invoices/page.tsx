@@ -1,10 +1,7 @@
-"use client"
+
 import InvoiceList from "@/app/components/invoice-list";
-import InvoicePreview from "@/app/components/invoice-preview";
-import { useState } from "react";
 
 export default function OrdersPage() {
-    const [openPreview, setOpenPreview] = useState(false);
 	return (
 		<div className='flex h-screen'>
 			<div className='flex-1 overflow-auto border-r'>
@@ -12,9 +9,6 @@ export default function OrdersPage() {
 					<h1 className='text-2xl font-semibold'>Invoices</h1>
 				</div>
 				<InvoiceList />
-                {
-                    openPreview && <InvoicePreview />
-                }
 			</div>
 		</div>
 	);

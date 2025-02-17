@@ -7,17 +7,7 @@ import Link from "next/link";
 import { Search, ChevronRight, ChevronLeft } from "lucide-react";
 import { blogPosts } from "../data/blogPosts";
 
-interface BlogPost {
-  id: number;
-  title: string;
-  excerpt: string;
-  category: string;
-  date: string;
-  readTime: string;
-  image: string;
-  slug: string;
-  content: string;
-}
+
 
 const categories = [
   "All",

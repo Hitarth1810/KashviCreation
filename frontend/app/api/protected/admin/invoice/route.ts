@@ -1,4 +1,4 @@
-import { getCustomer } from "@/lib/customer";
+import { getCustomer, getCustomerAddress } from "@/lib/customer";
 import {
 	createInvoice,
 	getInvoice,
@@ -11,11 +11,11 @@ import { NextResponse } from "next/server";
 export async function GET(req: Request): Promise<NextResponse> {
 	try {
 		const { searchParams } = new URL(req.url);
-		if (!searchParams.has("invoiceId")) {
+		if (!searchParams.has("id")) {
 			const invoices = await getInvoices();
 			return NextResponse.json(invoices);
 		}
-		const invoiceId = searchParams.get("invoiceId");
+		const invoiceId = searchParams.get("id");
 		if (!invoiceId) {
 			return NextResponse.json({
 				status: 400,
@@ -25,6 +25,7 @@ export async function GET(req: Request): Promise<NextResponse> {
 
 		const invoices = await getInvoice(invoiceId);
 		const customer = await getCustomer(invoices!.customerId);
+		const address = await getCustomerAddress(invoices!.addressId);
 		console.log(invoices?.products);
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		let products: any = [];
@@ -47,6 +48,7 @@ export async function GET(req: Request): Promise<NextResponse> {
 				image: customer!.image,
 			},
 			products: products,
+			address
 		};
 
 		return NextResponse.json(data);

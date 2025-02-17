@@ -6,7 +6,7 @@ import { Input } from "@/app/components/ui/input";
 import { Label } from "@/app/components/ui/label";
 import { Textarea } from "@/app/components/ui/textarea";
 import { FileText, Printer, Download, Eye } from "lucide-react";
-import { InvoicePreview } from "./preview";
+import { InvoicePreview } from "../../components/invoice-preview";
 
 export type InvoiceData = {
 	invoiceNumber: string;

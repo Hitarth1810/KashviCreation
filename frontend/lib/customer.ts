@@ -9,3 +9,9 @@ export function getCustomer(id: string) {
 export function getCustomers() {
     return prisma.user.findMany();
 }
+
+export function getCustomerAddress(id: string){
+    return prisma.address.findUnique({
+        where: { id },
+    });
+}

@@ -93,7 +93,7 @@ export function ProductDetails() {
 					</Dialog>
 				</div>
 			</div>
-			<ProductItems product={product} />
+			<ProductItems productP={product} />
 		</>
 	);
 }

@@ -9,7 +9,7 @@ export function createOrder(
 		data: {
 			id: orderId,
 			userId,
-			products: { connect: products.map((id) => ({ id })) },
+			products,
 		},
 	});
 }

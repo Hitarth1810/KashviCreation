@@ -1,16 +1,11 @@
 import { prisma } from "./prisma";
+import { Invoice } from "@prisma/client";
 
 export function createInvoice(
-	invoiceId: string,
-	userId: string,
-	products: string[]
+	data: Invoice
 ) {
 	return prisma.invoice.create({
-		data: {
-			id: invoiceId,
-			userId,
-			products,
-		},
+		data: data
 	});
 }
 
@@ -24,11 +19,10 @@ export function getInvoices() {
 	return prisma.invoice.findMany();
 }
 
-import { Status } from "@prisma/client";
 
-export function updateInvoiceStatus(invoiceId: string, status: Status) {
-	return prisma.invoice.update({
-		where: { id: invoiceId },
-		data: { status },
-	});
-}
+// export function updateInvoiceStatus(invoiceId: string, status: Status) {
+// 	return prisma.invoice.update({
+// 		where: { id: invoiceId },
+// 		data: { status },
+// 	});
+// }

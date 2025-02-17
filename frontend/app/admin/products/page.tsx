@@ -3,7 +3,7 @@
 import { ProductList } from "@/app/components/product-list";
 import { ProductDetails } from "@/app/components/product-details";
 import { AddProductButton } from "@/app/components/add-product-button";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import axios from "axios";
 
 export default function ProductsPage() {
@@ -25,18 +25,20 @@ export default function ProductsPage() {
 	}, []);
 
 	return (
-		<div className='flex h-screen flex-col md:flex-row overflow-hidden'>
-			<div className='flex-1 overflow-auto border-r'>
-				<div className='flex items-center justify-between border-b bg-muted/40 p-4'>
-					<h1 className='text-2xl font-semibold'>Products</h1>
-					{/* Pass fetchProducts function to update the list after adding a new product */}
-					<AddProductButton refreshProducts={fetchProducts} />
+		<Suspense>
+			<div className='flex h-screen flex-col md:flex-row overflow-hidden'>
+				<div className='flex-1 overflow-auto border-r'>
+					<div className='flex items-center justify-between border-b bg-muted/40 p-4'>
+						<h1 className='text-2xl font-semibold'>Products</h1>
+						{/* Pass fetchProducts function to update the list after adding a new product */}
+						<AddProductButton refreshProducts={fetchProducts} />
+					</div>
+					<ProductList products={products} />
 				</div>
-				<ProductList products={products} />
+				<div className='w-full border-t md:w-[400px] md:border-t-0'>
+					<ProductDetails />
+				</div>
 			</div>
-			<div className='w-full border-t md:w-[400px] md:border-t-0'>
-				<ProductDetails />
-			</div>
-		</div>
+		</Suspense>
 	);
 }

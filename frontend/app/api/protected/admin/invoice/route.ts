@@ -1,9 +1,9 @@
 import { getCustomer, getCustomerAddress } from "@/lib/customer";
 import {
-	createInvoice,
+	// createInvoice,
 	getInvoice,
 	getInvoices,
-	updateInvoiceStatus,
+	// updateInvoiceStatus,
 } from "@/lib/invoice";
 import { getProduct } from "@/lib/products";
 import { NextResponse } from "next/server";
@@ -60,33 +60,33 @@ export async function GET(req: Request): Promise<NextResponse> {
 	}
 }
 
-export async function POST(req: Request): Promise<NextResponse> {
-	try {
-		const data = await req.json();
-		const { invoiceId, userId, products } = data;
-		const invoice = await createInvoice(invoiceId, userId, products);
-		return NextResponse.json({ status: 200, body: invoice });
-	} catch (error) {
-		return NextResponse.json({
-			status: 500,
-			body: `Internal Server Error: ${error}`,
-		});
-	}
-}
+// export async function POST(req: Request): Promise<NextResponse> {
+// 	try {
+// 		const data = await req.json();
+// 		const { invoiceId, userId, products } = data;
+// 		const invoice = await createInvoice(invoiceId, userId, products);
+// 		return NextResponse.json({ status: 200, body: invoice });
+// 	} catch (error) {
+// 		return NextResponse.json({
+// 			status: 500,
+// 			body: `Internal Server Error: ${error}`,
+// 		});
+// 	}
+// }
 
-export async function PUT(req: Request): Promise<NextResponse> {
-	try {
-		const data = await req.json();
-		const { invoiceId, status } = data;
-		const invoice = await updateInvoiceStatus(invoiceId, status);
-		return NextResponse.json({ status: 200, body: invoice });
-	} catch (error) {
-		return NextResponse.json({
-			status: 500,
-			body: `Internal Server Error: ${error}`,
-		});
-	}
-}
+// export async function PUT(req: Request): Promise<NextResponse> {
+// 	try {
+// 		const data = await req.json();
+// 		const { invoiceId, status } = data;
+// 		const invoice = await updateInvoiceStatus(invoiceId, status);
+// 		return NextResponse.json({ status: 200, body: invoice });
+// 	} catch (error) {
+// 		return NextResponse.json({
+// 			status: 500,
+// 			body: `Internal Server Error: ${error}`,
+// 		});
+// 	}
+// }
 
 
 function mergeDuplicateProducts(products: { id: string; name: string }[]) {

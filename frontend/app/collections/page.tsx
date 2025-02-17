@@ -446,7 +446,7 @@ export default function Collections() {
                           <div className="hidden md:block">
                             {cart.includes(saree.id) ? (
                               <Link href="/cart">
-                                <button className="w-full bg-white text-[#8B1D3F] border border-[#8B1D3F] py-2 px-4 rounded-sm text-sm hover:bg-[#8B1D3F] hover:text-white transition-colors duration-300">
+                                <button className="w-full text-white border border-[#8B1D3F] py-2 px-4 rounded-sm text-sm bg-[#8B1D3F] hover:bg-white hover:text-[#8B1D3F] transition-colors duration-300">
                                   View Cart
                                 </button>
                               </Link>

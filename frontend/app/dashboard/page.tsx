@@ -115,7 +115,7 @@ export default function Dashboard() {
       <div className="flex">
         {/* Sidebar */}
         <AnimatePresence>
-          {(isSidebarOpen || window.innerWidth >= 768) && (
+          {(isSidebarOpen || (typeof window !== "undefined" && window.innerWidth >= 768)) && (
             <motion.aside
               initial={{ x: -100, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}

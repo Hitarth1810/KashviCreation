@@ -64,63 +64,47 @@ export default function AboutPage() {
       animate="visible" 
       className="min-h-screen bg-gradient-to-b from-rose-50 to-white"
     >
-      {/* Hero Section */}
+{/* Hero Section */}
 <motion.section
   variants={sectionVariants}
-  className="relative h-screen flex items-center justify-center overflow-hidden px-4 md:px-8"
+  className="relative h-[40vh] md:h-screen flex items-center justify-center overflow-hidden px-4 md:px-8"
   style={{ opacity, scale }}
 >
-  {/* Hero content remains the same */}
+  {/* Hero background */}
   <div className="absolute inset-0 w-full h-full">
     <Image
-      src="https://res.cloudinary.com/diujpbja7/image/upload/v1739730190/xbq37vna5pxac9tbmgm4.jpg"
+      src="https://res.cloudinary.com/diujpbja7/image/upload/v1739852242/hrpltjeywq4cml3iqvkm.jpg"
       alt="Kashvi Creation Artistry"
       fill
       className="object-cover"
       priority
     />
-    <div className="absolute inset-0 bg-black/30 backdrop-blur-[2px]" />
+    <div className="absolute inset-0 bg-black/20 backdrop-blur-[2px]" />
   </div>
   
+  {/* Hero content */}
   <div className="relative z-10 text-center px-4 md:px-8">
     <motion.div
       variants={sectionVariants}
-      className="mb-6"
+      className="mb-4 md:mb-6"
     >
-      <Sparkles className="w-12 h-12 sm:w-16 sm:h-16 text-rose-300 mx-auto mb-4" />
+      <Sparkles className="w-8 h-8 sm:w-12 sm:h-12 md:w-16 md:h-16 text-rose-300 mx-auto mb-2 md:mb-4" />
     </motion.div>
     <motion.h1
       variants={sectionVariants}
-      className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-serif text-[#FDF7F3] mb-6"
+      className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-serif text-[#FDF7F3] mb-3 md:mb-6"
     >
       Our Legacy of Beauty
     </motion.h1>
     <motion.p
       variants={sectionVariants}
-      className="text-lg sm:text-xl md:text-2xl text-rose-100 max-w-2xl mx-auto"
+      className="text-base sm:text-lg md:text-xl lg:text-2xl text-rose-100 max-w-2xl mx-auto"
     >
       Crafting timeless elegance through traditional artistry and modern innovation
     </motion.p>
   </div>
 
-  <motion.div
-    variants={sectionVariants}
-    className="absolute bottom-10 left-1/2 transform -translate-x-1/2 text-white cursor-pointer"
-  >
-    <div className="w-6 h-10 border-2 border-white rounded-full flex items-start justify-center p-1">
-      <motion.div
-        animate={{
-          y: [0, 12, 0],
-        }}
-        transition={{
-          duration: 1.5,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
-        className="w-1 h-3 bg-white rounded-full"
-      />
-    </div>
-  </motion.div>
+
 </motion.section>
 
       {/* Vision Section */}
@@ -223,21 +207,21 @@ export default function AboutPage() {
           year: "2018",
           title: "The Beginning",
           description: "Founded with a vision to revolutionize traditional saree craftsmanship",
-          image: "https://images.unsplash.com/photo-1610030244570-3b6d4b7a7c0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+          image: "https://res.cloudinary.com/diujpbja7/image/upload/v1739858652/likhadvwpzx3xtxu34ax.jpg",
           icon: <Globe2 className="w-6 h-6" />,
         },
         {
           year: "2020",
           title: "Digital Evolution",
           description: "Expanded our reach to global audiences through digital innovation",
-          image: "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+          image: "https://res.cloudinary.com/diujpbja7/image/upload/v1739858652/kcu6sn5npzs8tytmxuz5.jpg",
           icon: <Users className="w-6 h-6" />,
         },
         {
           year: "2023",
           title: "Sustainable Future",
           description: "Launched our sustainable collection supporting local artisans",
-          image: "https://images.unsplash.com/photo-1590735213920-68192a57bc5c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+          image: "https://res.cloudinary.com/diujpbja7/image/upload/v1739858652/oa8bbgclcfumclteyfun.jpg",
           icon: <Leaf className="w-6 h-6" />,
         },
       ].map((milestone, index) => (

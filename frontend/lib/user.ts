@@ -2,6 +2,7 @@ import { prisma } from "./prisma";
 import bcrypt from "bcryptjs";
 import { verifyToken } from "./jwt";
 import { shippingAddress } from "@/types/user";
+import { generateOrderId } from "./utils";
 
 export type CreateUserInput = {
 	email: string;
@@ -152,6 +153,19 @@ export async function deleteUserCart(token: string, productid: string) {
 	return user.Cart;
 }
 
+export async function clearUserCart(token: string) {
+	const data = verifyToken(token);
+	const user = await prisma.user.update({
+		where: { id: data.userId },
+		data: {
+			Cart: {
+				set: [],
+			},
+		},
+	});
+	return user.Cart;
+}
+
 export async function getUserCart(id: string) {
 	const user = await prisma.user.findUnique({
 		where: { id },
@@ -200,10 +214,9 @@ export async function getUserWishlist(id: string) {
 	return user.Wishlist;
 }
 
-export async function getShippingAddress(token: string) {
-	const data = verifyToken(token);
+export async function getShippingAddress(id: string) {
 	const user = await prisma.user.findUnique({
-		where: { id: data.userId },
+		where: { id: id },
 		include: {
 			shippingAddress: true, // ✅ Correct way to include related records
 		  },
@@ -222,4 +235,23 @@ export async function setShippingAddress(token: string, address: shippingAddress
 		},
 	});
 	return shippingAddress;
+}
+
+export async function getCustomerOrders(userId: string) {
+	const orders = await prisma.order.findMany({
+		where: { userId },
+	});
+	return orders;
+}
+
+export async function createCustomerOrder(token: string, products: string[]) {
+	const { userId } = verifyToken(token);
+	const order = await prisma.order.create({
+		data: {
+			id: generateOrderId(userId),
+			userId,
+			products,
+		},
+	});
+	return order;
 }

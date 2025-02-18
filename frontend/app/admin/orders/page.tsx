@@ -1,10 +1,10 @@
 import { OrderList } from "@/app/components/order-list";
 import { OrderDetails } from "@/app/components/order-details";
-import { Suspense } from "react";
+
 
 export default function OrdersPage() {
 	return (
-		<Suspense>
+		
 			<div className='flex h-screen'>
 				<div className='flex-1 overflow-auto border-r'>
 					<div className='border-b bg-muted/40 p-4'>
@@ -16,6 +16,6 @@ export default function OrdersPage() {
 					<OrderDetails />
 				</div>
 			</div>
-		</Suspense>
+		
 	);
 }

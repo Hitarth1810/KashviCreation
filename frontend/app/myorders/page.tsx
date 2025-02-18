@@ -4,35 +4,37 @@ import { useState, useEffect } from "react"
 import Image from "next/image"
 import { ShoppingBag, CheckCircle, Clock, XCircle } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
+import { useUser } from "@/context/UserProvider"
+import { useAuth } from "@/context/AuthProvider"
 
 interface OrderItem {
   id: number
   name: string
   image: string
   color: string
-  status: "Delivered" | "Processing" | "Cancelled"
+  status: string
 }
 
 export default function OrdersPage() {
+  const { getOrders } = useUser()
+  const { user } = useAuth()
   const [orders, setOrders] = useState<OrderItem[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    const savedOrders = localStorage.getItem("orders")
-    if (savedOrders) {
-      const parsedOrders = JSON.parse(savedOrders)
-      const ordersWithDetails = parsedOrders.map((itemId: number) => ({
-        id: itemId,
-        name: `Elegant Saree ${itemId}`,
-        image: `/saree-${(itemId % 4) + 1}.jpg`,
-        color: ["Royal Blue", "Deep Red", "Emerald Green", "Golden"][itemId % 4],
-        status: ["Delivered", "Processing", "Cancelled"][itemId % 3],
-      }))
-      setOrders(ordersWithDetails)
+    const fetchOrders = async () => {
+      const orders = await getOrders(user?.id as string)
+      console.log(orders)
+      setOrders(
+        
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        orders.map((order: any) => ({ id: order.id, name: order.name, image: order.image, color: order.color, status: order.status }))
+      )
     }
+    fetchOrders()
     // Simulate loading state
     setTimeout(() => setIsLoading(false), 800)
-  }, [])
+  }, [user?.id, getOrders])
 
   if (isLoading) {
     return (

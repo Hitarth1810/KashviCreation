@@ -21,6 +21,7 @@ import {
 import Image from "next/image";
 import AddressForm from "../components/address-form";
 import { useEffect, useState } from "react";
+import { useAuth } from "@/context/AuthProvider";
 
 interface Product {
   id: string;
@@ -38,18 +39,28 @@ interface Address {
   city: string;
   state: string;
   isDefault: boolean;
-  instructions: string;
+  instructions: string | null;
 }
 
-export default function Dashboard() {
+export default function Dashboard()  {
   const [activeTab, setActiveTab] = useState("overview");
-  const { wishlist, removeFromWishlist, addToCart } = useUser();
+  const { wishlist, removeFromWishlist, addToCart, getShippingAddress } = useUser();
+  const { user } = useAuth()
   const [wishlistItems, setWishlistItems] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showAddressForm, setShowAddressForm] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [activeSettingsTab, setActiveSettingsTab] = useState("personal");
   const [addresses, setAddresses] = useState<Address[]>([]);
+
+  useEffect(()=>{
+    if(user){
+      getShippingAddress(user.id).then((address) => {
+        if (address) setAddresses(address);
+      });
+    }
+  },[user, showAddressForm])
+
 
   const recentOrders = [
     {
@@ -458,6 +469,8 @@ export default function Dashboard() {
               </motion.div>
             )}
 
+
+
             {activeTab === "settings" && (
               <motion.div
                 initial={{ y: 20, opacity: 0 }}
@@ -502,6 +515,7 @@ export default function Dashboard() {
                     onClick={() => {
                       setShowAddressForm(true);
                       setEditingAddress(null);
+                      
                     }}
                     className="flex items-center px-4 py-2 text-[#9B2C2C] hover:bg-[#9B2C2C]/10 rounded-lg ml-2"
                   >
@@ -518,15 +532,15 @@ export default function Dashboard() {
                       </h3>
                       <div>
                         <label
-                          htmlFor="username"
+                          htmlFor="name"
                           className="block text-sm font-medium text-gray-700"
                         >
-                          Username
+                          Name
                         </label>
                         <input
                           type="text"
-                          id="username"
-                          defaultValue="kashvi_user"
+                          id="name"
+                          defaultValue={user?.name}
                           className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-[#9B2C2C] focus:outline-none focus:ring-1 focus:ring-[#9B2C2C]"
                         />
                       </div>
@@ -577,7 +591,7 @@ export default function Dashboard() {
                         <input
                           type="email"
                           id="email"
-                          defaultValue="user@example.com"
+                          defaultValue={user?.email}
                           disabled
                           className="mt-1 block w-full cursor-not-allowed rounded-md border border-gray-300 bg-gray-100 px-3 py-2 text-gray-500 shadow-sm"
                         />
@@ -592,7 +606,7 @@ export default function Dashboard() {
                         <input
                           type="tel"
                           id="phone"
-                          defaultValue="+91 9876543210"
+                          defaultValue={user?.phone}
                           disabled
                           className="mt-1 block w-full cursor-not-allowed rounded-md border border-gray-300 bg-gray-100 px-3 py-2 text-gray-500 shadow-sm"
                         />

@@ -104,13 +104,13 @@ export default function Dashboard() {
     <div className="min-h-screen bg-[#FDF7F3]">
       {/* Mobile Menu Button - Outside sidebar */}
       {!isSidebarOpen && (
-        <button
-          onClick={() => setIsSidebarOpen(true)}
-          className="fixed top-20 left-4 z-50 p-2 bg-white rounded-lg shadow-md md:hidden"
-        >
-          <Menu className="h-6 w-6 text-[#9B2C2C]" />
-        </button>
-      )}
+  <button
+    onClick={() => setIsSidebarOpen(true)}
+    className="absolute top-20 left-4 z-30 p-2 bg-white rounded-lg shadow-md md:hidden"
+  >
+    <Menu className="h-6 w-6 text-[#9B2C2C]" />
+  </button>
+)}
 
       <div className="flex">
         {/* Sidebar */}

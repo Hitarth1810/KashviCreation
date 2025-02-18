@@ -10,8 +10,13 @@ import {
   Menu,
   Package,
   Settings,
-  Trash2,
   X,
+  User,
+  MapPin,
+  Plus,
+  Edit,
+  Star,
+  Trash2,
 } from "lucide-react";
 import Image from "next/image";
 import AddressForm from "../components/address-form";
@@ -24,6 +29,17 @@ interface Product {
   images: string[];
   category: string;
 }
+interface Address {
+  id: string;
+  pincode: string;
+  address: string;
+  area: string;
+  landmark: string;
+  city: string;
+  state: string;
+  isDefault: boolean;
+  instructions: string;
+}
 
 export default function Dashboard() {
   const [activeTab, setActiveTab] = useState("overview");
@@ -32,6 +48,8 @@ export default function Dashboard() {
   const [isLoading, setIsLoading] = useState(false);
   const [showAddressForm, setShowAddressForm] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [activeSettingsTab, setActiveSettingsTab] = useState("personal");
+  const [addresses, setAddresses] = useState<Address[]>([]);
 
   const recentOrders = [
     {
@@ -100,6 +118,8 @@ export default function Dashboard() {
     setIsSidebarOpen(false); // Close sidebar on mobile when tab changes
   };
 
+  const [editingAddress, setEditingAddress] = useState<Address | null>(null);
+
   return (
     <div className="min-h-screen bg-[#FDF7F3]">
       {/* Mobile Menu Button - Outside sidebar */}
@@ -115,14 +135,16 @@ export default function Dashboard() {
       <div className="flex">
         {/* Sidebar */}
         <AnimatePresence>
-          {(isSidebarOpen || (typeof window !== "undefined" && window.innerWidth >= 768)) && (
+          {(isSidebarOpen ||
+            (typeof window !== "undefined" && window.innerWidth >= 768)) && (
             <motion.aside
               initial={{ x: -100, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               exit={{ x: -100, opacity: 0 }}
               transition={{ duration: 0.3 }}
-              className={`fixed md:sticky top-0 h-screen w-64 border-r bg-white z-40 ${isSidebarOpen ? "block" : "hidden md:block"
-                }`}
+              className={`fixed md:sticky top-0 h-screen w-64 border-r bg-white z-40 ${
+                isSidebarOpen ? "block" : "hidden md:block"
+              }`}
             >
               {/* Close button - Absolute positioned at the top */}
               {isSidebarOpen && (
@@ -160,27 +182,31 @@ export default function Dashboard() {
                         <path d="M15 18l-6-6 6-6" />
                       </svg>
                     </button>
-                    <h1 className="text-xl font-semibold text-[#9B2C2C]">My Dashboard</h1>
+                    <h1 className="text-xl font-semibold text-[#9B2C2C]">
+                      My Dashboard
+                    </h1>
                   </div>
                 </div>
 
                 <nav className="space-y-2">
                   <button
                     onClick={() => handleTabChange("overview")}
-                    className={`flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left transition-colors ${activeTab === "overview"
-                      ? "bg-[#9B2C2C]/10 text-[#9B2C2C]"
-                      : "text-gray-600 hover:bg-gray-100"
-                      }`}
+                    className={`flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left transition-colors ${
+                      activeTab === "overview"
+                        ? "bg-[#9B2C2C]/10 text-[#9B2C2C]"
+                        : "text-gray-600 hover:bg-gray-100"
+                    }`}
                   >
                     <LayoutGrid className="h-4 w-4" />
                     Overview
                   </button>
                   <button
                     onClick={() => handleTabChange("orders")}
-                    className={`flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left transition-colors ${activeTab === "orders"
-                      ? "bg-[#9B2C2C]/10 text-[#9B2C2C]"
-                      : "text-gray-600 hover:bg-gray-100"
-                      }`}
+                    className={`flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left transition-colors ${
+                      activeTab === "orders"
+                        ? "bg-[#9B2C2C]/10 text-[#9B2C2C]"
+                        : "text-gray-600 hover:bg-gray-100"
+                    }`}
                   >
                     <Package className="h-4 w-4" />
                     My Orders
@@ -188,10 +214,11 @@ export default function Dashboard() {
 
                   <button
                     onClick={() => handleTabChange("wishlist")}
-                    className={`flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left transition-colors ${activeTab === "wishlist"
-                      ? "bg-[#9B2C2C]/10 text-[#9B2C2C]"
-                      : "text-gray-600 hover:bg-gray-100"
-                      }`}
+                    className={`flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left transition-colors ${
+                      activeTab === "wishlist"
+                        ? "bg-[#9B2C2C]/10 text-[#9B2C2C]"
+                        : "text-gray-600 hover:bg-gray-100"
+                    }`}
                   >
                     <Heart className="h-4 w-4" />
                     Wishlist
@@ -200,10 +227,11 @@ export default function Dashboard() {
                   <div className="my-4 h-px bg-gray-200" />
                   <button
                     onClick={() => handleTabChange("settings")}
-                    className={`flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left transition-colors ${activeTab === "settings"
-                      ? "bg-[#9B2C2C]/10 text-[#9B2C2C]"
-                      : "text-gray-600 hover:bg-gray-100"
-                      }`}
+                    className={`flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left transition-colors ${
+                      activeTab === "settings"
+                        ? "bg-[#9B2C2C]/10 text-[#9B2C2C]"
+                        : "text-gray-600 hover:bg-gray-100"
+                    }`}
                   >
                     <Settings className="h-4 w-4" />
                     Settings
@@ -308,12 +336,13 @@ export default function Dashboard() {
                         <div className="text-right">
                           <p className="font-medium">Qty: {order.quantity}</p>
                           <p
-                            className={`text-sm ${order.status === "Delivered"
-                              ? "text-green-600"
-                              : order.status === "Processing"
+                            className={`text-sm ${
+                              order.status === "Delivered"
+                                ? "text-green-600"
+                                : order.status === "Processing"
                                 ? "text-orange-600"
                                 : "text-blue-600"
-                              }`}
+                            }`}
                           >
                             {order.status}
                           </p>
@@ -436,127 +465,210 @@ export default function Dashboard() {
                 transition={{ duration: 0.5 }}
                 className="rounded-lg border bg-white p-6"
               >
-                <h2 className="text-lg font-semibold">Account Settings</h2>
-                <p className="text-sm text-gray-500">
-                  Manage your account details and security
-                </p>
+                <h2 className="text-lg font-semibold mb-6">Account Settings</h2>
 
-                <div className="mt-6 space-y-6">
-                  {/* Address Section */}
-                  <div className="space-y-4">
-                    <h3 className="text-lg font-medium">Delivery Address</h3>
+                <div className="flex border-b mb-6">
+                  <button
+                    onClick={() => setActiveSettingsTab("personal")}
+                    className={`flex items-center px-4 py-2 border-b-2 ${
+                      activeSettingsTab === "personal"
+                        ? "border-[#9B2C2C] text-[#9B2C2C]"
+                        : "border-transparent text-gray-500 hover:text-gray-700"
+                    }`}
+                  >
+                    <User className="w-4 h-4 mr-2" />
+                    Personal Info
+                  </button>
+                  {addresses.map((address, index) => (
                     <button
-                      onClick={() => setShowAddressForm(true)}
-                      className="w-full rounded-md bg-[#8B4513] px-4 py-2 text-white hover:bg-[#723A0F] transition-colors"
+                      key={address.id}
+                      onClick={() =>
+                        setActiveSettingsTab(`address-${address.id}`)
+                      }
+                      className={`flex items-center px-4 py-2 border-b-2 ${
+                        activeSettingsTab === `address-${address.id}`
+                          ? "border-[#9B2C2C] text-[#9B2C2C]"
+                          : "border-transparent text-gray-500 hover:text-gray-700"
+                      }`}
                     >
-                      Add/Update Address
+                      <MapPin className="w-4 h-4 mr-2" />
+                      Address {index + 1}
+                      {address.isDefault && (
+                        <Star className="w-3 h-3 ml-1 text-yellow-500" />
+                      )}
                     </button>
-                    <AddressForm
-                      isOpen={showAddressForm}
-                      setIsOpen={setShowAddressForm}
-                    />
-                  </div>
-
-                  <div className="h-px bg-gray-200" />
-
-                  {/* Account Information */}
-                  <div className="space-y-4">
-                    <h3 className="text-lg font-medium">Account Information</h3>
-                    <div>
-                      <label
-                        htmlFor="username"
-                        className="block text-sm font-medium text-gray-700"
-                      >
-                        Username
-                      </label>
-                      <input
-                        type="text"
-                        id="username"
-                        defaultValue="kashvi_user"
-                        className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-[#9B2C2C] focus:outline-none focus:ring-1 focus:ring-[#9B2C2C]"
-                      />
-                    </div>
-                    <div>
-                      <label
-                        htmlFor="current-password"
-                        className="block text-sm font-medium text-gray-700"
-                      >
-                        Current Password
-                      </label>
-                      <input
-                        type="password"
-                        id="current-password"
-                        className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-[#9B2C2C] focus:outline-none focus:ring-1 focus:ring-[#9B2C2C]"
-                      />
-                    </div>
-                    <div>
-                      <label
-                        htmlFor="new-password"
-                        className="block text-sm font-medium text-gray-700"
-                      >
-                        New Password
-                      </label>
-                      <input
-                        type="password"
-                        id="new-password"
-                        className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-[#9B2C2C] focus:outline-none focus:ring-1 focus:ring-[#9B2C2C]"
-                      />
-                    </div>
-                    <div>
-                      <label
-                        htmlFor="confirm-password"
-                        className="block text-sm font-medium text-gray-700"
-                      >
-                        Confirm New Password
-                      </label>
-                      <input
-                        type="password"
-                        id="confirm-password"
-                        className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-[#9B2C2C] focus:outline-none focus:ring-1 focus:ring-[#9B2C2C]"
-                      />
-                    </div>
-                    <button className="rounded-md bg-[#9B2C2C] px-4 py-2 text-white hover:bg-[#9B2C2C]/90">
-                      Update Account
-                    </button>
-                  </div>
-
-                  <div className="h-px bg-gray-200" />
-
-                  {/* Contact Information */}
-                  <div className="space-y-4">
-                    <h3 className="text-lg font-medium">Contact Information</h3>
-                    <div>
-                      <label
-                        htmlFor="email"
-                        className="block text-sm font-medium text-gray-700"
-                      >
-                        Email Address
-                      </label>
-                      <input
-                        type="email"
-                        id="email"
-                        defaultValue="user@example.com"
-                        disabled
-                        className="mt-1 block w-full cursor-not-allowed rounded-md border border-gray-300 bg-gray-100 px-3 py-2 text-gray-500 shadow-sm"
-                      />
-                    </div>
-                    <div>
-                      <label
-                        htmlFor="phone"
-                        className="block text-sm font-medium text-gray-700"
-                      >
-                        Phone Number
-                      </label>
-                      <input
-                        type="tel"
-                        id="phone"
-                        defaultValue="+91 9876543210"
-                        disabled
-                        className="mt-1 block w-full cursor-not-allowed rounded-md border border-gray-300 bg-gray-100 px-3 py-2 text-gray-500 shadow-sm"
-                      />
-                    </div>
-                  </div>
+                  ))}
+                  <button
+                    onClick={() => {
+                      setShowAddressForm(true);
+                      setEditingAddress(null);
+                    }}
+                    className="flex items-center px-4 py-2 text-[#9B2C2C] hover:bg-[#9B2C2C]/10 rounded-lg ml-2"
+                  >
+                    <Plus className="w-4 h-4 mr-2" />
+                    Add Address
+                  </button>
                 </div>
+
+                {activeSettingsTab === "personal" ? (
+                  <div className="space-y-6">
+                    <div className="space-y-4">
+                      <h3 className="text-lg font-medium">
+                        Personal Information
+                      </h3>
+                      <div>
+                        <label
+                          htmlFor="username"
+                          className="block text-sm font-medium text-gray-700"
+                        >
+                          Username
+                        </label>
+                        <input
+                          type="text"
+                          id="username"
+                          defaultValue="kashvi_user"
+                          className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-[#9B2C2C] focus:outline-none focus:ring-1 focus:ring-[#9B2C2C]"
+                        />
+                      </div>
+                      <div>
+                        <label
+                          htmlFor="current-password"
+                          className="block text-sm font-medium text-gray-700"
+                        >
+                          Current Password
+                        </label>
+                        <input
+                          type="password"
+                          id="current-password"
+                          className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-[#9B2C2C] focus:outline-none focus:ring-1 focus:ring-[#9B2C2C]"
+                        />
+                      </div>
+                      <div>
+                        <label
+                          htmlFor="new-password"
+                          className="block text-sm font-medium text-gray-700"
+                        >
+                          New Password
+                        </label>
+                        <input
+                          type="password"
+                          id="new-password"
+                          className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-[#9B2C2C] focus:outline-none focus:ring-1 focus:ring-[#9B2C2C]"
+                        />
+                      </div>
+                      <button className="rounded-md bg-[#9B2C2C] px-4 py-2 text-white hover:bg-[#9B2C2C]/90">
+                        Update Password
+                      </button>
+                    </div>
+
+                    <div className="h-px bg-gray-200" />
+
+                    <div className="space-y-4">
+                      <h3 className="text-lg font-medium">
+                        Contact Information
+                      </h3>
+                      <div>
+                        <label
+                          htmlFor="email"
+                          className="block text-sm font-medium text-gray-700"
+                        >
+                          Email Address
+                        </label>
+                        <input
+                          type="email"
+                          id="email"
+                          defaultValue="user@example.com"
+                          disabled
+                          className="mt-1 block w-full cursor-not-allowed rounded-md border border-gray-300 bg-gray-100 px-3 py-2 text-gray-500 shadow-sm"
+                        />
+                      </div>
+                      <div>
+                        <label
+                          htmlFor="phone"
+                          className="block text-sm font-medium text-gray-700"
+                        >
+                          Phone Number
+                        </label>
+                        <input
+                          type="tel"
+                          id="phone"
+                          defaultValue="+91 9876543210"
+                          disabled
+                          className="mt-1 block w-full cursor-not-allowed rounded-md border border-gray-300 bg-gray-100 px-3 py-2 text-gray-500 shadow-sm"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="space-y-6">
+                    {addresses.map((address) => {
+                      if (activeSettingsTab === `address-${address.id}`) {
+                        function handleSetDefaultAddress(id: string): void {
+                          setAddresses((prevAddresses) =>
+                            prevAddresses.map((address) =>
+                              address.id === id
+                                ? { ...address, isDefault: true }
+                                : { ...address, isDefault: false }
+                            )
+                          );
+                        }
+
+                        return (
+                          <div key={address.id} className="space-y-4">
+                            <div className="flex justify-between items-center">
+                              <h3 className="text-lg font-medium">
+                                Delivery Address
+                                {address.isDefault && (
+                                  <span className="ml-2 text-sm text-yellow-600 font-normal">
+                                    (Default)
+                                  </span>
+                                )}
+                              </h3>
+                              <div className="space-x-2">
+                                <button
+                                  onClick={() => {
+                                    setEditingAddress(address);
+                                    setShowAddressForm(true);
+                                  }}
+                                  className="text-[#9B2C2C] hover:bg-[#9B2C2C]/10 p-2 rounded-lg"
+                                >
+                                  <Edit className="w-4 h-4" />
+                                </button>
+                                {!address.isDefault && (
+                                  <button
+                                    onClick={() =>
+                                      handleSetDefaultAddress(address.id)
+                                    }
+                                    className="text-yellow-600 hover:bg-yellow-50 p-2 rounded-lg"
+                                  >
+                                    <Star className="w-4 h-4" />
+                                  </button>
+                                )}
+                              </div>
+                            </div>
+                            <div className="bg-gray-50 p-4 rounded-lg space-y-2">
+                              <p className="text-gray-700">{address.address}</p>
+                              <p className="text-gray-700">
+                                {address.area}
+                                {address.landmark &&
+                                  `, Near ${address.landmark}`}
+                              </p>
+                              <p className="text-gray-700">
+                                {address.city}, {address.state} -{" "}
+                                {address.pincode}
+                              </p>
+                            </div>
+                          </div>
+                        );
+                      }
+                      return null;
+                    })}
+                  </div>
+                )}
+                <AddressForm
+                  isOpen={showAddressForm}
+                  setIsOpen={setShowAddressForm}
+                />
               </motion.div>
             )}
           </div>

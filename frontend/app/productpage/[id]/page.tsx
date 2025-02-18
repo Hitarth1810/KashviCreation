@@ -4,11 +4,12 @@ import "react-medium-image-zoom/dist/styles.css";
 import type React from "react";
 import { useState, useEffect, use } from "react";
 import { motion } from "framer-motion";
-import { Star, Heart, Send, Minus, Plus, ShoppingCart } from "lucide-react";
+import { Star, Heart, Send, Minus, Plus, ShoppingCart,} from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Product } from "@/types/product";
 import { useUser } from "@/context/UserProvider";
+import Link from "next/link";
 
 interface Review {
   id: number;
@@ -63,8 +64,9 @@ const ProductPage = ({ params }: { params: Promise<{ id: string }> }) => {
   const router = useRouter();
   const { cart, addToCart, wishlist, addToWishlist, removeFromWishlist } = useUser(); // Added cart/wishlist context
   const [product, setProduct] = useState<Product>();
-  const [, setLoading] = useState(true);
-  const [, setError] = useState<string | null>(null);
+  const [allProducts, setAllProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [selectedImage, setSelectedImage] = useState<string>("");
   const [hoveredImage, setHoveredImage] = useState<string | null>(null);
   const [reviews, setReviews] = useState<Review[]>(initialReviews);
@@ -78,15 +80,24 @@ const ProductPage = ({ params }: { params: Promise<{ id: string }> }) => {
 
 
   useEffect(() => {
-    const fetchProduct = async () => {
+    const fetchData = async () => {
       try {
-        const response = await fetch(`/api/product/${id}`);
-        if (!response.ok) {
+        // Fetch current product
+        const productResponse = await fetch(`/api/product/${id}`);
+        if (!productResponse.ok) {
           throw new Error("Failed to fetch product");
         }
-        const data = await response.json();
-        setProduct(data);
-        setSelectedImage(data.images[0]); // Set first image as selected
+        const productData = await productResponse.json();
+        setProduct(productData);
+        setSelectedImage(productData.images[0]);
+
+        // Fetch all products
+        const allProductsResponse = await fetch('/api/product');
+        if (!allProductsResponse.ok) {
+          throw new Error("Failed to fetch all products");
+        }
+        const allProductsData = await allProductsResponse.json();
+        setAllProducts(allProductsData);
       } catch (err) {
         setError(err instanceof Error ? err.message : "An error occurred");
       } finally {
@@ -95,9 +106,32 @@ const ProductPage = ({ params }: { params: Promise<{ id: string }> }) => {
     };
 
     if (id) {
-      fetchProduct();
+      fetchData();
     }
   }, [id]);
+
+    // Function to get similar products
+    const getSimilarProducts = () => {
+      if (!product || !allProducts.length) return [];
+  
+      // Get the design number (before the dash)
+      const currentDesignNumber = product.id.split('-')[0];
+      
+      // First try to find products with same design number
+      const sameDesignProducts = allProducts.filter(p => 
+        p.id !== product.id && 
+        p.id.split('-')[0] === currentDesignNumber
+      );
+
+     // If no products with same design number, get products from same category
+    if (sameDesignProducts.length === 0) {
+      return allProducts
+        .filter(p => p.id !== product.id && p.category === product.category)
+        .slice(0, 4);
+    }
+
+    return sameDesignProducts.slice(0, 4);
+  }; 
 
   const handleQuantityChange = (type: "increment" | "decrement") => {
     setQuantity((prev) =>
@@ -288,8 +322,68 @@ const ProductPage = ({ params }: { params: Promise<{ id: string }> }) => {
             </motion.div>
           </div>
         </div>
+
+        {/* Similar Products Section - Move it above reviews */}
+        {!loading && product && allProducts.length > 0 && (
+          <div className="mt-16 mb-16">
+             <h2 className="text-3xl font-serif tracking-wide text-black mb-8">
+                  Similar Products
+                </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {getSimilarProducts().map((similarProduct) => (
+                <motion.div
+                  key={similarProduct.id}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="relative group bg-white shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden"
+                >
+                  <Link href={`/productpage/${similarProduct.id}`}>
+                    <div className="relative">
+                      <div className="aspect-[3/4] relative overflow-hidden">
+                        <Image
+                          src={similarProduct.images[0]}
+                          alt={similarProduct.name}
+                          fill
+                          className="object-cover transform group-hover:scale-105 transition-transform duration-300"
+                          sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                        />
+                      </div>
+                      <button
+                        onClick={(e) => {
+                          e.preventDefault();
+                          if (wishlist.includes(similarProduct.id)) {
+                            removeFromWishlist(similarProduct.id);
+                          } else {
+                            addToWishlist(similarProduct.id);
+                          }
+                        }}
+                        className="absolute top-2 left-2 p-2"
+                      >
+                        <Heart
+                        size={24}
+                          className={`${
+                            wishlist.includes(similarProduct.id)
+                              ? "fill-[#fd0202] stroke-[#8b1d1d00]"
+                              : "stroke-white"
+                          }`}
+                        />
+                      </button>
+                    </div>
+                    <div className="p-4">
+                      <h3 className="text-sm font-medium text-gray-900 mb-1 truncate">
+                        {similarProduct.name}
+                      </h3>
+                      <p className="text-sm text-gray-500">D.No. {similarProduct.id}</p>
+                    </div>
+                  </Link>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        )}
+
         <div className="mt-16">
-          <h2 className="text-2xl font-bold text-gray-900 mb-8">
+          <h2 className="text-3xl font-serif tracking-wide text-black mb-8">
             Customer Reviews
           </h2>
 

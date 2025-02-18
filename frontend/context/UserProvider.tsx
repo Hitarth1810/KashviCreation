@@ -14,6 +14,7 @@ interface Address {
 	instructions: string | null;
 }
 interface UserContextType {
+	
 	cart: string[];
 	wishlist: string[];
 	shippingAddress: Address | null;

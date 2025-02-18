@@ -1,29 +1,6 @@
 import { getShippingAddress, setShippingAddress } from "@/lib/user";
 import { NextResponse } from "next/server";
 
-// Helper function to validate address
-interface Address {
-  pincode: string;
-  address: string;
-  city: string;
-  state: string;
-}
-
-function validateAddress(address: Address) {
-  const requiredFields = ['pincode', 'address', 'city', 'state'];
-  for (const field of requiredFields) {
-    if (!address[field as keyof Address]) {
-      return `${field} is required`;
-    }
-  }
-  
-  // Validate pincode format
-  if (!/^\d{6}$/.test(address.pincode)) {
-    return 'Invalid pincode format';
-  }
-  
-  return null; // null means validation passed
-}
 
 export async function GET(req: Request): Promise<NextResponse> {
   try {
@@ -31,6 +8,8 @@ export async function GET(req: Request): Promise<NextResponse> {
     const token = cookieHeader?.split(';')
       .find(c => c.trim().startsWith('token='))
       ?.split('=')[1];
+
+    console.log(req.json())
 
     if (!token) {
       return NextResponse.json(
@@ -75,18 +54,10 @@ export async function POST(req: Request): Promise<NextResponse> {
     // Parse and validate request body
     const address = await req.json();
     
-    // Validate address
-    const validationError = validateAddress(address);
-    if (validationError) {
-      return NextResponse.json(
-        { message: validationError },
-        { status: 400 }
-      );
-    }
 
     // Save address
     const shippingAddress = await setShippingAddress(token, address);
-    
+    console.log(shippingAddress)
     return NextResponse.json(shippingAddress, { status: 200 });
   } catch (error) {
     console.error("Error setting address:", error);

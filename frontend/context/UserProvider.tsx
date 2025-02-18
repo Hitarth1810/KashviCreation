@@ -4,16 +4,14 @@ import axios from "axios";
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { useAuth } from "./AuthProvider";
 interface Address {
-	
-		pincode: string
-		address: string
-		area: string
-		landmark: string
-		city: string,
-		state: string,
-		isDefault: boolean,
-		instructions: string | null,
-	
+	pincode: string;
+	address: string;
+	area: string;
+	landmark: string;
+	city: string;
+	state: string;
+	isDefault: boolean;
+	instructions: string | null;
 }
 interface UserContextType {
 	cart: string[];
@@ -81,11 +79,10 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
 
 	const addToCart = async (productId: string) => {
 		try {
-			const res = await axios.post("/api/protected/user/cart", {productId,quantity: 1 });
-			console.log(res)
+			const res = await axios.post("/api/protected/user/cart", { productId });
+			console.log(res);
 			if (res.status === 200) {
-				const data = res.data
-				console.log(data)
+				const data = res.data;
 				setCart(data.Cart);
 			}
 		} catch (error) {
@@ -206,7 +203,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
 				addToWishlist,
 				removeFromWishlist,
 				getShippingAddress,
-				setShippingAddress
+				setShippingAddress,
 			}}
 		>
 			{children}

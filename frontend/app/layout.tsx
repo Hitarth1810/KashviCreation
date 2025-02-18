@@ -7,7 +7,7 @@ import Navbar from "./components/Navbar"
 import Footer from "./components/Footer"
 import "./globals.css"
 import { UserProvider } from '@/context/UserProvider'
-import WhatsAppButton from './components/WhatsappButton'
+import WhatsAppButton from './components/WhatsAppButton'
 
 // Initialize Kalam font
 const kalam = Kalam({

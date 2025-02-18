@@ -63,8 +63,8 @@ const ProductPage = ({ params }: { params: Promise<{ id: string }> }) => {
   const router = useRouter();
   const { cart, addToCart, wishlist, addToWishlist, removeFromWishlist } = useUser(); // Added cart/wishlist context
   const [product, setProduct] = useState<Product>();
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [, setLoading] = useState(true);
+  const [, setError] = useState<string | null>(null);
   const [selectedImage, setSelectedImage] = useState<string>("");
   const [hoveredImage, setHoveredImage] = useState<string | null>(null);
   const [reviews, setReviews] = useState<Review[]>(initialReviews);

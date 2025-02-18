@@ -2,14 +2,16 @@
 
 import { useUser } from "@/context/UserProvider";
 import axios from "axios";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Heart,
   LayoutGrid,
   LogOut,
+  Menu,
   Package,
   Settings,
   Trash2,
+  X,
 } from "lucide-react";
 import Image from "next/image";
 import AddressForm from "../components/address-form";
@@ -29,6 +31,7 @@ export default function Dashboard() {
   const [wishlistItems, setWishlistItems] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showAddressForm, setShowAddressForm] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const recentOrders = [
     {
@@ -92,83 +95,142 @@ export default function Dashboard() {
     setWishlistItems(updatedItems);
   };
 
+  const handleTabChange = (tab: string) => {
+    setActiveTab(tab);
+    setIsSidebarOpen(false); // Close sidebar on mobile when tab changes
+  };
+
   return (
     <div className="min-h-screen bg-[#FDF7F3]">
+      {/* Mobile Menu Button - Outside sidebar */}
+      {!isSidebarOpen && (
+        <button
+          onClick={() => setIsSidebarOpen(true)}
+          className="fixed top-20 left-4 z-50 p-2 bg-white rounded-lg shadow-md md:hidden"
+        >
+          <Menu className="h-6 w-6 text-[#9B2C2C]" />
+        </button>
+      )}
+
       <div className="flex">
         {/* Sidebar */}
-        <motion.aside
-          initial={{ x: -100, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          transition={{ duration: 0.5 }}
-          className="sticky top-0 h-screen w-64 border-r bg-white p-4"
-        >
-          <div className="mb-8 flex items-center gap-3">
-            <Image
-              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-NfonmaMTbzrkQHVlxYzBH39xYJFu2m.png"
-              alt="Kashvi Creation Logo"
-              width={40}
-              height={40}
-              className="rounded"
-            />
-            <h1 className="text-xl font-semibold">My Dashboard</h1>
-          </div>
-          <nav className="space-y-2">
-            <button
-              onClick={() => setActiveTab("overview")}
-              className={`flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left transition-colors ${
-                activeTab === "overview"
-                  ? "bg-[#9B2C2C]/10 text-[#9B2C2C]"
-                  : "text-gray-600 hover:bg-gray-100"
-              }`}
+        <AnimatePresence>
+          {(isSidebarOpen || (typeof window !== "undefined" && window.innerWidth >= 768)) && (
+            <motion.aside
+              initial={{ x: -100, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              exit={{ x: -100, opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              className={`fixed md:sticky top-0 h-screen w-64 border-r bg-white z-40 ${isSidebarOpen ? "block" : "hidden md:block"
+                }`}
             >
-              <LayoutGrid className="h-4 w-4" />
-              Overview
-            </button>
-            <button
-              onClick={() => setActiveTab("orders")}
-              className={`flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left transition-colors ${
-                activeTab === "orders"
-                  ? "bg-[#9B2C2C]/10 text-[#9B2C2C]"
-                  : "text-gray-600 hover:bg-gray-100"
-              }`}
-            >
-              <Package className="h-4 w-4" />
-              My Orders
-            </button>
+              {/* Close button - Absolute positioned at the top */}
+              {isSidebarOpen && (
+                <button
+                  onClick={() => setIsSidebarOpen(false)}
+                  className="absolute top-4 right-4 p-2 text-[#9B2C2C] hover:bg-red-50 rounded-lg md:hidden"
+                >
+                  <X className="h-6 w-6" />
+                </button>
+              )}
 
-            <button
-              onClick={() => setActiveTab("wishlist")}
-              className={`flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left transition-colors ${
-                activeTab === "wishlist"
-                  ? "bg-[#9B2C2C]/10 text-[#9B2C2C]"
-                  : "text-gray-600 hover:bg-gray-100"
-              }`}
-            >
-              <Heart className="h-4 w-4" />
-              Wishlist
-            </button>
+              {/* Sidebar content with proper padding */}
+              <div className="p-6 pt-20 md:pt-6 h-full overflow-y-auto">
+                {/* Dashboard header */}
+                <div className="mb-8">
+                  <div className="flex items-center gap-2 mb-4">
+                    {/* Back button - visible only on mobile */}
+                    <button
+                      onClick={() => setIsSidebarOpen(false)}
+                      className="p-2 hover:bg-gray-100 rounded-full transition-colors md:hidden"
+                      aria-label="Close sidebar"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="text-gray-600"
+                      >
+                        <path d="M15 18l-6-6 6-6" />
+                      </svg>
+                    </button>
+                    <h1 className="text-xl font-semibold text-[#9B2C2C]">My Dashboard</h1>
+                  </div>
+                </div>
 
-            <div className="my-4 h-px bg-gray-200" />
-            <button
-              onClick={() => setActiveTab("settings")}
-              className={`flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left transition-colors ${
-                activeTab === "settings"
-                  ? "bg-[#9B2C2C]/10 text-[#9B2C2C]"
-                  : "text-gray-600 hover:bg-gray-100"
-              }`}
-            >
-              <Settings className="h-4 w-4" />
-              Settings
-            </button>
-            <button className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-red-600 transition-colors hover:bg-red-50">
-              <LogOut className="h-4 w-4" />
-              Logout
-            </button>
-          </nav>
-        </motion.aside>
+                <nav className="space-y-2">
+                  <button
+                    onClick={() => handleTabChange("overview")}
+                    className={`flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left transition-colors ${activeTab === "overview"
+                      ? "bg-[#9B2C2C]/10 text-[#9B2C2C]"
+                      : "text-gray-600 hover:bg-gray-100"
+                      }`}
+                  >
+                    <LayoutGrid className="h-4 w-4" />
+                    Overview
+                  </button>
+                  <button
+                    onClick={() => handleTabChange("orders")}
+                    className={`flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left transition-colors ${activeTab === "orders"
+                      ? "bg-[#9B2C2C]/10 text-[#9B2C2C]"
+                      : "text-gray-600 hover:bg-gray-100"
+                      }`}
+                  >
+                    <Package className="h-4 w-4" />
+                    My Orders
+                  </button>
+
+                  <button
+                    onClick={() => handleTabChange("wishlist")}
+                    className={`flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left transition-colors ${activeTab === "wishlist"
+                      ? "bg-[#9B2C2C]/10 text-[#9B2C2C]"
+                      : "text-gray-600 hover:bg-gray-100"
+                      }`}
+                  >
+                    <Heart className="h-4 w-4" />
+                    Wishlist
+                  </button>
+
+                  <div className="my-4 h-px bg-gray-200" />
+                  <button
+                    onClick={() => handleTabChange("settings")}
+                    className={`flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left transition-colors ${activeTab === "settings"
+                      ? "bg-[#9B2C2C]/10 text-[#9B2C2C]"
+                      : "text-gray-600 hover:bg-gray-100"
+                      }`}
+                  >
+                    <Settings className="h-4 w-4" />
+                    Settings
+                  </button>
+                  <button className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-red-600 transition-colors hover:bg-red-50">
+                    <LogOut className="h-4 w-4" />
+                    Logout
+                  </button>
+                </nav>
+              </div>
+            </motion.aside>
+          )}
+        </AnimatePresence>
+
+        {/* Overlay for mobile */}
+        {isSidebarOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setIsSidebarOpen(false)}
+            className="fixed inset-0 bg-black bg-opacity-50 z-30 md:hidden"
+          />
+        )}
 
         {/* Main Content */}
-        <main className="flex-1 p-6">
+        <main className="flex-1 p-6 md:p-6 pt-16 md:pt-6">
           <div className="space-y-6">
             {activeTab === "overview" && (
               <>
@@ -246,13 +308,12 @@ export default function Dashboard() {
                         <div className="text-right">
                           <p className="font-medium">Qty: {order.quantity}</p>
                           <p
-                            className={`text-sm ${
-                              order.status === "Delivered"
-                                ? "text-green-600"
-                                : order.status === "Processing"
+                            className={`text-sm ${order.status === "Delivered"
+                              ? "text-green-600"
+                              : order.status === "Processing"
                                 ? "text-orange-600"
                                 : "text-blue-600"
-                            }`}
+                              }`}
                           >
                             {order.status}
                           </p>

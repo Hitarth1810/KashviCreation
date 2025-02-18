@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Mail, Phone, Clock, MapPin } from "lucide-react";
+import { Mail, Phone, MapPin } from "lucide-react";
 import Logo from "@/public/KCLogo.png";
 import LogoLetter from "@/public/KCLogoLetter.png";
 

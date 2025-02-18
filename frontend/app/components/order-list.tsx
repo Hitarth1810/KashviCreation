@@ -2,31 +2,47 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Badge } from "@/app/components/ui/badge";
+import { Order } from "@prisma/client";
+import { useRouter } from "next/navigation";
 
-interface Invoice  {
+interface InvoiceData {
 	id: number;
 	customer: string;
 	status: string;
-	total: string;
 }
 
-export function OrderList({ }) {
+export function OrderList({}) {
+	const router = useRouter();
 	const [selectedOrder, setSelectedOrder] = useState<number | null>(null);
-	const [orders, setOrders] = useState<Invoice[]>([]);
+	const [orders, setOrders] = useState<InvoiceData[]>([]);
 
 	useEffect(() => {
-		axios.get("/api/protected/admin/orders").then((response) => {
-			setOrders(response.data);
-		});
-	})
+		const fetchInvoices = async () => {
+			const orders = await axios.get("/api/protected/admin/order");
+			console.log(orders);
+			const data = await Promise.all(
+				orders.data.map((order: Order) => ({
+					id: order.id,
+					customer: axios
+						.get(`/api/protected/admin/customer?customerId=${order.userId}`)
+						.then((res) => {
+							return res.data.name;
+						}),
+					status: order.status,
+				}))
+			);
+			console.log(data);
+			setOrders(data);
+		};
+		fetchInvoices();
+	}, []);
 
 	return (
 		<div className='p-4'>
-			<div className='grid grid-cols-4 gap-4 text-sm font-medium text-muted-foreground'>
+			<div className='grid grid-cols-3 gap-4 text-sm font-medium text-muted-foreground'>
 				<div>Order ID</div>
 				<div>Customer</div>
 				<div>Status</div>
-				<div>Total</div>
 			</div>
 			<div className='mt-2 space-y-2'>
 				{orders.map((order) => (
@@ -35,9 +51,12 @@ export function OrderList({ }) {
 						className={`cursor-pointer rounded-lg border p-4 transition-colors hover:bg-muted/50 ${
 							selectedOrder === order.id ? "border-primary bg-muted" : ""
 						}`}
-						onClick={() => setSelectedOrder(order.id)}
+						onClick={() => {
+							setSelectedOrder(order.id);
+							router.push(`/admin/orders?id=${order.id}`);
+						}}
 					>
-						<div className='grid grid-cols-4 items-center gap-4'>
+						<div className='grid grid-cols-3 items-center gap-4'>
 							<div className='font-medium'>{order.id}</div>
 							<div>{order.customer}</div>
 							<div>
@@ -49,7 +68,6 @@ export function OrderList({ }) {
 									{order.status}
 								</Badge>
 							</div>
-							<div>{order.total}</div>
 						</div>
 					</div>
 				))}

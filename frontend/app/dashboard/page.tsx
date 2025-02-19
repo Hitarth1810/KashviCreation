@@ -129,7 +129,7 @@ export default function Dashboard()  {
     setIsSidebarOpen(false); // Close sidebar on mobile when tab changes
   };
 
-  const [editingAddress, setEditingAddress] = useState<Address | null>(null);
+  const [, setEditingAddress] = useState<Address | null>(null);
 
   return (
     <div className="min-h-screen bg-[#FDF7F3]">

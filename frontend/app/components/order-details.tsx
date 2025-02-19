@@ -28,9 +28,10 @@ interface Invoice {
 	status: string;
 }
 
-export function OrderDetails() {
+export function OrderDetails({ setUpdate }: { setUpdate: React.Dispatch<React.SetStateAction<boolean>> }) {
 	const [details, setDetails] = useState<Invoice | null>(null);
 	const [loading, setLoading] = useState(true);
+	const [updateDetails, setUpdateDetails] = useState<boolean>(false);
 	const searchParams = useSearchParams();
 	const selectedId = searchParams.get("id");
 
@@ -43,9 +44,11 @@ export function OrderDetails() {
 			setDetails(response.data);
 			console.log(response.data);
 			setLoading(false);
+			setUpdate(false)
+			setUpdateDetails(false)
 		};
 		fetchData();
-	}, [selectedId]);
+	}, [selectedId, updateDetails]);
 
 	if (!selectedId)
 		return (
@@ -65,33 +68,39 @@ export function OrderDetails() {
 		e
 	) => {
 		e.preventDefault();
-		const res = await axios.put(`/api/protected/admin/order`, {
+		await axios.put(`/api/protected/admin/order`, {
 			orderId: selectedId,
 			status: "confirmed",
 		});
-		setDetails(res.data);
+		setUpdate(true);
+
+		setUpdateDetails(true)
 	};
 
 	const handleOnComplete: React.MouseEventHandler<HTMLButtonElement> = async (
 		e
 	) => {
 		e.preventDefault();
-		const res = await axios.put(`/api/protected/admin/order`, {
+		await axios.put(`/api/protected/admin/order`, {
 			orderId: selectedId,
 			status: "completed",
 		});
-		setDetails(res.data);
+		setUpdate(true);
+
+		setUpdateDetails(true);
 	};
 
 	const handleOnCancel: React.MouseEventHandler<HTMLButtonElement> = async (
 		e
 	) => {
 		e.preventDefault();
-		const res = await axios.put(`/api/protected/admin/order`, {
+		 await axios.put(`/api/protected/admin/order`, {
 			orderId: selectedId,
 			status: "cancelled",
 		});
-		setDetails(res.data);
+		setUpdate(true);
+
+		setUpdateDetails(true);
 	};
 
 	return (
@@ -105,7 +114,7 @@ export function OrderDetails() {
 			</div>
 			<div className='p-4'>
 				<div className='flex items-center gap-4'>
-					{details?.user.image ? (
+					{details?.user?.image ? (
 						<>
 							<Image
 								src={details?.user.image}
@@ -122,7 +131,7 @@ export function OrderDetails() {
 					)}
 
 					<div>
-						<h3 className='font-semibold'>{details?.user.name || "Unknown"}</h3>
+						<h3 className='font-semibold'>{details?.user?.name || "Unknown"}</h3>
 						<div className='mt-1 space-y-1 text-sm text-muted-foreground'>
 							<div className='flex items-center gap-2'>
 								<Mail className='h-4 w-4' />

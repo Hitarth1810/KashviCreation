@@ -6,6 +6,7 @@ import {
 	updateOrderStatus,
 } from "@/lib/order";
 import { getProduct } from "@/lib/products";
+import { Status } from "@prisma/client";
 import { NextResponse } from "next/server";
 
 export async function GET(req: Request): Promise<NextResponse> {
@@ -25,7 +26,6 @@ export async function GET(req: Request): Promise<NextResponse> {
 
 		const order = await getOrder(orderId);
 		const customer = await getCustomer(order!.userId);
-		console.log(order?.products);
 
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		let products: any = [];
@@ -39,7 +39,6 @@ export async function GET(req: Request): Promise<NextResponse> {
 		}
 
 		products = mergeDuplicateProducts(products);
-		console.log(products);
 
 		const data = {
 			id: order!.id,
@@ -67,7 +66,33 @@ export async function POST(req: Request): Promise<NextResponse> {
 		const data = await req.json();
 		const { orderId, userId, products } = data;
 		const order = await createOrder(orderId, userId, products);
-		return NextResponse.json({ status: 200, body: order });
+		const customer = await getCustomer(order!.userId);
+
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		let productsRes: any = [];
+		if (order?.products) {
+			await Promise.all(
+				order.products.map(async (product: string) => {
+					const data = await getProduct(product);
+					productsRes.push({ id: data?.id, name: data?.name });
+				})
+			);
+		}
+
+		productsRes = mergeDuplicateProducts(productsRes);
+
+		const resdata = {
+			id: order!.id,
+			user: {
+				name: customer?.name,
+				email: customer!.email,
+				phone: customer!.phone,
+				image: customer!.image,
+			},
+			products: productsRes,
+			status: order!.status,
+		};
+		return NextResponse.json({ status: 200, body: resdata });
 	} catch (error) {
 		return NextResponse.json({
 			status: 500,
@@ -80,8 +105,35 @@ export async function PUT(req: Request): Promise<NextResponse> {
 	try {
 		const data = await req.json();
 		const { orderId, status } = data;
-		const order = await updateOrderStatus(orderId, status);
-		return NextResponse.json({ status: 200, body: order });
+		const order = await updateOrderStatus(orderId, ((status as string).toLocaleUpperCase()) as Status);
+		const customer = await getCustomer(order!.userId);
+
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		let productsRes: any = [];
+		if (order?.products) {
+			await Promise.all(
+				order.products.map(async (product: string) => {
+					const data = await getProduct(product);
+					productsRes.push({ id: data?.id, name: data?.name });
+				})
+			);
+		}
+
+		productsRes = mergeDuplicateProducts(productsRes);
+
+		const resdata = {
+			id: order!.id,
+			user: {
+				name: customer?.name,
+				email: customer!.email,
+				phone: customer!.phone,
+				image: customer!.image,
+			},
+			products: productsRes,
+			status: order!.status,
+		};
+		console.log(order)
+		return NextResponse.json({ status: 200, body: resdata });
 	} catch (error) {
 		return NextResponse.json({
 			status: 500,

@@ -103,10 +103,9 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
 
 	const removeFromCart = async (id: string) => {
 		try {
-			const res = await axios("/api/protected/user/cart", {
+			const res = await axios(`/api/protected/user/cart?productId=${id}`, {
 				method: "DELETE",
 				headers: { "Content-Type": "application/json" },
-				data: { productId: id },
 			});
 			if (res.status === 200) {
 				const data = res.data;
@@ -118,14 +117,12 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
 	};
 
 	const clearCart = async () => {
-		setCart([]);
 		try {
 			const res = await axios.delete("/api/protected/user/cart", {
 				headers: { "Content-Type": "application/json" },
 			});
 			if (res.status === 200) {
-				const data = res.data;
-				setCart(data);
+				setCart([]);
 			}
 		} catch (error) {
 			console.error("Error clearing cart:", error);
@@ -219,7 +216,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
 		}
 	};
 
-	const sendOrder = async(products: string[]) => {
+	const sendOrder = async (products: string[]) => {
 		try {
 			const res = await axios("/api/protected/user/order", {
 				method: "POST",
@@ -234,7 +231,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
 			console.error("Error sending order:", error);
 			return false;
 		}
-	}
+	};
 
 	const getOrders = async (id: string) => {
 		try {
@@ -243,11 +240,10 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
 				const orders = res.data;
 				return orders;
 			}
-		}
-		catch (error) {
+		} catch (error) {
 			console.error("Error fetching orders:", error);
 		}
-	}
+	};
 
 	return (
 		<UserContext.Provider
@@ -263,7 +259,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
 				getShippingAddress,
 				setShippingAddress,
 				sendOrder,
-				getOrders
+				getOrders,
 			}}
 		>
 			{children}

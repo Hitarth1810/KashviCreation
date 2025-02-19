@@ -4,6 +4,7 @@ import { verifyToken } from "./jwt";
 import { shippingAddress } from "@/types/user";
 import { generateOrderId } from "./utils";
 
+
 export type CreateUserInput = {
 	email: string;
 	phone: number;
@@ -131,7 +132,7 @@ export async function insertUserCart(token: string, productid: string) {
 			},
 		},
 	});
-	return user.Cart
+	return user.Cart;
 }
 
 export async function deleteUserCart(token: string, productid: string) {
@@ -155,15 +156,17 @@ export async function deleteUserCart(token: string, productid: string) {
 
 export async function clearUserCart(token: string) {
 	const data = verifyToken(token);
-	const user = await prisma.user.update({
-		where: { id: data.userId },
-		data: {
-			Cart: {
-				set: [],
+	try {
+		const user = await prisma.user.update({
+			where: { id: data.userId },
+			data: {
+				Cart: [],
 			},
-		},
-	});
-	return user.Cart;
+		});
+		return user.Cart;
+	} catch (error) {
+		console.error(error)
+	}
 }
 
 export async function getUserCart(id: string) {
@@ -219,12 +222,15 @@ export async function getShippingAddress(id: string) {
 		where: { id: id },
 		include: {
 			shippingAddress: true, // ✅ Correct way to include related records
-		  },
+		},
 	});
 	return user?.shippingAddress;
 }
 
-export async function setShippingAddress(token: string, address: shippingAddress) {
+export async function setShippingAddress(
+	token: string,
+	address: shippingAddress
+) {
 	const { userId } = verifyToken(token);
 	const shippingAddress = await prisma.address.create({
 		data: {

@@ -57,17 +57,17 @@ export default function FAQ() {
       <div className="max-w-4xl mx-auto">
         <div className="relative mb-12">
           <h1 
-            className="text-3xl md:text-4xl font-bold text-center mb-2 text-[#8B0000]"
+            className="text-5xl md:text-5xl font-serif text-center mb-2 text-black"
             style={{
               animation: 'fadeInDown 0.8s ease-out'
             }}
           >
-            Frequently Asked Questions
+            Frequently asked Questions
           </h1>
           <div className="absolute -top-4 right-0 animate-sparkle">
             <Sparkles className="w-6 h-6 text-[#8B0000]" />
           </div>
-          <div className="w-32 h-1 bg-[#8B0000] mx-auto mt-4 rounded-full"
+          <div className="w-60 h-1 bg-[#8B0000] mx-auto mt-4 rounded-full"
             style={{
               animation: 'scaleWidth 1s ease-out'
             }}

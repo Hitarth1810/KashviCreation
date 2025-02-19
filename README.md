@@ -175,7 +175,7 @@ The comprehensive review system includes:
 ## 👥 Contributors
 
 - Kuruv Patel - Fullstack Developer
-- Hitarth Shah - Frontend Developer
+- Hitarth Shah - Fullstack Developer
 - Harshvardhan Gupta - Fronted Developer
 - Utkarsh Pandey - Frontend Developer
 

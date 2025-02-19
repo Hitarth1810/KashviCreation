@@ -4,21 +4,16 @@ import { NextResponse } from "next/server";
 
 export async function GET(req: Request): Promise<NextResponse> {
   try {
-    const cookieHeader = req.headers.get("cookie");
-    const token = cookieHeader?.split(';')
-      .find(c => c.trim().startsWith('token='))
-      ?.split('=')[1];
+    const { searchParams } = new URL(req.url);
+		const userId = searchParams.get("userId");
 
-    console.log(req.json())
-
-    if (!token) {
+    if (!userId) {
       return NextResponse.json(
-        { message: "Authentication required" },
-        { status: 401 }
+        { message: "User ID is required" },
+        { status: 400 }
       );
     }
-
-    const address = await getShippingAddress(token);
+    const address = await getShippingAddress(userId);
     if (!address) {
       return NextResponse.json(
         { message: "No shipping address found" },
@@ -39,10 +34,7 @@ export async function GET(req: Request): Promise<NextResponse> {
 export async function POST(req: Request): Promise<NextResponse> {
   try {
     // Get token from cookies
-    const cookieHeader = req.headers.get("cookie");
-    const token = cookieHeader?.split(';')
-      .find(c => c.trim().startsWith('token='))
-      ?.split('=')[1];
+    const token = req.headers.get("cookie")?.split("=")[1];
 
     if (!token) {
       return NextResponse.json(

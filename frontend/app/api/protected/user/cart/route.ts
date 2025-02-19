@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getUserCart, insertUserCart, deleteUserCart } from "@/lib/user";
+import { getUserCart, insertUserCart, deleteUserCart, clearUserCart } from "@/lib/user";
 export async function POST(req: Request): Promise<NextResponse> {
 	try {
 		const body = await req.json();
@@ -60,18 +60,16 @@ export async function DELETE(req: Request): Promise<NextResponse> {
 	try {
 		const body = await req.json();
 		const { productId } = body;
-		if (!productId) {
-			return NextResponse.json(
-				{ message: "Product ID are required" },
-				{ status: 400 }
-			);
-		}
 		const token = req.headers.get("cookie")?.split("=")[1];
 		if (!token) {
 			return NextResponse.json(
 				{ message: "Cookie is required" },
 				{ status: 400 }
 			);
+		}
+		if (!productId) {
+			const cart = await clearUserCart(token);
+			return NextResponse.json(cart, { status: 200 });
 		}
 
 		const cart = await deleteUserCart(token, productId);

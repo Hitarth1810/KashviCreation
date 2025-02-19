@@ -11,7 +11,7 @@ interface InvoiceData {
 	status: string;
 }
 
-export function OrderList({}) {
+export function OrderList() {
 	const router = useRouter();
 	const [selectedOrder, setSelectedOrder] = useState<number | null>(null);
 	const [orders, setOrders] = useState<InvoiceData[]>([]);

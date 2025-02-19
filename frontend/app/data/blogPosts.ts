@@ -7,7 +7,7 @@ export const blogPosts = [
       category: "Styling Guide",
       date: "March 15, 2024",
       readTime: "8 min read",
-      image: "/blog_drapping.jpg",
+      image: "https://res.cloudinary.com/diujpbja7/image/upload/v1739962174/yyv8juxuhhygllznidbn.jpg",
       slug: "art-of-draping",
       content: `
         
@@ -45,7 +45,7 @@ export const blogPosts = [
         category: "Fabric Care",
         date: "March 12, 2024",
         readTime: "6 min read",
-        image: "/blog_fabriccare.jpg",
+        image: "https://res.cloudinary.com/diujpbja7/image/upload/v1739962171/x3pfuqmmbtzsjpudyav6.jpg",
         slug: "silk-sarees-guide",
         content: `
         
@@ -82,7 +82,7 @@ export const blogPosts = [
         category: "Fashion Trends",
         date: "March 10, 4",
         readTime: "5 min read",
-        image: "/blog_fashiontrends.jpg",
+        image: "https://res.cloudinary.com/diujpbja7/image/upload/v1739962163/lmjgdczvar976bip0szd.jpg",
         slug: "modern-saree-trends",
         content: `
     
@@ -115,7 +115,7 @@ export const blogPosts = [
         category: "Traditional Wear",
         date: "March 10, 2024",
         readTime: "6 min read",
-        image: "/blog_trad.jpg",
+        image: "https://res.cloudinary.com/diujpbja7/image/upload/v1739962145/gtzytaepc2uceuzoouno.jpg",
         slug: "traditional-wear-sarees",
         content: `
     
@@ -143,7 +143,7 @@ export const blogPosts = [
   category: "Fashion History",
   date: "March 5, 2024",
   readTime: "7 min read",
-  image: "/blog_history.jpg",
+  image: "https://res.cloudinary.com/diujpbja7/image/upload/v1739962173/kqv70ffij0j9aasjdwlf.jpg",
   slug: "saree-evolution",
   content: `
     
@@ -171,7 +171,7 @@ export const blogPosts = [
   category: "Bridal Guide",
   date: "March 5, 2024",
   readTime: "7 min read",
-  image: "/blog_bridal.jpg",
+  image: "https://res.cloudinary.com/diujpbja7/image/upload/v1739962154/iryszguvrtrsho3ipaom.jpg",
   slug: "bridal-wear-sarees",
   content: `
    
@@ -199,9 +199,6 @@ export const blogPosts = [
     <p>
         The perfect combination of a stunning saree and well-chosen accessories can make your wedding day truly magical, reflecting both your personal style and the rich traditions that make Indian weddings so special.
     </p><br>
-
-
-
   `
 }
 ]

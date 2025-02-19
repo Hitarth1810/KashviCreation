@@ -82,7 +82,7 @@ function ProductGrid({
   }, [allSarees, filters, keywords]);
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-2">
+    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 md:gap-2 gap-1 bg-gradient-to-br from-[#FDF7F3] to-rose-5">
       <AnimatePresence>
         {!isLoading &&
           filteredSarees.map((saree) => (

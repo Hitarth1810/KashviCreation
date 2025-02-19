@@ -58,8 +58,9 @@ export async function GET(req: Request): Promise<NextResponse> {
 
 export async function DELETE(req: Request): Promise<NextResponse> {
 	try {
-		const body = await req.json();
-		const { productId } = body;
+	
+		const searchParams = new URL(req.url).searchParams;
+		const productId = searchParams.get("productId");
 		const token = req.headers.get("cookie")?.split("=")[1];
 		if (!token) {
 			return NextResponse.json(

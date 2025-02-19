@@ -2,39 +2,92 @@
 
 import { useState, useEffect } from "react"
 import Image from "next/image"
-import { ShoppingBag, CheckCircle, Clock, XCircle } from "lucide-react"
+import { ShoppingBag, CheckCircle, Clock, XCircle, ChevronDown, ChevronUp } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 import { useUser } from "@/context/UserProvider"
 import { useAuth } from "@/context/AuthProvider"
+import { Status } from "@prisma/client"
 
 interface OrderItem {
-  id: number
+  id: string
   name: string
-  image: string
-  color: string
-  status: string
+  images: string[]
+  colors: string[]
+}
+
+interface Order {
+  id: string
+  products: OrderItem[]
+  status: Status
+  date: string
 }
 
 export default function OrdersPage() {
-  const { getOrders } = useUser()
   const { user } = useAuth()
-  const [orders, setOrders] = useState<OrderItem[]>([])
+  const { getOrders } = useUser()
+  const [expandedOrder, setExpandedOrder] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+
+  // Dummy data for demonstration
+  // const dummyOrders: Order[] = [
+  //   {
+  //     id: "ORD-2024-001",
+  //     status: "Processing",
+  //     date: "2024-02-19",
+  //     items: [
+  //       {
+  //         id: "1",
+  //         name: "Classic White T-Shirt",
+  //         image: "/api/placeholder/400/400",
+  //         color: "White"
+  //       },
+  //       {
+  //         id: "2",
+  //         name: "Denim Blue Jeans",
+  //         image: "/api/placeholder/400/400",
+  //         color: "Blue"
+  //       }
+  //     ]
+  //   },
+  //   {
+  //     id: "ORD-2024-002",
+  //     status: "Delivered",
+  //     date: "2024-02-18",
+  //     items: [
+  //       {
+  //         id: "3",
+  //         name: "Leather Jacket",
+  //         image: "/api/placeholder/400/400",
+  //         color: "Black"
+  //       },
+  //       {
+  //         id: "4",
+  //         name: "Cotton Sweater",
+  //         image: "/api/placeholder/400/400",
+  //         color: "Gray"
+  //       }
+  //     ]
+  //   }
+  // ]
+
+  const [orders, setOrders] = useState<Order[]>([])
 
   useEffect(() => {
     const fetchOrders = async () => {
-      const orders = await getOrders(user?.id as string)
-      console.log(orders)
-      setOrders(
-        
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        orders.map((order: any) => ({ id: order.id, name: order.name, image: order.image, color: order.color, status: order.status }))
-      )
+      try {
+        const orders = await getOrders(user!.id)
+        setOrders(orders)
+      } catch (error) {
+        console.error("Error fetching orders:", error)
+      }
     }
     fetchOrders()
-    // Simulate loading state
     setTimeout(() => setIsLoading(false), 800)
-  }, [user?.id, getOrders])
+  }, [getOrders, user])
+
+  const toggleOrder = (orderId: string) => {
+    setExpandedOrder(expandedOrder === orderId ? null : orderId)
+  }
 
   if (isLoading) {
     return (
@@ -73,59 +126,87 @@ export default function OrdersPage() {
           transition={{ delay: 0.3 }}
         >
           <AnimatePresence mode="wait">
-            {orders.length === 0 ? (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.8 }}
-                className="text-center py-12"
-              >
-                <ShoppingBag className="w-16 h-16 mx-auto text-amber-800/30 mb-4" />
-                <p className="text-xl text-[#8B1D3F] font-medium">You have no orders</p>
-              </motion.div>
-            ) : (
-              <div className="space-y-6">
-                {orders.map((order, index) => (
-                  <motion.div
-                    key={order.id}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: 20 }}
-                    transition={{ delay: index * 0.1 }}
-                    className="flex flex-col md:flex-row items-start md:items-center gap-6 p-4 rounded-xl bg-white shadow-lg hover:shadow-xl transition-shadow duration-300"
+            <div className="space-y-6">
+              {orders.map((order, index) => (
+                <motion.div
+                  key={order.id}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 20 }}
+                  transition={{ delay: index * 0.1 }}
+                  className="rounded-xl bg-white shadow-lg hover:shadow-xl transition-shadow duration-300"
+                >
+                  {/* Order Header */}
+                  <div 
+                    className="flex items-center justify-between p-4 cursor-pointer"
+                    onClick={() => toggleOrder(order.id)}
                   >
-                    {/* Order Image with Hover Effect */}
-                    <div className="relative w-full md:w-32 aspect-[3/4] group">
-                      <Image
-                        src={order.image || "/placeholder.svg"}
-                        alt={order.name}
-                        fill
-                        className="object-cover rounded-lg transition-transform duration-300 group-hover:scale-105"
-                      />
-                      <div className="absolute inset-0 bg-black/10 group-hover:bg-black/0 transition-colors duration-300 rounded-lg" />
-                    </div>
-
-                    {/* Order Details with Enhanced Typography */}
-                    <div className="flex-1 space-y-4">
+                    <div className="flex items-center gap-4">
+                      <div className="relative w-20 aspect-square">
+                        <Image
+                          src={order.products[0]?.images[0] || "/placeholder.svg"}
+                          alt="First item"
+                          fill
+                          className="object-cover rounded-lg"
+                        />
+                      </div>
                       <div>
-                        <h3 className="text-xl font-semibold text-gray-900 mb-2 tracking-tight">{order.name}</h3>
-                        <p className="text-[#8B1D3F] font-medium">Color: {order.color}</p>
-                      </div>
-
-                      {/* Order Status */}
-                      <div className="flex items-center gap-4">
-                        <span className={`flex items-center gap-2 text-${order.status === "Delivered" ? "green" : order.status === "Processing" ? "amber" : "red"}-600 font-medium`}>
-                          {order.status === "Delivered" && <CheckCircle size={20} />}
-                          {order.status === "Processing" && <Clock size={20} />}
-                          {order.status === "Cancelled" && <XCircle size={20} />}
-                          {order.status}
-                        </span>
+                        <p className="font-medium text-gray-600">Order ID: {order.id}</p>
+                        <p className="text-sm text-gray-500">{order.date}</p>
+                        <div className="flex items-center gap-2 mt-2">
+                          <span className="text-gray-700 font-medium">Status:</span>
+                          <span className={`flex items-center gap-2 ${
+                            order.status === Status.COMPLETE ? "text-green-600" : 
+                            order.status === Status.CONFIRMED ? "text-amber-600" : 
+                            "text-red-600"
+                          } font-medium`}>
+                            {order.status === Status.COMPLETE && <CheckCircle size={16} />}
+                            {order.status === Status.PENDING && <Clock size={16} />}
+                            {order.status === Status.CANCELLED && <XCircle size={16} />}
+                            {order.status}
+                          </span>
+                        </div>
                       </div>
                     </div>
-                  </motion.div>
-                ))}
-              </div>
-            )}
+                    {expandedOrder === order.id? <ChevronUp size={24} /> : <ChevronDown size={24} />}
+                  </div>
+
+                  {/* Order Items */}
+                  <AnimatePresence>
+                    {expandedOrder === order.id && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        className="border-t border-gray-200"
+                      >
+                        {order.products.map((item, itemIndex) => (
+                          <div 
+                            key={item.id}
+                            className={`p-4 flex items-center gap-4 ${
+                              itemIndex !== order.products.length - 1 ? "border-b border-gray-200" : ""
+                            }`}
+                          >
+                            <div className="relative w-16 aspect-square">
+                              <Image
+                                src={item.images[0] || "/placeholder.svg"}
+                                alt={item.name}
+                                fill
+                                className="object-cover rounded-lg"
+                              />
+                            </div>
+                            <div>
+                              <h3 className="font-medium text-gray-900">{item.name}</h3>
+                              <p className="text-sm text-gray-600">Color: {item.colors[0]}</p>
+                            </div>
+                          </div>
+                        ))}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </motion.div>
+              ))}
+            </div>
           </AnimatePresence>
         </motion.div>
       </motion.div>

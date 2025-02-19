@@ -20,9 +20,3 @@ export function getInvoices() {
 }
 
 
-// export function updateInvoiceStatus(invoiceId: string, status: Status) {
-// 	return prisma.invoice.update({
-// 		where: { id: invoiceId },
-// 		data: { status },
-// 	});
-// }

@@ -11,7 +11,7 @@ interface InvoiceData {
 	status: string;
 }
 
-export function OrderList({ updateDetails }: { updateDetails: boolean }) {
+export function OrderList({ setUpdate, updateDetails }: { updateDetails: boolean, setUpdate: (value: boolean) => void }) {
 	const router = useRouter();
 	const [selectedOrder, setSelectedOrder] = useState<number | null>(null);
 	const [orders, setOrders] = useState<InvoiceData[]>([]);
@@ -33,9 +33,11 @@ export function OrderList({ updateDetails }: { updateDetails: boolean }) {
 			);
 			console.log(data);
 			setOrders(data);
+			setUpdate(false)
 		};
 		fetchInvoices();
-	}, [updateDetails]);
+		
+	}, [updateDetails,setUpdate]);
 
 	return (
 		<div className='p-4'>

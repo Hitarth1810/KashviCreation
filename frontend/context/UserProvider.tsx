@@ -3,7 +3,7 @@
 import axios from "axios";
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { useAuth } from "./AuthProvider";
-import { Order } from "@prisma/client";
+
 interface Address {
 	id: string;
 	userId: string;
@@ -39,7 +39,9 @@ interface UserContextType {
 	addToWishlist: (productId: string) => Promise<void>;
 	removeFromWishlist: (productId: string) => Promise<void>;
 	sendOrder: (products: string[]) => Promise<boolean>;
-	getOrders: (id: string) => Promise<Order[]>;
+
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	getOrders: (id: string) => Promise<any>;
 }
 
 const UserContext = createContext<UserContextType | null>(null);

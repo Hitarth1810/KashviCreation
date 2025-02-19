@@ -83,7 +83,7 @@ export function OrderDetails({ setUpdate }: { setUpdate: React.Dispatch<React.Se
 		e.preventDefault();
 		await axios.put(`/api/protected/admin/order`, {
 			orderId: selectedId,
-			status: "completed",
+			status: "complete",
 		});
 		setUpdate(true);
 
@@ -198,7 +198,7 @@ export function OrderDetails({ setUpdate }: { setUpdate: React.Dispatch<React.Se
 								CANCEL
 							</Button>
 						</>
-					) : details?.status.toLocaleLowerCase() === "completed" ? (
+					) : details?.status.toLocaleLowerCase() === "complete" ? (
 						<Label>Order Completed</Label>
 					) : (
 						<Label>Order Cancelled</Label>

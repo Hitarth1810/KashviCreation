@@ -150,35 +150,61 @@ const NavIcons = () => {
 
                     {/* Menu items */}
                     <div className="py-2">
-                      <motion.div variants={itemVariants}>
-                        <button
-                          onClick={() => handleNavigation("/dashboard")}
-                          className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-all group"
-                        >
-                          <UserCircle className="w-4 h-4 text-gray-400 group-hover:text-blue-500 transition-colors" />
-                          My Profile
-                        </button>
-                      </motion.div>
+                      {user.role === "ADMIN" ? (
+                        <>
+                          <motion.div variants={itemVariants}>
+                            <button
+                              onClick={() => handleNavigation("/admin/products")}
+                              className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-all group"
+                            >
+                              <Package className="w-4 h-4 text-gray-400 group-hover:text-blue-500 transition-colors" />
+                              Admin Dashboard
+                            </button>
+                          </motion.div>
 
-                      <motion.div variants={itemVariants}>
-                        <button
-                          onClick={() => handleNavigation("/myorders")}
-                          className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-all group"
-                        >
-                          <Package className="w-4 h-4 text-gray-400 group-hover:text-blue-500 transition-colors" />
-                          My Orders
-                        </button>
-                      </motion.div>
+                          <motion.div variants={itemVariants}>
+                            <button
+                              onClick={handleLogout}
+                              className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-all group"
+                            >
+                              <LogOut className="w-4 h-4 text-red-400 group-hover:text-red-500 transition-colors" />
+                              Logout
+                            </button>
+                          </motion.div>
+                        </>
+                      ) : (
+                        <>
+                          <motion.div variants={itemVariants}>
+                            <button
+                              onClick={() => handleNavigation("/dashboard")}
+                              className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-all group"
+                            >
+                              <UserCircle className="w-4 h-4 text-gray-400 group-hover:text-blue-500 transition-colors" />
+                              My Profile
+                            </button>
+                          </motion.div>
 
-                      <motion.div variants={itemVariants}>
-                        <button
-                          onClick={handleLogout}
-                          className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-all group"
-                        >
-                          <LogOut className="w-4 h-4 text-red-400 group-hover:text-red-500 transition-colors" />
-                          Logout
-                        </button>
-                      </motion.div>
+                          <motion.div variants={itemVariants}>
+                            <button
+                              onClick={() => handleNavigation("/myorders")}
+                              className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-all group"
+                            >
+                              <Package className="w-4 h-4 text-gray-400 group-hover:text-blue-500 transition-colors" />
+                              My Orders
+                            </button>
+                          </motion.div>
+
+                          <motion.div variants={itemVariants}>
+                            <button
+                              onClick={handleLogout}
+                              className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-all group"
+                            >
+                              <LogOut className="w-4 h-4 text-red-400 group-hover:text-red-500 transition-colors" />
+                              Logout
+                            </button>
+                          </motion.div>
+                        </>
+                      )}
                     </div>
                   </div>
                 ) : (
@@ -224,4 +250,3 @@ const NavIcons = () => {
 }
 
 export default NavIcons
-

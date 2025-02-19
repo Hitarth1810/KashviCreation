@@ -1,16 +1,17 @@
 import Image from "next/image";
+import Link from "next/link";
 
 const categories = [
-  { name: "TRADITIONAL", image: "https://res.cloudinary.com/diujpbja7/image/upload/v1739209801/19591-7_ybplnl.png" },
-  { name: "BRIDAL", image: "https://res.cloudinary.com/diujpbja7/image/upload/v1739209826/19635-2_airf6b.png" },
-  { name: "FESTIVE", image: "https://res.cloudinary.com/diujpbja7/image/upload/v1739209805/19593-4_qjomfv.png" },
-  { name: "CASUAL", image: "https://res.cloudinary.com/diujpbja7/image/upload/v1739209841/24341-4_xuiw47.jpg" },
+  { name: "Traditional", image: "https://res.cloudinary.com/diujpbja7/image/upload/v1739209801/19591-7_ybplnl.png" },
+  { name: "Bridal", image: "https://res.cloudinary.com/diujpbja7/image/upload/v1739209826/19635-2_airf6b.png" },
+  { name: "Festive", image: "https://res.cloudinary.com/diujpbja7/image/upload/v1739209805/19593-4_qjomfv.png" },
+  { name: "Casual", image: "https://res.cloudinary.com/diujpbja7/image/upload/v1739209841/24341-4_xuiw47.jpg" },
 ];
 
 export function PopularCategories() {
   return (
     <div className="relative bg-gradient-to-b from-rose-50 to-[#FDF7F3] px-4 py-5 sm:px-6 sm:py-8 md:px-8 lg:px-12 xl:px-16 2xl:px-32">
-      {/* Your specified header */}
+      {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-center mb-8 sm:mb-12">
         <div className="flex items-center gap-4 mb-4 sm:mb-0">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="#8B1D3F" className="hidden sm:block">
@@ -29,10 +30,12 @@ export function PopularCategories() {
         </div>
       </div>
 
+      {/* Categories Grid */}
       <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 xl:gap-10">
         {categories.map((category, index) => (
-          <div
+          <Link
             key={index}
+            href={`/collections?category=${encodeURIComponent(category.name)}`}
             className="group relative overflow-hidden rounded-lg shadow-lg transition-transform duration-300 hover:scale-105"
           >
             <Image
@@ -47,7 +50,7 @@ export function PopularCategories() {
                 {category.name}
               </h3>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
     </div>

@@ -6,74 +6,84 @@ import { ShoppingBag, CheckCircle, Clock, XCircle, ChevronDown, ChevronUp } from
 import { motion, AnimatePresence } from "framer-motion"
 import { useUser } from "@/context/UserProvider"
 import { useAuth } from "@/context/AuthProvider"
+import { Status } from "@prisma/client"
 
 interface OrderItem {
   id: string
   name: string
-  image: string
-  color: string
+  images: string[]
+  colors: string[]
 }
 
 interface Order {
-  orderId: string
-  items: OrderItem[]
-  status: string
+  id: string
+  products: OrderItem[]
+  status: Status
   date: string
 }
 
 export default function OrdersPage() {
   const { user } = useAuth()
+  const { getOrders } = useUser()
   const [expandedOrder, setExpandedOrder] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
   // Dummy data for demonstration
-  const dummyOrders: Order[] = [
-    {
-      orderId: "ORD-2024-001",
-      status: "Processing",
-      date: "2024-02-19",
-      items: [
-        {
-          id: "1",
-          name: "Classic White T-Shirt",
-          image: "/api/placeholder/400/400",
-          color: "White"
-        },
-        {
-          id: "2",
-          name: "Denim Blue Jeans",
-          image: "/api/placeholder/400/400",
-          color: "Blue"
-        }
-      ]
-    },
-    {
-      orderId: "ORD-2024-002",
-      status: "Delivered",
-      date: "2024-02-18",
-      items: [
-        {
-          id: "3",
-          name: "Leather Jacket",
-          image: "/api/placeholder/400/400",
-          color: "Black"
-        },
-        {
-          id: "4",
-          name: "Cotton Sweater",
-          image: "/api/placeholder/400/400",
-          color: "Gray"
-        }
-      ]
-    }
-  ]
+  // const dummyOrders: Order[] = [
+  //   {
+  //     id: "ORD-2024-001",
+  //     status: "Processing",
+  //     date: "2024-02-19",
+  //     items: [
+  //       {
+  //         id: "1",
+  //         name: "Classic White T-Shirt",
+  //         image: "/api/placeholder/400/400",
+  //         color: "White"
+  //       },
+  //       {
+  //         id: "2",
+  //         name: "Denim Blue Jeans",
+  //         image: "/api/placeholder/400/400",
+  //         color: "Blue"
+  //       }
+  //     ]
+  //   },
+  //   {
+  //     id: "ORD-2024-002",
+  //     status: "Delivered",
+  //     date: "2024-02-18",
+  //     items: [
+  //       {
+  //         id: "3",
+  //         name: "Leather Jacket",
+  //         image: "/api/placeholder/400/400",
+  //         color: "Black"
+  //       },
+  //       {
+  //         id: "4",
+  //         name: "Cotton Sweater",
+  //         image: "/api/placeholder/400/400",
+  //         color: "Gray"
+  //       }
+  //     ]
+  //   }
+  // ]
 
-  const [orders, setOrders] = useState<Order[]>(dummyOrders)
+  const [orders, setOrders] = useState<Order[]>([])
 
   useEffect(() => {
-    // Simulate loading
+    const fetchOrders = async () => {
+      try {
+        const orders = await getOrders(user!.id)
+        setOrders(orders)
+      } catch (error) {
+        console.error("Error fetching orders:", error)
+      }
+    }
+    fetchOrders()
     setTimeout(() => setIsLoading(false), 800)
-  }, [])
+  }, [getOrders, user])
 
   const toggleOrder = (orderId: string) => {
     setExpandedOrder(expandedOrder === orderId ? null : orderId)
@@ -119,7 +129,7 @@ export default function OrdersPage() {
             <div className="space-y-6">
               {orders.map((order, index) => (
                 <motion.div
-                  key={order.orderId}
+                  key={order.id}
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: 20 }}
@@ -129,57 +139,57 @@ export default function OrdersPage() {
                   {/* Order Header */}
                   <div 
                     className="flex items-center justify-between p-4 cursor-pointer"
-                    onClick={() => toggleOrder(order.orderId)}
+                    onClick={() => toggleOrder(order.id)}
                   >
                     <div className="flex items-center gap-4">
                       <div className="relative w-20 aspect-square">
                         <Image
-                          src={order.items[0]?.image || "/placeholder.svg"}
+                          src={order.products[0]?.images[0] || "/placeholder.svg"}
                           alt="First item"
                           fill
                           className="object-cover rounded-lg"
                         />
                       </div>
                       <div>
-                        <p className="font-medium text-gray-600">Order ID: {order.orderId}</p>
+                        <p className="font-medium text-gray-600">Order ID: {order.id}</p>
                         <p className="text-sm text-gray-500">{order.date}</p>
                         <div className="flex items-center gap-2 mt-2">
                           <span className="text-gray-700 font-medium">Status:</span>
                           <span className={`flex items-center gap-2 ${
-                            order.status === "Delivered" ? "text-green-600" : 
-                            order.status === "Processing" ? "text-amber-600" : 
+                            order.status === Status.COMPLETE ? "text-green-600" : 
+                            order.status === Status.CONFIRMED ? "text-amber-600" : 
                             "text-red-600"
                           } font-medium`}>
-                            {order.status === "Delivered" && <CheckCircle size={16} />}
-                            {order.status === "Processing" && <Clock size={16} />}
-                            {order.status === "Cancelled" && <XCircle size={16} />}
+                            {order.status === Status.COMPLETE && <CheckCircle size={16} />}
+                            {order.status === Status.PENDING && <Clock size={16} />}
+                            {order.status === Status.CANCELLED && <XCircle size={16} />}
                             {order.status}
                           </span>
                         </div>
                       </div>
                     </div>
-                    {expandedOrder === order.orderId ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
+                    {expandedOrder === order.id? <ChevronUp size={24} /> : <ChevronDown size={24} />}
                   </div>
 
                   {/* Order Items */}
                   <AnimatePresence>
-                    {expandedOrder === order.orderId && (
+                    {expandedOrder === order.id && (
                       <motion.div
                         initial={{ height: 0, opacity: 0 }}
                         animate={{ height: "auto", opacity: 1 }}
                         exit={{ height: 0, opacity: 0 }}
                         className="border-t border-gray-200"
                       >
-                        {order.items.map((item, itemIndex) => (
+                        {order.products.map((item, itemIndex) => (
                           <div 
                             key={item.id}
                             className={`p-4 flex items-center gap-4 ${
-                              itemIndex !== order.items.length - 1 ? "border-b border-gray-200" : ""
+                              itemIndex !== order.products.length - 1 ? "border-b border-gray-200" : ""
                             }`}
                           >
                             <div className="relative w-16 aspect-square">
                               <Image
-                                src={item.image || "/placeholder.svg"}
+                                src={item.images[0] || "/placeholder.svg"}
                                 alt={item.name}
                                 fill
                                 className="object-cover rounded-lg"
@@ -187,7 +197,7 @@ export default function OrdersPage() {
                             </div>
                             <div>
                               <h3 className="font-medium text-gray-900">{item.name}</h3>
-                              <p className="text-sm text-gray-600">Color: {item.color}</p>
+                              <p className="text-sm text-gray-600">Color: {item.colors[0]}</p>
                             </div>
                           </div>
                         ))}

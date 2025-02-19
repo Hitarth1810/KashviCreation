@@ -1,5 +1,14 @@
 import { prisma } from "./prisma";
-import { Invoice } from "@prisma/client";
+
+
+type Invoice = {
+    id: string;
+    orderId: string
+    customerId: string;
+    addressId: string;
+    products: string[];
+    notes: string | null;
+}
 
 export function createInvoice(
 	data: Invoice

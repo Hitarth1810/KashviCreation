@@ -17,3 +17,13 @@ export function generateOrderId(userObjectId: string): string {
 		.substring(0, 2); // Random 2-digit number
 	return `${userNumericId}${timestamp}${randomPart}`;
 }
+
+export function generateInvoiceId(): string {
+	const timestamp = Math.floor(Date.now() / 1000)
+		.toString()
+		.substring(0, 4); // Unix timestamp in seconds
+	const randomPart = Math.floor(Math.random() * 100)
+		.toString()
+		.substring(0, 2); // Random 2-digit number
+	return `${timestamp}${randomPart}`;
+}

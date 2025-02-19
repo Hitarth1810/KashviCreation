@@ -13,6 +13,7 @@ export default function OrdersPage() {
 					<h1 className='text-2xl font-semibold'>Orders</h1>
 				</div>
 				<OrderList
+					setUpdate={setUpdateDetails}
 					updateDetails={updateDetails}
 				/>
 			</div>

@@ -176,8 +176,8 @@ The comprehensive review system includes:
 
 - Kuruv Patel - Fullstack Developer
 - Hitarth Shah - Fullstack Developer
-- Harshvardhan Gupta - Fronted Developer
-- Utkarsh Pandey - Frontend Developer
+- Harshvardhan Gupta - Fullstack Developer
+- Utkarsh Pandey - Fullstack Developer
 
 ## 📄 License
 

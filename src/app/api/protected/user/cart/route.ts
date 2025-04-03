@@ -1,10 +1,16 @@
 import { NextResponse } from "next/server";
-import { getUserCart, insertUserCart, deleteUserCart, clearUserCart } from "@/lib/user";
+import {
+	getUserCart,
+	insertUserCart,
+	deleteUserCart,
+	clearUserCart,
+} from "@/lib/user";
+import { cookies } from "next/headers";
 export async function POST(req: Request): Promise<NextResponse> {
 	try {
 		const body = await req.json();
 		const { productId } = body;
-		console.log(productId)
+		console.log(productId);
 		if (!productId) {
 			return NextResponse.json(
 				{ message: "Product ID are required" },
@@ -12,7 +18,7 @@ export async function POST(req: Request): Promise<NextResponse> {
 			);
 		}
 
-		const token = req.headers.get("cookie")?.split("=")[1].split(";")[0];
+		const token = (await cookies()).get("token")?.value.split(";")[0];
 		if (!token) {
 			return NextResponse.json(
 				{ message: "Cookie is required" },
@@ -58,10 +64,9 @@ export async function GET(req: Request): Promise<NextResponse> {
 
 export async function DELETE(req: Request): Promise<NextResponse> {
 	try {
-	
 		const searchParams = new URL(req.url).searchParams;
 		const productId = searchParams.get("productId");
-		const token = req.headers.get("cookie")?.split("=")[1].split(";")[0];
+		const token = (await cookies()).get("token")?.value.split(";")[0];
 		if (!token) {
 			return NextResponse.json(
 				{ message: "Cookie is required" },

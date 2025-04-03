@@ -21,3 +21,9 @@ export function generateToken(user: User): string {
 export function verifyToken(token: string): JWTPayload {
 	return jwt.verify(token, JWT_SECRET) as JWTPayload;
 }
+
+export function getCookieToken(str: string, key: string): string {
+	const regex = new RegExp(`${key}=([^;]+)`);
+	const match = str.match(regex);
+	return match ? match[1].trim() : "";
+}

@@ -27,3 +27,5 @@ export function generateInvoiceId(): string {
 		.substring(0, 2); // Random 2-digit number
 	return `${timestamp}${randomPart}`;
 }
+
+

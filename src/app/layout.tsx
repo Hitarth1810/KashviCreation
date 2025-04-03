@@ -8,6 +8,7 @@ import Footer from "./components/Footer"
 import "./globals.css"
 import { UserProvider } from '@/context/UserProvider'
 import WhatsAppButton from './components/WhatsAppButton'
+import StoreProvider from './StoreProvider'
 
 // Initialize Kalam font
 const kalam = Kalam({
@@ -25,17 +26,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
 		<html lang='en' className={`${kalam.variable}`}>
 			<body>
-				<AuthProvider>
-					<UserProvider>
-						{!isAdminRoute && <Navbar />}
-						{!isAdminRoute && (
-							<div className='w-full h-[2px] bg-gradient-to-r from-transparent via-[#ff9933] to-transparent'></div>
-						)}
-						<main>{children}</main>
-						{!isAdminRoute && <Footer />}
-						{!isAdminRoute && <WhatsAppButton/>}
-					</UserProvider>
-				</AuthProvider>
+				<StoreProvider>
+					<AuthProvider>
+						<UserProvider>
+							{!isAdminRoute && <Navbar />}
+							{!isAdminRoute && (
+								<div className='w-full h-[2px] bg-gradient-to-r from-transparent via-[#ff9933] to-transparent'></div>
+							)}
+							<main>{children}</main>
+							{!isAdminRoute && <Footer />}
+							{!isAdminRoute && <WhatsAppButton />}
+						</UserProvider>
+					</AuthProvider>
+				</StoreProvider>
 			</body>
 		</html>
 	);

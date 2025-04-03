@@ -34,7 +34,7 @@ export async function GET(req: Request): Promise<NextResponse> {
 export async function POST(req: Request): Promise<NextResponse> {
   try {
     // Get token from cookies
-    const token = req.headers.get("cookie")?.split("=")[1];
+    const token = req.headers.get("cookie")?.split("=")[1].split(";")[0];
 
     if (!token) {
       return NextResponse.json(

@@ -38,7 +38,7 @@ export async function GET(req: Request): Promise<NextResponse> {
 }
 
 export async function POST(req: Request): Promise<NextResponse> {
-	const token = req.headers.get("cookie")?.split("=")[1];
+	const token = req.headers.get("cookie")?.split("=")[1].split(";")[0];
 	const res = await req.json();
 	if (!token) {
 		return NextResponse.json({ message: "Unauthorized" }, { status: 401 });

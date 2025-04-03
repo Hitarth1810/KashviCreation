@@ -4,7 +4,8 @@ import { findUserByEmail } from "@/lib/user";
 
 export async function GET(req: Request): Promise<NextResponse> {
 	// Get token from headers
-	const token = req.headers.get("cookie")?.split("=")[1];
+	const token = req.headers.get("cookie")?.split("=")[1].split(";")[0];
+	console.log(token);
 	if (!token) {
 		return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 	}

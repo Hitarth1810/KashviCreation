@@ -12,7 +12,7 @@ export async function POST(req: Request): Promise<NextResponse> {
 			);
 		}
 
-		const token = req.headers.get("cookie")?.split("=")[1];
+		const token = req.headers.get("cookie")?.split("=")[1].split(";")[0];
 		if (!token) {
 			return NextResponse.json(
 				{ message: "Cookie is required" },
@@ -61,7 +61,7 @@ export async function DELETE(req: Request): Promise<NextResponse> {
 	
 		const searchParams = new URL(req.url).searchParams;
 		const productId = searchParams.get("productId");
-		const token = req.headers.get("cookie")?.split("=")[1];
+		const token = req.headers.get("cookie")?.split("=")[1].split(";")[0];
 		if (!token) {
 			return NextResponse.json(
 				{ message: "Cookie is required" },

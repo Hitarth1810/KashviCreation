@@ -4,12 +4,12 @@ import { NextResponse } from "next/server";
 export async function GET(req: Request): Promise<NextResponse> {
 	try {
 		const { searchParams } = new URL(req.url);
-		if (!searchParams.has("customerId")) {
+		if (!searchParams.has("userId")) {
 			const customers = await getCustomers();
 			return NextResponse.json(customers);
 		}
         
-		const customerId = searchParams.get("customerId");
+		const customerId = searchParams.get("userId");
 		if (customerId) {
 			const customers = await getCustomer(customerId);
 			return NextResponse.json(customers);

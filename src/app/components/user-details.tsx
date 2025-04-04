@@ -1,7 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { Phone, Mail, CircleUserRound, MapPin, ChevronDown, ChevronUp } from "lucide-react";
+import { Phone, Mail, CircleUserRound, ChevronDown, ChevronUp } from "lucide-react";
+import { Button } from "@/app/components/ui/button";
 import { Card, CardContent } from "@/app/components/ui/card";
 import { Badge } from "@/app/components/ui/badge";
 import { Separator } from "@/app/components/ui/separator";
@@ -15,6 +16,7 @@ interface User {
   phone: number;
   image?: string;
   addresses: string[];
+  role: "user" | "admin";
   orders: {
     id: string;
     status: string;
@@ -26,26 +28,29 @@ interface User {
   }[];
 }
 
+interface Address {
+  address: string;
+  area: string;
+  city: string;
+  pincode: string;
+  landmark: string;
+  state: string;
+}
+
 export function UserDetails({ selectedUser, setUpdate }: { selectedUser: string | null; setUpdate: React.Dispatch<React.SetStateAction<boolean>> }) {
   const [details, setDetails] = useState<User | null>(null);
+  const [shippingAddresses, setShippingAddresses] = useState<Address[]>([]);
   const [loading, setLoading] = useState(false);
   const [expandedOrder, setExpandedOrder] = useState<string | null>(null);
 
   useEffect(() => {
-    console.log("🔄 useEffect triggered. selectedUser:", selectedUser);
+    if (!selectedUser) return;
   
-    if (!selectedUser) {
-      console.warn("🚨 No selectedUser, skipping API call.");
-      return;
-    }
-  
-    const fetchData = async () => {
+    const fetchUserDetails = async () => {
       setLoading(true);
-      console.log(`📡 Fetching user details for userId: ${selectedUser}`);
-  
       try {
         const response = await axios.get(`/api/protected/admin/customer?userId=${selectedUser}`);
-        console.log("✅ API Response:", response.data);
+        console.log(response.data);
         setDetails(response.data);
         setUpdate(false);
       } catch (error) {
@@ -55,43 +60,75 @@ export function UserDetails({ selectedUser, setUpdate }: { selectedUser: string 
       }
     };
   
-    fetchData();
-  }, [selectedUser, setUpdate]); // 👈 Ensure dependencies are correct
+    const fetchOrders = async () => {
+      try {
+        const response = await axios.get(`/api/protected/user/order?userId=${selectedUser}`);
+        if (Array.isArray(response.data)) {
+          setDetails((prev) => prev ? { ...prev, orders: response.data } : null);
+        } else {
+          console.warn("Unexpected orders format:", response.data);
+        }
+      } catch (error) {
+        console.error("❌ Error fetching orders:", error);
+      }
+    };
   
+    fetchUserDetails();
+    fetchOrders(); // Fetch orders separately
   
+  }, [selectedUser, setUpdate]);
   
-
 
   useEffect(() => {
-    console.log("🛠 Re-rendering component. Current details state:", details);
-  }, [details]);
+    if (!selectedUser) return;
 
-  console.log("ℹ️ Current selectedUser:", selectedUser);
-  console.log("📊 Current user details state:", details);
+    const fetchShippingAddresses = async () => {
+      try {
+        const response = await axios.get(`/api/protected/user/shipping-address?userId=${selectedUser}`);
+        
+        if (Array.isArray(response.data)) {
+          setShippingAddresses(response.data.map((addr: { address: string; area: string; city: string; pincode: string; landmark?: string; state: string }) => ({
+            address: addr.address,
+            area: addr.area,
+            city: addr.city,
+            pincode: addr.pincode,
+            landmark: addr.landmark || "N/A",
+            state: addr.state
+          })));
+        } else {
+          console.warn("Unexpected response format:", response.data);
+        }
+      } catch (error) {
+        console.error("❌ Error fetching shipping addresses:", error);
+      }
+    };
+
+    fetchShippingAddresses();
+  }, [selectedUser]);
+
+  const handleRoleChange = async () => {
+    if (!details) return;
+    
+    const newRole = details.role === "user" ? "admin" : "user";
+    try {
+      await axios.put(`/api/protected/admin/update-role`, {
+        userId: details.id,
+        role: newRole,
+      });
+      setDetails({ ...details, role: newRole });
+    } catch (error) {
+      console.error("❌ Error updating role:", error);
+    }
+  };
 
   if (!selectedUser)
-    return (
-      <div className='flex h-full items-center justify-center p-8 text-center text-muted-foreground'>
-        Select a user to view their details
-      </div>
-    );
+    return <div className='flex h-full items-center justify-center p-8 text-center text-muted-foreground'>Select a user to view their details</div>;
 
-  if (loading) {
-    return (
-      <div className='flex h-full items-center justify-center p-8 text-center'>
-        Loading user details...
-      </div>
-    );
-  }
+  if (loading)
+    return <div className='flex h-full items-center justify-center p-8 text-center'>Loading user details...</div>;
 
-  if (!details) {
-    return (
-      <div className='flex h-full items-center justify-center p-8 text-center text-muted-foreground'>
-        ⚠️ No user data available.
-        <pre>{JSON.stringify(details, null, 2)}</pre>
-      </div>
-    );
-  }
+  if (!details)
+    return <div className='flex h-full items-center justify-center p-8 text-center text-muted-foreground'>⚠️ No user data available.</div>;
 
   return (
     <div className='h-full border-l p-4'>
@@ -115,20 +152,35 @@ export function UserDetails({ selectedUser, setUpdate }: { selectedUser: string 
           </div>
         </div>
         <Separator className='my-4' />
-        <h4 className='font-semibold'>Addresses</h4>
+        {/* Role Change Section */}
+        <h4 className='font-semibold'>User Role</h4>
+        <div className='flex items-center gap-4 mt-2'>
+          <Badge variant={details.role === "admin" ? "default" : "outline"}>{details.role.toUpperCase()}</Badge>
+          <Button onClick={handleRoleChange} variant='secondary'>
+            Change to {details.role === "user" ? "Admin" : "User"}
+          </Button>
+        </div>
+        
+        {/* Shipping Addresses Section */}
+        
+        <h4 className='font-semibold'>Shipping Addresses</h4>
         <div className='mt-2 space-y-2'>
-          {(details?.addresses ?? []).length > 0 ? (
-            details?.addresses.map((address, index) => (
+          {shippingAddresses.length > 0 ? (
+            shippingAddresses.map((addr, index) => (
               <Card key={index}>
-                <CardContent className='p-4 flex items-center gap-2'>
-                  <MapPin className='h-5 w-5' /> {address}
+                <CardContent className='p-4'>
+                  <p className='text-sm'><strong>Address:</strong> {addr.address}, {addr.area}</p>
+                  <p className='text-sm'><strong>City:</strong> {addr.city}, <strong>State:</strong> {addr.state}</p>
+                  <p className='text-sm'><strong>Pincode:</strong> {addr.pincode}</p>
+                  <p className='text-sm'><strong>Landmark:</strong> {addr.landmark}</p>
                 </CardContent>
               </Card>
             ))
           ) : (
-            <p className='text-sm text-muted-foreground'>No addresses available</p>
+            <p className='text-sm text-muted-foreground'>No shipping addresses found</p>
           )}
         </div>
+
         <Separator className='my-4' />
         <h4 className='font-semibold'>Orders</h4>
         <div className='mt-2 space-y-2'>

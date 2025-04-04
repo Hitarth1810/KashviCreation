@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { getCookieToken } from "@/lib/jwt";
 import { updateOrderStatus } from "@/lib/order";
 import { prisma } from "@/lib/prisma";
 import { createCustomerOrder, getCustomerOrders } from "@/lib/user";
@@ -38,7 +39,8 @@ export async function GET(req: Request): Promise<NextResponse> {
 }
 
 export async function POST(req: Request): Promise<NextResponse> {
-	const token = req.headers.get("cookie")?.split("=")[1].split(";")[0];
+	const token = getCookieToken(
+		req.headers.get("cookie") || "","token");
 	const res = await req.json();
 	if (!token) {
 		return NextResponse.json({ message: "Unauthorized" }, { status: 401 });

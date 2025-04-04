@@ -3,13 +3,15 @@ import { NextRequest } from "next/server";
 import { verifyToken } from "./lib/jwt";
 import { prisma } from "./lib/prisma";
 
+import { getCookieToken } from "./lib/jwt";
 export async function middleware(request: NextRequest) {
 
 
 	// Check for protected routes
 	if (request.nextUrl.pathname.startsWith("/api/admin")) {
 		try {
-			const token = request.headers.get("cookie")?.split("=")[1];
+			const token = getCookieToken(
+				request.headers.get("cookie") || "","token");
 			console.log(token);
 			if (!token) {
 				console.log("no token");

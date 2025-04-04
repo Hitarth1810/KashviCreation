@@ -1,7 +1,7 @@
 import { getShippingAddress, setShippingAddress } from "@/lib/user";
 import { NextResponse } from "next/server";
 
-
+import { getCookieToken } from "@/lib/jwt";
 export async function GET(req: Request): Promise<NextResponse> {
   try {
     const { searchParams } = new URL(req.url);
@@ -34,7 +34,7 @@ export async function GET(req: Request): Promise<NextResponse> {
 export async function POST(req: Request): Promise<NextResponse> {
   try {
     // Get token from cookies
-    const token = req.headers.get("cookie")?.split("=")[1].split(";")[0];
+    const token = getCookieToken(req.headers.get("cookie") || "", "token");
 
     if (!token) {
       return NextResponse.json(
@@ -67,3 +67,4 @@ export async function POST(req: Request): Promise<NextResponse> {
     );
   }
 }
+

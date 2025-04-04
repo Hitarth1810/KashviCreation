@@ -261,3 +261,23 @@ export async function createCustomerOrder(token: string, products: string[]) {
 	});
 	return order;
 }
+
+export async function updateUserRole(userId: string, role: "user" | "admin") {
+	try {
+		const updatedUser = await prisma.user.update({
+			where: { id: userId },
+			data: { role: role.toUpperCase() as "USER" | "ADMIN" },
+			select: {
+				id: true,
+				email: true,
+				name: true,
+				role: true,
+				updatedAt: true,
+			},
+		});
+		return updatedUser;
+	} catch (error) {
+		console.error("Error updating user role:", error);
+		throw new Error(error instanceof Error ? error.message : String(error));
+	}
+}

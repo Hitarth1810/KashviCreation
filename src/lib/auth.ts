@@ -2,6 +2,7 @@ import { prisma } from "./prisma";
 import bcrypt from "bcryptjs";
 import { generateToken } from "./jwt";
 import { createUser } from "./user";
+import { cookies } from "next/headers";
 
 export async function loginUser(email: string, password: string) {
 	const user = await prisma.user.findUnique({ where: { email } });
@@ -49,4 +50,26 @@ export async function signupUser(
 	} catch (error) {
 		throw new Error(error instanceof Error ? error.message : String(error));
 	}
+}
+export async function getSession() {
+	const token = (await cookies()).get("token")?.value;
+
+	if (!token) return null;
+
+	const session = await prisma.session.findUnique({
+		where: { token },
+		include: { user: true },
+	});
+
+	if (!session || session.expires < new Date()) {
+		return null;
+	}
+
+	return {
+		user: {
+			id: session.user.id,
+			email: session.user.email,
+			role: session.user.role,
+		},
+	};
 }

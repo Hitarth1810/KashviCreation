@@ -4,6 +4,8 @@ import {
 	insertUserWishlist,
 	deleteUserWishlist,
 } from "@/lib/user";
+import { getCookieToken } from "@/lib/jwt";
+import { cookies } from "next/headers";
 export async function POST(req: Request): Promise<NextResponse> {
 	try {
 		const body = await req.json();
@@ -15,7 +17,7 @@ export async function POST(req: Request): Promise<NextResponse> {
 				{ status: 400 }
 			);
 		}
-		const token = req.headers.get("cookie")?.split("=")[1];
+		const token = getCookieToken(req.headers.get("cookie") || "", "token");
 		if (!token) {
 			return NextResponse.json(
 				{ message: "Cookie is required" },
@@ -45,9 +47,9 @@ export async function GET(req: Request): Promise<NextResponse> {
 		}
 
 		const wishlist = await getUserWishlist(userId);
-    if (!wishlist) {
-      return NextResponse.json({ message: "User not found" }, { status: 404 });
-    }
+		if (!wishlist) {
+			return NextResponse.json({ message: "User not found" }, { status: 404 });
+		}
 		return NextResponse.json(wishlist, { status: 200 });
 	} catch (error) {
 		console.error("Error fetching cart:", error);
@@ -68,13 +70,13 @@ export async function DELETE(req: Request): Promise<NextResponse> {
 				{ status: 400 }
 			);
 		}
-    const token = req.headers.get("cookie")?.split("=")[1];
-    if (!token) {
-      return NextResponse.json(
-        { message: "Cookie is required" },
-        { status: 400 }
-      );
-    }
+		const token = (await cookies()).get("token")?.value;
+		if (!token) {
+			return NextResponse.json(
+				{ message: "Cookie is required" },
+				{ status: 400 }
+			);
+		}
 
 		const wishlist = await deleteUserWishlist(token, productId);
 		return NextResponse.json(wishlist, { status: 200 });

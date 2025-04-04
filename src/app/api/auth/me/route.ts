@@ -1,10 +1,11 @@
 import { NextResponse } from "next/server";
 import { verifyToken } from "@/lib/jwt";
 import { findUserByEmail } from "@/lib/user";
+import { cookies } from "next/headers";
 
-export async function GET(req: Request): Promise<NextResponse> {
+export async function GET(): Promise<NextResponse> {
 	// Get token from headers
-	const token = req.headers.get("cookie")?.split("=")[1].split(";")[0];
+	const token = (await cookies()).get("token")?.value;
 	if (!token) {
 		return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 	}

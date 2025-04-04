@@ -3,6 +3,7 @@ import { getCookieToken } from "@/lib/jwt";
 import { updateOrderStatus } from "@/lib/order";
 import { prisma } from "@/lib/prisma";
 import { createCustomerOrder, getCustomerOrders } from "@/lib/user";
+import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
 export async function GET(req: Request): Promise<NextResponse> {
@@ -16,31 +17,29 @@ export async function GET(req: Request): Promise<NextResponse> {
 	}
 
 	const orders = await getCustomerOrders(userId);
-    const data = await Promise.all(
-        orders.map(async (order) => {
-            const products = await Promise.all(
-                order.products.map(async (product: any) => {
-                    return await prisma.product.findUnique({
-                        where: { id: product },
-                    });
-                })
-            );
+	const data = await Promise.all(
+		orders.map(async (order) => {
+			const products = await Promise.all(
+				order.products.map(async (product: any) => {
+					return await prisma.product.findUnique({
+						where: { id: product },
+					});
+				})
+			);
 
-            return {
-                id: order.id,
-                products: products,
-                status: order.status,
-            };
-        })
-    );
-
+			return {
+				id: order.id,
+				products: products,
+				status: order.status,
+			};
+		})
+	);
 
 	return NextResponse.json(data);
 }
 
 export async function POST(req: Request): Promise<NextResponse> {
-	const token = getCookieToken(
-		req.headers.get("cookie") || "","token");
+	const token = (await cookies()).get("token")?.value.split(";")[0];
 	const res = await req.json();
 	if (!token) {
 		return NextResponse.json({ message: "Unauthorized" }, { status: 401 });

@@ -5,11 +5,17 @@ import Image from "next/image";
 import { Minus, Plus, Trash2, ShoppingBag, Package2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
-import { useUser } from "@/context/UserProvider";
-import { useAuth } from "@/context/AuthProvider";
+
 import AddressForm from "@/app/components/address-form";
 import Popup from "../components/popup";
-
+import { useSelector } from "react-redux";
+import { RootState } from "@/lib/store";
+import {
+	useClearCartMutation,
+	useRemoveFromCartMutation,
+	useSendOrderMutation,
+} from "@/lib/api/userDataApiSlice";
+import { useLazyFetchProductByIdQuery } from "@/lib/api/productApiSlice";
 
 const fadeIn = {
 	initial: { opacity: 0, y: 20 },
@@ -18,8 +24,17 @@ const fadeIn = {
 };
 
 function CartPage() {
-	const { getShippingAddress, cart, removeFromCart, clearCart, sendOrder } = useUser();
-	const { user } = useAuth();
+	// const { getShippingAddress, cart, removeFromCart, clearCart, sendOrder } = useUser();
+	// const { user } = useAuth();
+
+	const { user, cart, shippingAddress } = useSelector(
+		(state: RootState) => state.user
+	);
+	const [removeFromCart] = useRemoveFromCartMutation();
+	const [clearCart] = useClearCartMutation();
+	const [sendOrder] = useSendOrderMutation();
+	const [fetchProductByIdQuery] = useLazyFetchProductByIdQuery();
+
 	const [cartItems, setCartItems] = useState<
 		{
 			id: string;
@@ -50,8 +65,7 @@ function CartPage() {
 
 			const productDetails = await Promise.all(
 				Object.keys(itemCounts).map(async (id) => {
-					const res = await fetch(`/api/product/${id}`);
-					const data = await res.json();
+					const { data } = await fetchProductByIdQuery(id);
 					return { ...data, quantity: itemCounts[id] };
 				})
 			);
@@ -60,7 +74,7 @@ function CartPage() {
 		};
 
 		fetchCartDetails();
-	}, [cart]);
+	}, [cart, fetchProductByIdQuery]);
 
 	const updateQuantity = (id: string, change: number) => {
 		setCartItems((prevItems) =>
@@ -84,24 +98,27 @@ function CartPage() {
 			return;
 		}
 
-		if ((await getShippingAddress(user.id))?.length === 0) {
+		if (!shippingAddress) {
 			setIsAddressFormOpen(true);
 			return;
 		}
 
-    const productIds = cartItems.map((item) => item.id);
-    console.log(productIds)
-    const res = await sendOrder(productIds);
-    if(!res) return <>
-      <Popup
-        message="Your order could not be placed. Please try again later."
-        type="error"
-        onClose={() => router.push("/cart")}
-      />
-    </>
+		const productIds = cartItems.map((item) => item.id);
+		console.log(productIds);
+		const { data: res } = await sendOrder(productIds);
+		if (!res)
+			return (
+				<>
+					<Popup
+						message='Your order could not be placed. Please try again later.'
+						type='error'
+						onClose={() => router.push("/cart")}
+					/>
+				</>
+			);
 		router.push("/myorders");
 
-		clearCart();
+		clearCart(null);
 	};
 
 	if (isLoading) {

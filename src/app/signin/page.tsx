@@ -2,11 +2,11 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useAuth } from "@/context/AuthProvider";
 import Popup from "@/app/components/popup";
+import { useLoginMutation } from "@/lib/api/authApiSlice";
 
 export default function SignInPage() { 
-  const { login } = useAuth();
+  const [login] = useLoginMutation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [popup, setPopup] = useState<{ message: string; type: "success" | "error"; isVisible: boolean }>({ message: "", type: "success", isVisible: false });
@@ -16,7 +16,7 @@ export default function SignInPage() {
     setPopup({ message: "", type: "success", isVisible: false });
 
     try {
-      await login(email, password);
+      await login({email, password});
       setPopup({ message: "Sign in successful!", type: "success", isVisible: true });
       setTimeout(() => {
         setPopup({ ...popup, isVisible: false });

@@ -3,11 +3,11 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/context/AuthProvider";
 import Popup from "@/app/components/popup";
+import { useSignupMutation } from "@/lib/api/authApiSlice";
 
 export default function SignUpPage() {
-  const { signup } = useAuth();
+  const [signup] = useSignupMutation();
   const router = useRouter();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -20,7 +20,7 @@ export default function SignUpPage() {
     setPopup({ message: "", type: "error", isVisible: false });
     
     try {
-      await signup(email, password, Number(phone), name);
+      await signup({email, password, phone: Number(phone), name});
       setPopup({ message: "Sign up successful!", type: "success", isVisible: true });
       setTimeout(() => {
         setPopup({ ...popup, isVisible: false });

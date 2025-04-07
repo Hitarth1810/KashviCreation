@@ -1,15 +1,17 @@
 "use client";
 
 import { useState, useEffect, useMemo, Suspense } from "react";
-import axios from "axios";
 import Image from "next/image";
 import Link from "next/link";
 import { Heart, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import type { Product } from "@/types/product";
 import type React from "react";
-import { useUser } from "@/context/UserProvider";
 import { useSearchParams } from "next/navigation";
+import { useSelector } from "react-redux";
+import { RootState } from "@/lib/store";
+import { useAddToCartMutation, useRemoveFromWishlistMutation } from "@/lib/api/userDataApiSlice";
+import { useFetchProductsQuery } from "@/lib/api/productApiSlice";
 
 interface FilterState {
   categories: string[];
@@ -190,8 +192,12 @@ function ProductGrid({
 }
 
 export default function Collections() {
-  const { cart, addToCart, addToWishlist, removeFromWishlist, wishlist } =
-    useUser();
+  
+  const { cart, wishlist } = useSelector((state: RootState) => state.user)
+  const [addToCart] = useAddToCartMutation();
+  const [addToWishlist] = useAddToCartMutation();
+  const [removeFromWishlist] = useRemoveFromWishlistMutation()
+  const {data: products = [], isLoading: queryLoading} = useFetchProductsQuery(undefined)
   const searchParams = useSearchParams();
   const categoryQuery = searchParams.get("category");
 
@@ -217,8 +223,6 @@ export default function Collections() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get(`/api/product`);
-        const products = response.data;
         setAllSarees(products);
 
         const categoryMap = new Map<string, number>();
@@ -252,9 +256,8 @@ export default function Collections() {
         setIsLoading(false);
       }
     };
-
-    fetchProducts();
-  }, []);
+    if(!queryLoading) fetchProducts();
+  }, [products, queryLoading]);
 
   const toggleWishlist = (e: React.MouseEvent, id: string) => {
     e.preventDefault();

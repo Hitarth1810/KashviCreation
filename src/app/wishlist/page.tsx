@@ -12,6 +12,8 @@ import {
 	useRemoveFromWishlistMutation,
 } from "@/lib/api/userDataApiSlice";
 import { useLazyFetchProductByIdQuery } from "@/lib/api/productApiSlice";
+import { useSelector } from "react-redux";
+import { RootState } from "@/lib/store"; // Adjust the path to your store file
 
 interface Product {
 	id: string;
@@ -22,30 +24,36 @@ interface Product {
 }
 
 export default function WishlistPage() {
-	const { data: wishlist, isLoading } = useFetchWishlistQuery(undefined);
+	const { user, loading: stateLoading } = useSelector(
+		(state: RootState) => state.user
+	);
+	const { data: wishlist, isLoading: queryLoading } = useFetchWishlistQuery(
+		user?.id || ""
+	);
 	const [trigger] = useLazyFetchProductByIdQuery();
 	const [removeFromWishlist] = useRemoveFromWishlistMutation();
 	const [addToCart] = useAddToCartMutation();
-
+	const isLoading = stateLoading && queryLoading;
 	const router = useRouter();
 	const [wishlistItems, setWishlistItems] = useState<Product[]>([]);
 	//const [isLoading, setIsLoading] = useState(true);
 
 	useEffect(() => {
-		console.log(wishlist)
-		try {
-			// Trigger multiple requests in parallel
-			const productPromises = wishlist.map(async (id: string) => {
-				const { data } = await trigger(id);
-				return data;
-			});
+		const fetchWishlist = async () => {
+			try {
+				// Trigger multiple requests in parallel
+				const productPromises = wishlist.map(async (id: string) => {
+					const { data } = await trigger(id);
+					return data;
+				});
 
-			// Wait for all promises to resolve
-			console.log(productPromises)
-			setWishlistItems(productPromises);
-		} catch (error) {
-			console.error("Error fetching wishlist products:", error);
-		}
+				const products = await Promise.all(productPromises);
+				setWishlistItems(products);
+			} catch (error) {
+				console.error("Error fetching wishlist products:", error);
+			}
+		};
+		fetchWishlist();
 	}, [wishlist, trigger]);
 
 	const removeItem = async (id: string) => {

@@ -1,29 +1,33 @@
-"use client"
+"use client";
 
-import { Kalam } from 'next/font/google'
-import { AuthProvider } from "@/context/AuthProvider"
-import { usePathname } from "next/navigation"
-import Navbar from "./components/Navbar"
-import Footer from "./components/Footer"
-import "./globals.css"
-import { UserProvider } from '@/context/UserProvider'
-import WhatsAppButton from './components/WhatsAppButton'
-import StoreProvider from './StoreProvider'
+import { Kalam } from "next/font/google";
+import { AuthProvider } from "@/context/AuthProvider";
+import { usePathname } from "next/navigation";
+import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
+import "./globals.css";
+import { UserProvider } from "@/context/UserProvider";
+import WhatsAppButton from "./components/WhatsAppButton";
+import StoreProvider from "./StoreProvider";
 
 // Initialize Kalam font
 const kalam = Kalam({
-  weight: ['400', '700'],
-  subsets: ['devanagari'],
-  variable: '--font-kalam',
-})
+	weight: ["400", "700"],
+	subsets: ["devanagari"],
+	variable: "--font-kalam",
+});
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
-  const pathname = usePathname() // Get the current route
+export default function RootLayout({
+	children,
+}: {
+	children: React.ReactNode;
+}) {
+	const pathname = usePathname()
 
-  // Hide Navbar and Footer for admin routes
-  const isAdminRoute = pathname.startsWith("/admin")
+	// Hide Navbar and Footer for admin routes
+	const isAdminRoute = pathname.startsWith("/admin");
 
-  return (
+	return (
 		<html lang='en' className={`${kalam.variable}`}>
 			<body>
 				<StoreProvider>

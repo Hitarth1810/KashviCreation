@@ -58,12 +58,14 @@ export const userDataApiSlice = apiSlice.injectEndpoints({
 		}),
 		setShippingAddress: builder.mutation({
 			query: (address: {
-				name: string;
+				pincode: string;
 				address: string;
+				area: string;
+				landmark: string;
 				city: string;
 				state: string;
-				country: string;
-				zipCode: string;
+				isDefault: boolean;
+				instructions: string | null;
 			}) => ({
 				url: "/protected/user/shipping-address",
 				method: "POST",

@@ -12,7 +12,7 @@ export default function Footer() {
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12 relative">
           {/* Map Section - Replaced Google Maps with iframe */}
-          <div className="w-full rounded-lg overflow-hidden shadow-md ml-auto md:w-[90%] ml-2">
+          <div className="w-full rounded-lg overflow-hidden shadow-md ml-auto md:w-[90%]">
             <iframe
               src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3720.198385451438!2d72.84406537431065!3d21.18427668242081!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be04e4bffd55d29%3A0x9facf9728614cf00!2sMillennium%20Textile%20Market%202!5e0!3m2!1sen!2sin!4v1739453271727!5m2!1sen!2sin"
               className="w-full h-[200px]" // Same height as previous map

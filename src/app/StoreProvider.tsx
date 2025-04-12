@@ -36,7 +36,7 @@ function DataInitializer({ store }: { store: AppStore }) {
 		if (wishlist) store.dispatch(setWishlist(wishlist));
 		if (shippingAddress) store.dispatch(setShippingAddress(shippingAddress));
 		store.dispatch(setLoading(false));
-	}, [user, cart, wishlist, shippingAddress, store]);
+	}, [user, cart, wishlist, shippingAddress, store, isAuthSuccess]);
 
 	return null;
 }

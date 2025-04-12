@@ -2,18 +2,20 @@ import { apiSlice } from "./apiSlice";
 
 export const userDataApiSlice = apiSlice.injectEndpoints({
 	endpoints: (builder) => ({
-        fetchCart: builder.query({
-            query: () => ({
-                url: "/protected/user/cart",
-                method: "GET",
-            }),
-        }),
-        fetchWishlist: builder.query({
-            query: () => ({
-                url: "/protected/user/wishlist",
-                method: "GET",
-            }),
-        }),
+		fetchCart: builder.query({
+			query: (userId: string) => ({
+				url: "/protected/user/cart",
+				params: { userId },
+				method: "GET",
+			}),
+		}),
+		fetchWishlist: builder.query({
+			query: (userId: string) => ({
+				url: "/protected/user/wishlist",
+				params: { userId },
+				method: "GET",
+			}),
+		}),
 		addToCart: builder.mutation({
 			query: (productId: string) => ({
 				url: "/protected/user/cart",
@@ -24,7 +26,7 @@ export const userDataApiSlice = apiSlice.injectEndpoints({
 		removeFromCart: builder.mutation({
 			query: (productId: string) => ({
 				url: `/protected/user/cart?productId=${productId}`,
-                params: {productId},
+				params: { productId },
 				method: "DELETE",
 			}),
 		}),
@@ -48,50 +50,56 @@ export const userDataApiSlice = apiSlice.injectEndpoints({
 			}),
 		}),
 		getShippingAddress: builder.query({
-			query: () => ({
+			query: (userId: string) => ({
 				url: "/protected/user/shipping-address",
+				params: { userId },
 				method: "GET",
 			}),
 		}),
-        setShippingAddress: builder.mutation({
-            query: (address: {
-                name: string;
-                address: string;
-                city: string;
-                state: string;
-                country: string;
-                zipCode: string;
-            }) => ({
-                url: "/protected/user/shipping-address",
-                method: "POST",
-                body: address,
-            }),
-        }),
-        sendOrder: builder.mutation({
-            query: (orderId: string) => ({
-                url: `/protected/user/order/${orderId}`,
-                method: "POST",
-            }),
-        }),
-        getOrders: builder.query({
-            query: () => ({
-                url: "/protected/user/orders",
-                method: "GET",
-            }),
-        }),
+		setShippingAddress: builder.mutation({
+			query: (address: {
+				pincode: string;
+				address: string;
+				area: string;
+				landmark: string;
+				city: string;
+				state: string;
+				isDefault: boolean;
+				instructions: string | null;
+			}) => ({
+				url: "/protected/user/shipping-address",
+				method: "POST",
+				body: address,
+			}),
+		}),
+		sendOrder: builder.mutation({
+			query: (orderIds: string[]) => ({
+				url: `/protected/user/order`,
+				method: "POST",
+				body: { products: orderIds },
+			}),
+		}),
+		getOrders: builder.query({
+			query: (userId: string) => ({
+				url: "/protected/user/order",
+				params: { userId },
+				method: "GET",
+			}),
+		}),
 	}),
 });
 
 export const {
-    useFetchCartQuery,
-    useFetchWishlistQuery,
-    useAddToCartMutation,
-    useRemoveFromCartMutation,
-    useClearCartMutation,
-    useAddToWishlistMutation,
-    useRemoveFromWishlistMutation,
-    useGetShippingAddressQuery,
-    useSetShippingAddressMutation,
-    useSendOrderMutation,
-    useGetOrdersQuery,
+	useFetchCartQuery,
+	useFetchWishlistQuery,
+	useAddToCartMutation,
+	useRemoveFromCartMutation,
+	useClearCartMutation,
+	useAddToWishlistMutation,
+	useRemoveFromWishlistMutation,
+	useGetShippingAddressQuery,
+	useSetShippingAddressMutation,
+	useSendOrderMutation,
+	useGetOrdersQuery,
+	useLazyGetOrdersQuery,
 } = userDataApiSlice;

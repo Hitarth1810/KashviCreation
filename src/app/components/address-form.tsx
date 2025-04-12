@@ -1,6 +1,6 @@
 "use client";
 
-import { useUser } from "@/context/UserProvider";
+import { useSetShippingAddressMutation } from "@/lib/api/userDataApiSlice";
 import { AlertCircle, X } from "lucide-react";
 import { useState } from "react";
 
@@ -24,7 +24,7 @@ export default function AddressForm({
 
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { setShippingAddress } = useUser();
+  const [setShippingAddress] = useSetShippingAddressMutation()
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>

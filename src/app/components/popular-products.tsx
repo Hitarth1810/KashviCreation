@@ -1,13 +1,14 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { Heart, ShoppingBag } from "lucide-react";
 import type React from "react";
-import axios from "axios";
-import { useUser } from "@/context/UserProvider"; // Add this import
+import { useFetchProductsQuery } from "@/lib/api/productApiSlice";
+import { useAddToCartMutation, useAddToWishlistMutation, useRemoveFromWishlistMutation } from "@/lib/api/userDataApiSlice";
+import { useSelector } from "react-redux";
+import { RootState } from "@/lib/store";
 
 interface Product {
   id: string;
@@ -19,25 +20,14 @@ interface Product {
 }
 
 export function PopularProducts() {
-  const { cart, addToCart, addToWishlist, removeFromWishlist, wishlist } = useUser(); // Use the context
-  const [products, setProducts] = useState<Product[]>([]);
-  const [, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const response = await axios.get("/api/product");
-        const featuredProducts = response.data.slice(0, 4);
-        setProducts(featuredProducts);
-        setIsLoading(false);
-      } catch (error) {
-        console.error("Error fetching products:", error);
-        setIsLoading(false);
-      }
-    };
+  const { cart, wishlist } = useSelector((state: RootState) => state.user);
+	const [addToCart] = useAddToCartMutation();
+	const [addToWishlist] = useAddToWishlistMutation();
+	const [removeFromWishlist] = useRemoveFromWishlistMutation();
+	const { data: prodductsRes = [] } = useFetchProductsQuery(null);
+	const products: Product[] = prodductsRes.slice(0, 4) || [];
 
-    fetchProducts();
-  }, []);
 
   const toggleWishlist = (e: React.MouseEvent, id: string) => {
     e.preventDefault();

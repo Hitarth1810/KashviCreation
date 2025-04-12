@@ -86,6 +86,7 @@ export const userDataApiSlice = apiSlice.injectEndpoints({
 				method: "GET",
 			}),
 		}),
+		
 	}),
 });
 

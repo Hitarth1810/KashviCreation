@@ -19,73 +19,42 @@ import {
 import {
 	useFetchProductByIdQuery,
 	useFetchProductsQuery,
+	useFetchReviewsQuery,
+	usePostReviewMutation,
 } from "@/lib/api/productApiSlice";
 import ProductPageSkeleton from "@/app/components/skeletons/ProductPage.skeleton";
 
 interface Review {
-	id: number;
 	name: string;
-	avatar: string;
 	rating: number;
+	comment: string;
+}
+
+interface ReviewData {
+	id: string;
+	name: string;
+	rating: number;
+	comment: string;
 	date: string;
-	comment: string;
 }
-
-interface NewReview {
-	name: string;
-	comment: string;
-	rating: number;
-}
-
-const initialReviews: Review[] = [
-	{
-		id: 1,
-		name: "Sarah Johnson",
-		avatar:
-			"https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150",
-		rating: 5,
-		date: "2 weeks ago",
-		comment:
-			"Absolutely stunning saree! The quality of the silk is exceptional, and the zari work is intricate and beautiful. Perfect for my daughter's wedding.",
-	},
-	{
-		id: 2,
-		name: "Priya Patel",
-		avatar:
-			"https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150",
-		rating: 4,
-		date: "1 month ago",
-		comment:
-			"Beautiful craftsmanship and the color is exactly as shown in the pictures. The only reason for 4 stars is that delivery took a bit longer than expected.",
-	},
-	{
-		id: 3,
-		name: "Meera Shah",
-		avatar:
-			"https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150",
-		rating: 5,
-		date: "2 months ago",
-		comment:
-			"This saree exceeded my expectations! The border design is exquisite and the fabric drapes beautifully. Received many compliments at the event.",
-	},
-];
 
 const ProductPage = ({ params }: { params: Promise<{ id: string }> }) => {
 	const { id } = use(params);
-	const { cart, wishlist } = useSelector((state: RootState) => state.user);
+	const { cart, wishlist, user } = useSelector((state: RootState) => state.user);
 	const [addToCart] = useAddToCartMutation();
 	const [addToWishlist] = useAddToWishlistMutation();
 	const [removeFromWishlist] = useRemoveFromWishlistMutation();
 	const { data: product, isLoading: pageLoading } =
 		useFetchProductByIdQuery(id);
 	const { data: allProducts, isLoading: loading } = useFetchProductsQuery(null);
-
+	const { data: reviews = [], refetch: reviewsRefetch } = useFetchReviewsQuery(id);
+	const [postReview] = usePostReviewMutation();
 	const router = useRouter();
 	const [selectedImage, setSelectedImage] = useState<string | null>(null);
 	const [hoveredImage, setHoveredImage] = useState<string | null>(null);
-	const [reviews, setReviews] = useState<Review[]>(initialReviews);
-	const [newReview, setNewReview] = useState<NewReview>({
-		name: "",
+	//const [reviews, setReviews] = useState<Review[]>(initialReviews);
+	const [newReview, setNewReview] = useState<Review>({
+		name: user.name,
 		comment: "",
 		rating: 5,
 	});
@@ -131,17 +100,16 @@ const ProductPage = ({ params }: { params: Promise<{ id: string }> }) => {
 
 	const handleSubmitReview = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-		if (newReview.name.trim() && newReview.comment.trim()) {
-			const review: Review = {
-				id: reviews.length + 1,
-				...newReview,
-				date: "Just now",
-				avatar:
-					"https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150",
-			};
-			setReviews([review, ...reviews]);
-			setNewReview({ name: "", comment: "", rating: 5 });
-		}
+		console.log("Submitting review:", newReview);
+		newReview.name.trim();
+		newReview.comment.trim();
+		const review: Review = {
+			...newReview,
+		};
+		postReview({ ...review, productId: id });
+		reviewsRefetch();
+		setNewReview({ name: user.name, comment: "", rating: 5 });
+		console.log("Review submitted:", reviews);
 	};
 	// Updated cart handling
 	const handleCartClick = (e: React.MouseEvent) => {
@@ -407,25 +375,6 @@ const ProductPage = ({ params }: { params: Promise<{ id: string }> }) => {
 								</h3>
 								<div className='space-y-4'>
 									<div>
-										<label
-											htmlFor='name'
-											className='block text-sm font-medium text-gray-700'
-										>
-											Your Name
-										</label>
-										<input
-											type='text'
-											id='name'
-											value={newReview.name}
-											onChange={(e) =>
-												setNewReview({ ...newReview, name: e.target.value })
-											}
-											className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#8B1D3F] focus:ring-[#7a1936]'
-											required
-										/>
-									</div>
-
-									<div>
 										<label className='block text-sm font-medium text-gray-700 mb-1'>
 											Rating
 										</label>
@@ -472,7 +421,8 @@ const ProductPage = ({ params }: { params: Promise<{ id: string }> }) => {
 											onChange={(e) =>
 												setNewReview({ ...newReview, comment: e.target.value })
 											}
-											className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#8B1D3F] focus:ring-[#7a1936]'
+											className='mt-1 block w-full rounded-md border-gray-700 border-2
+											 shadow-sm focus:border-[#8B1D3F] focus:ring-[#7a1936]'
 											required
 										/>
 									</div>
@@ -491,7 +441,7 @@ const ProductPage = ({ params }: { params: Promise<{ id: string }> }) => {
 
 							{/* Reviews List */}
 							<div className='space-y-8'>
-								{reviews.map((review) => (
+								{reviews.map((review: ReviewData) => (
 									<motion.div
 										key={review.id}
 										initial={{ opacity: 0, y: 20 }}
@@ -499,15 +449,6 @@ const ProductPage = ({ params }: { params: Promise<{ id: string }> }) => {
 										className='bg-white p-6 rounded-lg shadow-sm'
 									>
 										<div className='flex items-start space-x-4'>
-											<div className='relative w-12 h-12'>
-												<Image
-													src={review.avatar || "/placeholder.svg"}
-													alt={review.name}
-													className='rounded-full object-cover'
-													fill
-													sizes='48px'
-												/>
-											</div>
 											<div className='flex-1'>
 												<div className='flex items-center justify-between'>
 													<h3 className='font-medium text-gray-900'>

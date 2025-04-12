@@ -34,7 +34,7 @@ const NavIcons = () => {
 
 		const handleStorageChange = (e: StorageEvent) => {
 			if (e.key === "cart") {
-				setCartItems(JSON.parse(e.newValue || "[]"));
+				setCartItems(JSON.parse(e.newValue || "[]"));	
 			}
 		};
 

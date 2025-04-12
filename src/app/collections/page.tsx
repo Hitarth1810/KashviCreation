@@ -98,13 +98,13 @@ function ProductGrid({
               <Link href={`/productpage/${saree.id}`}>
                 <div className="relative">
                   <div className="aspect-[3/4] relative overflow-hidden">
-                  <Image
-  src={saree.images[0] || "/placeholder.svg"}
-  alt={saree.name}
-  fill
-  className="object-cover object-top transform group-hover:scale-105 transition-transform duration-300"
-  sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-/>
+                    <Image
+                      src={saree.images[0] || "/placeholder.svg"}
+                      alt={saree.name}
+                      fill
+                      className="object-cover object-top transform group-hover:scale-105 transition-transform duration-300"
+                      sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                    />
                   </div>
 
                   <div className="absolute inset-0 bg-black bg-opacity-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 md:block hidden">
@@ -192,8 +192,7 @@ function ProductGrid({
 }
 
 export default function Collections() {
-  
-  const { cart, wishlist } = useSelector((state: RootState) => state.user)
+  const { cart, wishlist } = useSelector((state: RootState) => state.user);
   const [addToCart] = useAddToCartMutation();
   const [addToWishlist] = useAddToWishlistMutation();
   const [removeFromWishlist] = useRemoveFromWishlistMutation()
@@ -256,7 +255,7 @@ export default function Collections() {
         setIsLoading(false);
       }
     };
-    if(!queryLoading) fetchProducts();
+    if (!queryLoading) fetchProducts();
   }, [products, queryLoading]);
 
   const toggleWishlist = (e: React.MouseEvent, id: string) => {

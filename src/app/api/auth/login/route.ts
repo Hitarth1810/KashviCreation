@@ -8,10 +8,7 @@ export async function POST(request: Request) {
 		const { user, token } = await loginUser(email, password);
 
 		// Set JWT in HTTP-only cookie
-		(
-			await // Set JWT in HTTP-only cookie
-			cookies()
-		).set("token", token, {
+		(await cookies()).set("token", token, {
 			httpOnly: true,
 			secure: process.env.NODE_ENV === "production",
 			sameSite: "strict",

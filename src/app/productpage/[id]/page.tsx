@@ -69,15 +69,12 @@ const ProductPage = ({ params }: { params: Promise<{ id: string }> }) => {
   const [error, setError] = useState<string | null>(null);
   const [selectedImage, setSelectedImage] = useState<string>("");
   const [hoveredImage, setHoveredImage] = useState<string | null>(null);
-  const [reviews, setReviews] = useState<Review[]>(initialReviews);
-  const [newReview, setNewReview] = useState<NewReview>({
-    name: "",
-    comment: "",
-    rating: 5,
-  });
-  const [hoverRating, setHoverRating] = useState<number>(0);
+  const [reviews, setReviews] = useState<
+    { id: string; rating: number; comment: string; user: { name: string } }[]
+  >([]);
+  const [newReview, setNewReview] = useState({ rating: 0, comment: '' });
+  const [hoverRating, setHoverRating] = useState(0);
   const [quantity, setQuantity] = useState<number>(1);
-
 
   useEffect(() => {
     const fetchData = async () => {
@@ -139,20 +136,26 @@ const ProductPage = ({ params }: { params: Promise<{ id: string }> }) => {
     );
   };
 
-  const handleSubmitReview = (e: React.FormEvent<HTMLFormElement>) => {
+  async function handleSubmitReview(e: React.FormEvent) {
     e.preventDefault();
-    if (newReview.name.trim() && newReview.comment.trim()) {
-      const review: Review = {
-        id: reviews.length + 1,
-        ...newReview,
-        date: "Just now",
-        avatar:
-          "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150",
-      };
-      setReviews([review, ...reviews]);
-      setNewReview({ name: "", comment: "", rating: 5 });
+    if (newReview.rating === 0 || newReview.comment.trim() === '') return;
+
+    const res = await fetch('/api/protected/user/review', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        productId: (await params).id,
+        rating: newReview.rating,
+        comment: newReview.comment,
+      }),
+    });
+
+    if (res.ok) {
+      const savedReview = await res.json();
+      setReviews((prev) => [savedReview, ...prev]);
+      setNewReview({ rating: 0, comment: '' });
     }
-  };
+  }
   // Updated cart handling
   const handleCartClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -172,6 +175,15 @@ const ProductPage = ({ params }: { params: Promise<{ id: string }> }) => {
       addToWishlist(id);
     }
   };
+  useEffect(() => {
+    async function fetchReviews() {
+      const res = await fetch(`/api/reviews?productId=${(await params).id}`);
+      const data = await res.json();
+      setReviews(data);
+    }
+
+    fetchReviews();
+  }, [params.id])
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#FDF7F3] to-rose-50">
@@ -382,152 +394,108 @@ const ProductPage = ({ params }: { params: Promise<{ id: string }> }) => {
           </div>
         )}
 
-        <div className="mt-16">
-          <h2 className="text-3xl font-serif tracking-wide text-black mb-8">
-            Customer Reviews
-          </h2>
+<div className="mt-16 p-4">
+      <h2 className="text-3xl font-serif tracking-wide text-black mb-8">Customer Reviews</h2>
 
-          {/* Add Review Form */}
-          <motion.form
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            onSubmit={handleSubmitReview}
-            className="bg-white p-6 rounded-lg shadow-sm mb-8"
-          >
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">
-              Write a Review
-            </h3>
-            <div className="space-y-4">
-              <div>
-                <label
-                  htmlFor="name"
-                  className="block text-sm font-medium text-gray-700"
+      {/* Add Review Form */}
+      <motion.form
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        onSubmit={handleSubmitReview}
+        className="bg-white p-6 rounded-lg shadow-sm mb-8"
+      >
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">Write a Review</h3>
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Rating</label>
+            <div className="flex space-x-1">
+              {[1, 2, 3, 4, 5].map((rating) => (
+                <motion.button
+                  key={rating}
+                  type="button"
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                  onClick={() => setNewReview({ ...newReview, rating })}
+                  onMouseEnter={() => setHoverRating(rating)}
+                  onMouseLeave={() => setHoverRating(0)}
+                  className="focus:outline-none"
                 >
-                  Your Name
-                </label>
-                <input
-                  type="text"
-                  id="name"
-                  value={newReview.name}
-                  onChange={(e) =>
-                    setNewReview({ ...newReview, name: e.target.value })
-                  }
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#8B1D3F] focus:ring-[#7a1936]"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Rating
-                </label>
-                <div className="flex space-x-1">
-                  {[1, 2, 3, 4, 5].map((rating) => (
-                    <motion.button
-                      key={rating}
-                      type="button"
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.9 }}
-                      onClick={() => setNewReview({ ...newReview, rating })}
-                      onMouseEnter={() => setHoverRating(rating)}
-                      onMouseLeave={() => setHoverRating(0)}
-                      className="focus:outline-none"
-                    >
-                      <Star
-                        className={`w-6 h-6 ${
-                          rating <= (hoverRating || newReview.rating)
-                            ? "text-yellow-400"
-                            : "text-gray-300"
-                        }`}
-                        fill={
-                          rating <= (hoverRating || newReview.rating)
-                            ? "currentColor"
-                            : "none"
-                        }
-                      />
-                    </motion.button>
-                  ))}
-                </div>
-              </div>
-
-              <div>
-                <label
-                  htmlFor="comment"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Your Review
-                </label>
-                <textarea
-                  id="comment"
-                  rows={4}
-                  value={newReview.comment}
-                  onChange={(e) =>
-                    setNewReview({ ...newReview, comment: e.target.value })
-                  }
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#8B1D3F] focus:ring-[#7a1936]"
-                  required
-                />
-              </div>
-
-              <motion.button
-                type="submit"
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-[#8B1D3F] hover:bg-[#7a1936] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-              >
-                <Send className="w-4 h-4 mr-2" />
-                Submit Review
-              </motion.button>
+                  <Star
+                    className={`w-6 h-6 ${rating <= (hoverRating || newReview.rating) ? 'text-yellow-400' : 'text-gray-300'}`}
+                    fill={rating <= (hoverRating || newReview.rating) ? 'currentColor' : 'none'}
+                  />
+                </motion.button>
+              ))}
             </div>
-          </motion.form>
-
-          {/* Reviews List */}
-          <div className="space-y-8">
-            {reviews.map((review) => (
-              <motion.div
-                key={review.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="bg-white p-6 rounded-lg shadow-sm"
-              >
-                <div className="flex items-start space-x-4">
-                  <div className="relative w-12 h-12">
-                    <Image
-                      src={review.avatar || "/placeholder.svg"}
-                      alt={review.name}
-                      className="rounded-full object-cover"
-                      fill
-                      sizes="48px"
-                    />
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-center justify-between">
-                      <h3 className="font-medium text-gray-900">
-                        {review.name}
-                      </h3>
-                      <span className="text-sm text-gray-500">
-                        {review.date}
-                      </span>
-                    </div>
-                    <div className="flex items-center mt-1">
-                      {[...Array(5)].map((_, idx) => (
-                        <Star
-                          key={idx}
-                          className={`w-4 h-4 ${
-                            idx < review.rating
-                              ? "text-yellow-400"
-                              : "text-gray-300"
-                          }`}
-                          fill={idx < review.rating ? "currentColor" : "none"}
-                        />
-                      ))}
-                    </div>
-                    <p className="mt-3 text-gray-600">{review.comment}</p>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
           </div>
+
+          <div>
+            <label htmlFor="comment" className="block text-sm font-medium text-gray-700">Your Review</label>
+            <textarea
+              id="comment"
+              rows={4}
+              value={newReview.comment}
+              onChange={(e) => setNewReview({ ...newReview, comment: e.target.value })}
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#8B1D3F] focus:ring-[#7a1936]"
+              required
+            />
+          </div>
+
+          <motion.button
+            type="submit"
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-[#8B1D3F] hover:bg-[#7a1936] focus:outline-none"
+          >
+            <Send className="w-4 h-4 mr-2" />
+            Submit Review
+          </motion.button>
+        </div>
+      </motion.form>
+
+      {/* Reviews List */}
+      <div className="space-y-8">
+        {reviews.length === 0 ? (
+          <p className="text-gray-500">No reviews yet. Be the first to write one!</p>
+        ) : (
+          reviews.map((review) => (
+            <motion.div
+              key={review.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="bg-white p-6 rounded-lg shadow-sm"
+            >
+              <div className="flex items-start space-x-4">
+                <div className="relative w-12 h-12">
+                  <Image
+                    src="/placeholder.svg"
+                    alt={review.user.name}
+                    className="rounded-full object-cover"
+                    width={48}
+                    height={48}
+                  />
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center justify-between">
+                    <h3 className="font-medium text-gray-900">{review.user.name}</h3>
+                  </div>
+                  <div className="flex items-center mt-1">
+                    {[...Array(5)].map((_, idx) => (
+                      <Star
+                        key={idx}
+                        className={`w-4 h-4 ${idx < review.rating ? 'text-yellow-400' : 'text-gray-300'}`}
+                        fill={idx < review.rating ? 'currentColor' : 'none'}
+                      />
+                    ))}
+                  </div>
+                  <p className="mt-3 text-gray-600">{review.comment}</p>
+                </div>
+              </div>
+            </motion.div>
+          ))
+        )}
+      </div>
+    
         </div>
       </div>
     </div>

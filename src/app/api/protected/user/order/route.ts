@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { getCookieToken } from "@/lib/jwt";
 import { updateOrderStatus } from "@/lib/order";
 import { prisma } from "@/lib/prisma";
 import { createCustomerOrder, getCustomerOrders } from "@/lib/user";
@@ -52,6 +51,7 @@ export async function POST(req: Request): Promise<NextResponse> {
 	} catch (error) {
 		const errorMessage =
 			error instanceof Error ? error.message : "Unknown error";
+		console.log(errorMessage);
 		return NextResponse.json({ message: errorMessage }, { status: 400 });
 	}
 }

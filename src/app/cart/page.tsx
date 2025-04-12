@@ -304,7 +304,7 @@ function CartPage() {
 			{isAddressFormOpen && (
 				<AddressForm
 					isOpen={isAddressFormOpen}
-					setIsOpen={setIsAddressFormOpen}
+					setIsOpenAction={setIsAddressFormOpen}
 				/>
 			)}
 		</div>

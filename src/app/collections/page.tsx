@@ -10,7 +10,7 @@ import type React from "react";
 import { useSearchParams } from "next/navigation";
 import { useSelector } from "react-redux";
 import { RootState } from "@/lib/store";
-import { useAddToCartMutation, useRemoveFromWishlistMutation } from "@/lib/api/userDataApiSlice";
+import { useAddToCartMutation, useAddToWishlistMutation, useRemoveFromWishlistMutation } from "@/lib/api/userDataApiSlice";
 import { useFetchProductsQuery } from "@/lib/api/productApiSlice";
 
 interface FilterState {
@@ -195,7 +195,7 @@ export default function Collections() {
   
   const { cart, wishlist } = useSelector((state: RootState) => state.user)
   const [addToCart] = useAddToCartMutation();
-  const [addToWishlist] = useAddToCartMutation();
+  const [addToWishlist] = useAddToWishlistMutation();
   const [removeFromWishlist] = useRemoveFromWishlistMutation()
   const {data: products = [], isLoading: queryLoading} = useFetchProductsQuery(undefined)
   const searchParams = useSearchParams();
@@ -575,3 +575,4 @@ export default function Collections() {
     </div>
   );
 }
+

@@ -8,7 +8,8 @@ import {
 	setCart,
 	setWishlist,
 	setShippingAddress,
-	setLoading, setUserError
+	setLoading,
+	setUserError,
 } from "@/lib/features/user/userSlice";
 import {
 	useFetchCartQuery,
@@ -30,7 +31,9 @@ function DataInitializer({ store }: { store: AppStore }) {
 
 	useEffect(() => {
 		store.dispatch(setLoading(true));
-		if(!isAuthSuccess) store.dispatch(setUserError(401))
+		if (!isAuthSuccess) store.dispatch(setUserError(401));
+		else store.dispatch(setUserError(200));
+
 		if (user) store.dispatch(setUser(user));
 		if (cart) store.dispatch(setCart(cart));
 		if (wishlist) store.dispatch(setWishlist(wishlist));

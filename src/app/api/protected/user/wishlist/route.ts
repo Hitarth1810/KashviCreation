@@ -8,9 +8,9 @@ import { getCookieToken } from "@/lib/jwt";
 import { cookies } from "next/headers";
 export async function POST(req: Request): Promise<NextResponse> {
 	try {
-		const body = await req.json();
+		const { productId } = await req.json();
 
-		const { productId } = body;
+		
 		if (!productId) {
 			return NextResponse.json(
 				{ message: "Product ID are required" },
@@ -62,8 +62,8 @@ export async function GET(req: Request): Promise<NextResponse> {
 
 export async function DELETE(req: Request): Promise<NextResponse> {
 	try {
-		const body = await req.json();
-		const { productId } = body;
+		const { searchParams } = new URL(req.url);
+		const productId = searchParams.get("productId");
 		if (!productId) {
 			return NextResponse.json(
 				{ message: "Product ID are required" },

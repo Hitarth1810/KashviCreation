@@ -6,10 +6,10 @@ import { useState } from "react";
 
 export default function AddressForm({
   isOpen,
-  setIsOpen,
+  setIsOpenAction,
 }: {
   isOpen: boolean;
-  setIsOpen: (open: boolean) => void;
+  setIsOpenAction: (open: boolean) => void;
 }) {
   const [formData, setFormData] = useState({
     pincode: "",
@@ -69,7 +69,7 @@ export default function AddressForm({
     try {
       const success = await setShippingAddress(formData);
       if (success) {
-        setIsOpen(false);
+        setIsOpenAction(false);
       } else {
         setError("Failed to save address. Please try again.");
       }
@@ -88,7 +88,7 @@ export default function AddressForm({
           <div className="bg-white rounded-lg w-full max-w-md relative shadow-lg">
             {/* Close Button */}
             <button
-              onClick={() => setIsOpen(false)}
+              onClick={() => setIsOpenAction(false)}
               className="absolute right-4 top-4 text-gray-600 hover:text-gray-800"
             >
               <X className="h-6 w-6" />

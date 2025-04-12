@@ -9,6 +9,7 @@ import "./globals.css";
 import { UserProvider } from "@/context/UserProvider";
 import WhatsAppButton from "./components/WhatsAppButton";
 import StoreProvider from "./StoreProvider";
+import React from "react";
 
 // Initialize Kalam font
 const kalam = Kalam({

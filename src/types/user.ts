@@ -1,5 +1,4 @@
 export interface shippingAddress {
-    
 		pincode: string
 		address: string
 		area: string

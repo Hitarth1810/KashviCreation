@@ -24,7 +24,7 @@ const NavIcons = () => {
 	const [cartItems, setCartItems] = useState<number[]>([]);
 	const router = useRouter();
 	const [logout] = useLogoutMutation();
-	const { user } = useSelector((state: RootState) => state.user);
+	const { error: userError, user } = useSelector((state: RootState) => state.user);
 
 	useEffect(() => {
 		const savedCart = localStorage.getItem("cart");
@@ -155,7 +155,7 @@ const NavIcons = () => {
 								exit='exit'
 								className='absolute top-12 right-0 bg-white shadow-lg shadow-black/5 w-72 border border-gray-100 rounded-xl z-50 p-3 overflow-hidden'
 							>
-								{user ? (
+								{user && userError != 401 ? (
 									<div className='space-y-2'>
 										{/* User info section */}
 										<div className='px-4 py-3 border-b border-gray-100'>

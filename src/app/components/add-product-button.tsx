@@ -15,10 +15,10 @@ import {
 import { ProductForm } from "@/app/components/product-form";
 
 interface AddProductButtonProps {
-	refreshProducts: () => void;
+	refreshProductsAction: () => void;
 }
 
-export function AddProductButton({ refreshProducts }: AddProductButtonProps) {
+export function AddProductButton({ refreshProductsAction }: AddProductButtonProps) {
 	const [open, setOpen] = useState(false);
 
 	return (
@@ -41,7 +41,7 @@ export function AddProductButton({ refreshProducts }: AddProductButtonProps) {
 				<ProductForm
 					onSuccess={() => {
 						setOpen(false); // Close dialog
-						refreshProducts(); // Refresh the product list
+						refreshProductsAction(); // Refresh the product list
 					}}
 				/>
 			</DialogContent>

@@ -14,9 +14,9 @@ const userSlice = createSlice({
 		},
 		cart: [] as Array<string>,
 		wishlist: [] as Array<string>,
-		shippingAddress: [] as Array<>,
+		shippingAddress: [] as Array<object>,
 		loading: true,
-		error: "",
+		error: 401,
 	},
 	reducers: {
 		setUser: (state, action) => {
@@ -34,6 +34,9 @@ const userSlice = createSlice({
 		setLoading: (state, action) => {
 			state.loading = action.payload;
 		},
+		setUserError: (state, action) => {
+			state.error = action.payload;
+		}
 	},
 	extraReducers: (builder) => {
 		builder
@@ -72,10 +75,10 @@ const userSlice = createSlice({
 				(state, action) => {
 					state.shippingAddress = action.payload;
 				}
-			);
+			)
 	},
 });
 
-export const { setUser, setCart, setWishlist, setShippingAddress, setLoading } =
+export const { setUser, setCart, setWishlist, setShippingAddress, setLoading, setUserError } =
 	userSlice.actions;
 export const userReducer = userSlice.reducer;

@@ -1,14 +1,14 @@
 "use client";
-import { useRef, useEffect } from "react";
+import React, { useRef, useEffect } from "react";
 import { Provider } from "react-redux";
-import { makeStore, AppStore } from "../lib/store";
+import { makeStore, AppStore } from "@/lib/store";
 import { useCheckAuthQuery } from "@/lib/api/authApiSlice";
 import {
 	setUser,
 	setCart,
 	setWishlist,
 	setShippingAddress,
-	setLoading
+	setLoading, setUserError
 } from "@/lib/features/user/userSlice";
 import {
 	useFetchCartQuery,
@@ -30,6 +30,7 @@ function DataInitializer({ store }: { store: AppStore }) {
 
 	useEffect(() => {
 		store.dispatch(setLoading(true));
+		if(!isAuthSuccess) store.dispatch(setUserError(401))
 		if (user) store.dispatch(setUser(user));
 		if (cart) store.dispatch(setCart(cart));
 		if (wishlist) store.dispatch(setWishlist(wishlist));

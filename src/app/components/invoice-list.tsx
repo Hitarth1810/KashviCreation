@@ -21,21 +21,26 @@ export default function InvoiceList() {
 	useEffect(() => {
 		const fetchInvoices = async () => {
 			const response = await axios.get("/api/protected/admin/invoice");
+	
 			const data = await Promise.all(
-				response.data.map((invoice: Invoice) => ({
-					customer: axios
-						.get(
-							`/api/protected/admin/customer?customerId=${invoice.customerId}`
-						)
-						.then((res) => res.data.name),
-					date: new Date(invoice.createdAt).toISOString().split("T")[0],
-					...invoice,
-				}))
+				response.data.map(async (invoice: Invoice) => {
+					const customerResponse = await axios.get(
+						`/api/protected/admin/customer?customerId=${invoice.customerId}`
+					);
+					return {
+						id: invoice.id,
+						orderId: invoice.orderId,
+						customer: customerResponse.data.name,
+						date: new Date(invoice.createdAt).toISOString().split("T")[0],
+					};
+				})
 			);
+	
 			setInvoices(data);
 		};
 		fetchInvoices();
 	}, []);
+	
 
 	const componentRef = useRef<HTMLDivElement>(null);
 

@@ -52,7 +52,7 @@ const ProductPage = ({ params }: { params: Promise<{ id: string }> }) => {
 	const router = useRouter();
 	const [selectedImage, setSelectedImage] = useState<string | null>(null);
 	const [hoveredImage, setHoveredImage] = useState<string | null>(null);
-	//const [reviews, setReviews] = useState<Review[]>(initialReviews);
+	// const [reviews, setReviews] = useState<Review[]>(initialReviews);
 	const [newReview, setNewReview] = useState<Review>({
 		name: user.name,
 		comment: "",
@@ -98,19 +98,27 @@ const ProductPage = ({ params }: { params: Promise<{ id: string }> }) => {
 		);
 	};
 
-	const handleSubmitReview = (e: React.FormEvent<HTMLFormElement>) => {
+	const handleSubmitReview = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-		console.log("Submitting review:", newReview);
-		newReview.name.trim();
-		newReview.comment.trim();
-		const review: Review = {
-			...newReview,
-		};
-		postReview({ ...review, productId: id });
-		reviewsRefetch();
-		setNewReview({ name: user.name, comment: "", rating: 5 });
-		console.log("Review submitted:", reviews);
+	
+		if (!newReview.comment.trim()) return;
+	
+		try {
+			// Post the new review
+			await postReview({ ...newReview, productId: id }).unwrap();
+	
+			// Refetch reviews to get the latest list
+			await reviewsRefetch();
+	
+			// Reset the review input form
+			setNewReview({ name: user.name, comment: "", rating: 5 });
+			setHoverRating(0);
+		} catch (error) {
+			console.error("Error submitting review:", error);
+		}
 	};
+	
+	
 	// Updated cart handling
 	const handleCartClick = (e: React.MouseEvent) => {
 		e.preventDefault();

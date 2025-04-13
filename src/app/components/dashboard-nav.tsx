@@ -1,5 +1,5 @@
 "use client";
-import { Home, Package, Settings, ShoppingBag, Users, ReceiptText } from "lucide-react";
+import {Package, ShoppingBag, Users, ReceiptText } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -7,11 +7,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/app/components/ui/button";
 
 const navItems = [
-	{
-		title: "Dashboard",
-		href: "/admin",
-		icon: Home,
-	},
+	
 	{
 		title: "Orders",
 		href: "/admin/orders",
@@ -32,11 +28,7 @@ const navItems = [
 		href: "/admin/invoices",
 		icon: ReceiptText,
 	},
-	{
-		title: "Settings",
-		href: "/admin/settings",
-		icon: Settings,
-	},
+	
 ];
 
 export function DashboardNav({ closeSidebar }: { closeSidebar: () => void }) {

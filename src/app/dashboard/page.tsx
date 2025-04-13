@@ -62,35 +62,7 @@ export default function Dashboard()  {
   },[user, showAddressForm])
 
 
-  const recentOrders = [
-    {
-      id: "1",
-      product: "Banarasi Silk Saree",
-      status: "Delivered",
-      date: "2024-02-10",
-      quantity: 2,
-      image:
-        "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/24341-1_page-0005.jpg-KCtZgV3N1AhKh1BHyOXND9rVkiqC7t.jpeg",
-    },
-    {
-      id: "2",
-      product: "Wedding Collection Set",
-      status: "Processing",
-      date: "2024-02-09",
-      quantity: 1,
-      image:
-        "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/24341-1_page-0005.jpg-KCtZgV3N1AhKh1BHyOXND9rVkiqC7t.jpeg",
-    },
-    {
-      id: "3",
-      product: "Designer Lehenga",
-      status: "Shipped",
-      date: "2024-02-08",
-      quantity: 3,
-      image:
-        "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/24341-1_page-0005.jpg-KCtZgV3N1AhKh1BHyOXND9rVkiqC7t.jpeg",
-    },
-  ];
+  
 
   useEffect(() => {
     const fetchWishlistItems = async () => {
@@ -201,17 +173,6 @@ export default function Dashboard()  {
 
                 <nav className="space-y-2">
                   <button
-                    onClick={() => handleTabChange("overview")}
-                    className={`flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left transition-colors ${
-                      activeTab === "overview"
-                        ? "bg-[#9B2C2C]/10 text-[#9B2C2C]"
-                        : "text-gray-600 hover:bg-gray-100"
-                    }`}
-                  >
-                    <LayoutGrid className="h-4 w-4" />
-                    Overview
-                  </button>
-                  <button
                     onClick={() => handleTabChange("orders")}
                     className={`flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left transition-colors ${
                       activeTab === "orders"
@@ -222,7 +183,6 @@ export default function Dashboard()  {
                     <Package className="h-4 w-4" />
                     My Orders
                   </button>
-
                   <button
                     onClick={() => handleTabChange("wishlist")}
                     className={`flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left transition-colors ${
@@ -271,130 +231,7 @@ export default function Dashboard()  {
         {/* Main Content */}
         <main className="flex-1 p-6 md:p-6 pt-16 md:pt-6">
           <div className="space-y-6">
-            {activeTab === "overview" && (
-              <>
-                <div className="grid gap-4 md:grid-cols-2">
-                  <motion.div
-                    initial={{ y: 20, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    transition={{ duration: 0.5 }}
-                    className="rounded-lg border bg-white p-6"
-                  >
-                    <div className="flex items-center justify-between">
-                      <h3 className="text-sm font-medium text-gray-600">
-                        Total Orders
-                      </h3>
-                      <Package className="h-4 w-4 text-gray-400" />
-                    </div>
-                    <div className="mt-2">
-                      <div className="text-2xl font-bold">12</div>
-                      <p className="text-xs text-gray-500">
-                        +2 from last month
-                      </p>
-                    </div>
-                  </motion.div>
-                  <motion.div
-                    initial={{ y: 20, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    transition={{ duration: 0.5, delay: 0.1 }}
-                    className="rounded-lg border bg-white p-6"
-                  >
-                    <div className="flex items-center justify-between">
-                      <h3 className="text-sm font-medium text-gray-600">
-                        Wishlist Items
-                      </h3>
-                      <Heart className="h-4 w-4 text-[#9B2C2C]" />
-                    </div>
-                    <div className="mt-2">
-                      <div className="text-2xl font-bold">8</div>
-                      <p className="text-xs text-gray-500">3 items on sale</p>
-                    </div>
-                  </motion.div>
-                </div>
-
-                <motion.div
-                  initial={{ y: 20, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ duration: 0.5, delay: 0.2 }}
-                  className="rounded-lg border bg-white p-6"
-                >
-                  <h2 className="text-lg font-semibold">Recent Orders</h2>
-                  <p className="text-sm text-gray-500">
-                    Your recent purchases and their status
-                  </p>
-                  <div className="mt-4 space-y-4">
-                    {recentOrders.map((order) => (
-                      <div
-                        key={order.id}
-                        className="flex items-center justify-between rounded-lg border p-4"
-                      >
-                        <div className="flex items-center space-x-4">
-                          <div className="relative h-16 w-16 overflow-hidden rounded-md">
-                            <Image
-                              src={order.image || "/placeholder.svg"}
-                              alt={order.product}
-                              fill
-                              className="object-cover"
-                            />
-                          </div>
-                          <div>
-                            <p className="font-medium">{order.product}</p>
-                            <p className="text-sm text-gray-500">
-                              {order.date}
-                            </p>
-                          </div>
-                        </div>
-                        <div className="text-right">
-                          <p className="font-medium">Qty: {order.quantity}</p>
-                          <p
-                            className={`text-sm ${
-                              order.status === "Delivered"
-                                ? "text-green-600"
-                                : order.status === "Processing"
-                                ? "text-orange-600"
-                                : "text-blue-600"
-                            }`}
-                          >
-                            {order.status}
-                          </p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </motion.div>
-
-                <motion.div
-                  initial={{ y: 20, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ duration: 0.5, delay: 0.3 }}
-                  className="rounded-lg border bg-white p-6"
-                >
-                  <h2 className="text-lg font-semibold">Wishlist</h2>
-                  <p className="text-sm text-gray-500">
-                    Items you&apos;ve saved for later
-                  </p>
-                  <div className="mt-4 flex gap-4 overflow-x-auto pb-4">
-                    {wishlistItems.map((item) => (
-                      <div
-                        key={item.id}
-                        className="w-[250px] shrink-0 rounded-lg border bg-white p-4"
-                      >
-                        <div className="relative aspect-square overflow-hidden rounded-lg">
-                          <Image
-                            src={item.images[0] || "/placeholder.svg"}
-                            alt={item.name}
-                            fill
-                            className="object-cover transition-transform hover:scale-105"
-                          />
-                        </div>
-                        <h3 className="mt-2 font-medium">{item.name}</h3>
-                      </div>
-                    ))}
-                  </div>
-                </motion.div>
-              </>
-            )}
-
+            
             {activeTab === "wishlist" && (
               <motion.div
                 initial={{ y: 20, opacity: 0 }}
@@ -468,8 +305,6 @@ export default function Dashboard()  {
                 )}
               </motion.div>
             )}
-
-
 
             {activeTab === "settings" && (
               <motion.div
@@ -681,7 +516,7 @@ export default function Dashboard()  {
                 )}
                 <AddressForm
                   isOpen={showAddressForm}
-                  setIsOpen={setShowAddressForm}
+                  setIsOpenAction={(open) => setShowAddressForm(open)}
                 />
               </motion.div>
             )}

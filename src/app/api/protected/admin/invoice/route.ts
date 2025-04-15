@@ -26,7 +26,6 @@ export async function GET(req: Request): Promise<NextResponse> {
 		const invoices = await getInvoice(invoiceId);
 		const customer = await getCustomer(invoices!.customerId);
 		const address = await getCustomerAddress(invoices!.addressId);
-		console.log(invoices?.products);
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		let products: any = [];
 		if (invoices?.products) {
@@ -38,7 +37,6 @@ export async function GET(req: Request): Promise<NextResponse> {
 			);
 		}
 		products = mergeDuplicateProducts(products)
-		console.log(products);
 		const data = {
 			...invoices,
 			user: {

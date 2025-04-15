@@ -22,7 +22,7 @@ export async function POST(request: Request) {
 				name: user.name,
 				role: user.role,
 			},
-		});
+		}, { status: 200 });
 	} catch(err) {
 		console.log(err);
 		return NextResponse.json({ error: "Login failed" }, { status: 401 });

@@ -1,11 +1,9 @@
 "use client";
 
-import { useUser } from "@/context/UserProvider";
 import axios from "axios";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Heart,
-  LayoutGrid,
   LogOut,
   Menu,
   Package,
@@ -21,7 +19,10 @@ import {
 import Image from "next/image";
 import AddressForm from "../components/address-form";
 import { useEffect, useState } from "react";
-import { useAuth } from "@/context/AuthProvider";
+import { useRouter } from "next/navigation";
+import { useSelector } from "react-redux";
+import { RootState } from "@/lib/store";
+import { useAddToCartMutation, useGetShippingAddressQuery, useRemoveFromWishlistMutation } from "@/lib/api/userDataApiSlice";
 
 interface Product {
   id: string;
@@ -44,22 +45,23 @@ interface Address {
 
 export default function Dashboard()  {
   const [activeTab, setActiveTab] = useState("overview");
-  const { wishlist, removeFromWishlist, addToCart, getShippingAddress } = useUser();
-  const { user } = useAuth()
+  //const { wishlist, removeFromWishlist, addToCart, getShippingAddress } = useUser();
+  const { wishlist, user } = useSelector((state: RootState) => state.user);
+  const [removeFromWishlist] = useRemoveFromWishlistMutation();
+  const [addToCart] = useAddToCartMutation();
+  const {data: addresseData} = useGetShippingAddressQuery(user.id);
   const [wishlistItems, setWishlistItems] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showAddressForm, setShowAddressForm] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [activeSettingsTab, setActiveSettingsTab] = useState("personal");
   const [addresses, setAddresses] = useState<Address[]>([]);
+  const router = useRouter();
 
   useEffect(()=>{
-    if(user){
-      getShippingAddress(user.id).then((address) => {
-        if (address) setAddresses(address);
-      });
-    }
-  },[user, showAddressForm])
+    router.refresh()
+    setAddresses(addresseData)
+  },[router, addresseData])
 
 
   
@@ -441,7 +443,7 @@ export default function Dashboard()  {
                         <input
                           type="tel"
                           id="phone"
-                          defaultValue={user?.phone}
+                          defaultValue={user.phone || ""}
                           disabled
                           className="mt-1 block w-full cursor-not-allowed rounded-md border border-gray-300 bg-gray-100 px-3 py-2 text-gray-500 shadow-sm"
                         />

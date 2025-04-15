@@ -31,8 +31,8 @@ function DataInitializer({ store }: { store: AppStore }) {
 
 	useEffect(() => {
 		store.dispatch(setLoading(true));
-		if (!isAuthSuccess) store.dispatch(setUserError(401));
-		else store.dispatch(setUserError(200));
+		if (!isAuthSuccess) store.dispatch(setUserError(true));
+		else store.dispatch(setUserError(false));
 
 		if (user) store.dispatch(setUser(user));
 		if (cart) store.dispatch(setCart(cart));

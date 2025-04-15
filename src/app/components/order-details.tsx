@@ -48,7 +48,7 @@ export function OrderDetails({ setUpdate }: { setUpdate: React.Dispatch<React.Se
 			setUpdateDetails(false)
 		};
 		fetchData();
-	}, [selectedId, updateDetails]);
+	}, [selectedId, updateDetails,setUpdate]);
 
 	if (!selectedId)
 		return (

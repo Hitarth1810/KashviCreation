@@ -1,6 +1,8 @@
 import { createInvoice } from "./invoice";
 import { prisma } from "./prisma";
-import {  Status } from "@prisma/client";
+import { Status } from "@prisma/client";
+
+import { sendInvoiceEmail } from "./sendInvoiceEmail";
 import { generateInvoiceId } from "./utils";
 export function createOrder(
 	orderId: string,
@@ -35,21 +37,30 @@ export async function updateOrderStatus(orderId: string, status: Status) {
 	const addresData = await prisma.address.findFirst({
 		where: {
 			userId: res.userId,
-			isDefault: true
-		}
-	})
-
-	if(status === "COMPLETE"){
+			isDefault: true,
+		},
+	});
+	console.log("stat", status);
+	if (status == "COMPLETE") {
+		console.log("enter");
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		const data: any = {
 			id: generateInvoiceId(),
 			orderId: orderId,
 			customerId: res.userId,
 			addressId: addresData?.id,
-			products: res.products
-		} 
-		await createInvoice(data)
+			products: res.products,
+			notes: "",
+			total: null
+		};
+		try {
+			const invoice = await createInvoice(data);
+			console.log("in", invoice);
+			await sendInvoiceEmail(invoice.id);
+		} catch (error) {
+			throw error;
+		}
 	}
 
-	return res
+	return res;
 }

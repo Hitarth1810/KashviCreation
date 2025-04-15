@@ -1,21 +1,25 @@
 import { prisma } from "./prisma";
 
-
 type Invoice = {
-    id: string;
-    orderId: string
-    customerId: string;
-    addressId: string;
-    products: string[];
-    notes: string | null;
-}
+	id: string;
+	orderId: string;
+	customerId: string;
+	addressId: string;
+	products: string[];
+	notes: string | null;
+};
 
-export function createInvoice(
-	data: Invoice
-) {
-	return prisma.invoice.create({
-		data: data
-	});
+export async function createInvoice(data: Invoice) {
+	console.log("enter part 2");
+	try {
+		const d = await prisma.invoice.create({
+			data: data,
+		});
+		console.log("d",d)
+		return d
+	} catch (error) {
+		throw error;
+	}
 }
 
 export function getInvoice(invoiceId: string) {
@@ -27,5 +31,3 @@ export function getInvoice(invoiceId: string) {
 export function getInvoices() {
 	return prisma.invoice.findMany();
 }
-
-

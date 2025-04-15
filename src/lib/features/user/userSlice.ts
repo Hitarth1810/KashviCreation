@@ -1,3 +1,4 @@
+import { authApiSlice } from "@/lib/api/authApiSlice";
 import { userDataApiSlice } from "@/lib/api/userDataApiSlice";
 import { createSlice } from "@reduxjs/toolkit";
 
@@ -16,7 +17,7 @@ const userSlice = createSlice({
 		wishlist: [] as Array<string>,
 		shippingAddress: [] as Array<object>,
 		loading: true,
-		error: 401,
+		error: true,
 	},
 	reducers: {
 		setUser: (state, action) => {
@@ -36,10 +37,18 @@ const userSlice = createSlice({
 		},
 		setUserError: (state, action) => {
 			state.error = action.payload;
-		}
+		},
 	},
 	extraReducers: (builder) => {
 		builder
+			.addMatcher(authApiSlice.endpoints.login.matchFulfilled, (state) => {
+				state.error = false;
+				state.loading = false;
+			})
+			.addMatcher(authApiSlice.endpoints.logout.matchFulfilled, (state) => {
+				state.error = true;
+				state.loading = true;
+			})
 			.addMatcher(
 				userDataApiSlice.endpoints.addToCart.matchFulfilled,
 				(state, action) => {
@@ -75,10 +84,16 @@ const userSlice = createSlice({
 				(state, action) => {
 					state.shippingAddress = action.payload;
 				}
-			)
+			);
 	},
 });
 
-export const { setUser, setCart, setWishlist, setShippingAddress, setLoading, setUserError } =
-	userSlice.actions;
+export const {
+	setUser,
+	setCart,
+	setWishlist,
+	setShippingAddress,
+	setLoading,
+	setUserError,
+} = userSlice.actions;
 export const userReducer = userSlice.reducer;

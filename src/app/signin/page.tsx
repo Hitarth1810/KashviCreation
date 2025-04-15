@@ -4,13 +4,14 @@ import { useState } from "react";
 import Link from "next/link";
 import Popup from "@/app/components/popup";
 import { useLoginMutation } from "@/lib/api/authApiSlice";
+import { useRouter } from "next/navigation";
 
 export default function SignInPage() { 
   const [login] = useLoginMutation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [popup, setPopup] = useState<{ message: string; type: "success" | "error"; isVisible: boolean }>({ message: "", type: "success", isVisible: false });
-
+  const router = useRouter();
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setPopup({ message: "", type: "success", isVisible: false });
@@ -20,7 +21,8 @@ export default function SignInPage() {
       setPopup({ message: "Sign in successful!", type: "success", isVisible: true });
       setTimeout(() => {
         setPopup({ ...popup, isVisible: false });
-      }, 3000);
+        router.push("/dashboard");
+      }, 1500);
     } catch (err: unknown) {
       if (err instanceof Error) {
         setPopup({ message: err.message, type: "error", isVisible: true });

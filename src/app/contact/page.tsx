@@ -7,6 +7,13 @@ import RangoliPattern from "./RangoliPattern";
 
 export default function ContactPage() {
   const [, setCursorPos] = useState({ x: 0, y: 0 });
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [status, setStatus] = useState<null | "success" | "error">(null);
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -15,6 +22,36 @@ export default function ContactPage() {
     window.addEventListener("mousemove", handleMouseMove);
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setStatus(null);
+
+    try {
+      const res = await fetch("/api/protected/user/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ firstName, lastName, email, phone, message }),
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        setStatus("success");
+        setFirstName("");
+        setLastName("");
+        setEmail("");
+        setPhone("");
+        setMessage("");
+      } else {
+        setStatus("error");
+      }
+    } catch (err) {
+      setStatus("error");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#FDF7F3] to-rose-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -129,89 +166,91 @@ export default function ContactPage() {
         {/* Right Column */}
         <div className="bg-white rounded-lg shadow-xl p-8">
           <div className="mb-8">
-            <h2 className="text-3xl font-semibold text-[#8B1D3F] mb-2">
-              Get in Touch
-            </h2>
+            <h2 className="text-3xl font-semibold text-[#8B1D3F] mb-2">Get in Touch</h2>
             <p className="text-gray-600">You can reach us anytime</p>
           </div>
 
-          <form className="space-y-6">
+          <form className="space-y-6" onSubmit={handleSubmit}>
             <div className="grid grid-cols-2 gap-4">
-              <motion.div
-                initial={{ y: 20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 0.2 }}
-              >
+              <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.2 }}>
                 <input
                   type="text"
                   placeholder="First name"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                  required
                   className="w-full px-4 py-3 bg-[#FDF7F3]/50 border-2 border-[#f8e3d5] rounded-md focus:outline-none focus:ring-2 focus:ring-[#8B1D3F] focus:border-[#8B1D3F]"
                 />
               </motion.div>
 
-              <motion.div
-                initial={{ y: 20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 0.3 }}
-              >
+              <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.3 }}>
                 <input
                   type="text"
                   placeholder="Last name"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                  required
                   className="w-full px-4 py-3 bg-[#FDF7F3]/50 border-2 border-[#f8e3d5] rounded-md focus:outline-none focus:ring-2 focus:ring-[#8B1D3F] focus:border-[#8B1D3F]"
                 />
               </motion.div>
             </div>
 
-            <motion.div
-              initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.4 }}
-            >
+            <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.4 }}>
               <input
                 type="email"
                 placeholder="Your email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
                 className="w-full px-4 py-3 bg-[#FDF7F3]/50 border-2 border-[#f8e3d5] rounded-md focus:outline-none focus:ring-2 focus:ring-[#8B1D3F] focus:border-[#8B1D3F]"
               />
             </motion.div>
 
-            <motion.div
-              initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.5 }}
-            >
+            <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.5 }}>
               <div className="flex">
-                <select className="px-4 py-3 bg-[#FDF7F3]/50 border-2 border-[#f8e3d5] rounded-l-md focus:outline-none focus:ring-2 focus:ring-[#8B1D3F] focus:border-[#8B1D3F]">
+                <select disabled className="px-4 py-3 bg-[#FDF7F3]/50 border-2 border-[#f8e3d5] rounded-l-md">
                   <option>+91</option>
                 </select>
                 <input
                   type="tel"
                   placeholder="Phone number"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  required
                   className="w-full px-4 py-3 bg-[#FDF7F3]/50 border-2 border-l-0 border-[#f8e3d5] rounded-r-md focus:outline-none focus:ring-2 focus:ring-[#8B1D3F] focus:border-[#8B1D3F]"
                 />
               </div>
             </motion.div>
 
-            <motion.div
-              initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.6 }}
-            >
+            <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.6 }}>
               <textarea
                 placeholder="How can we help?"
                 rows={4}
+                maxLength={120}
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                required
                 className="w-full px-4 py-3 bg-[#FDF7F3]/50 border-2 border-[#f8e3d5] rounded-md focus:outline-none focus:ring-2 focus:ring-[#8B1D3F] focus:border-[#8B1D3F]"
               ></textarea>
-              <div className="text-right text-gray-500 text-sm mt-1">0/120</div>
+              <div className="text-right text-gray-500 text-sm mt-1">{message.length}/120</div>
             </motion.div>
 
             <motion.button
               type="submit"
+              disabled={loading}
               className="w-full px-4 py-3 bg-[#8B1D3F] text-white font-semibold rounded-md shadow-md hover:bg-[#7a1936] focus:outline-none focus:ring-2 focus:ring-[#8B1D3F] focus:ring-offset-2 transition-all duration-300"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >
-              Submit
+              {loading ? "Submitting..." : "Submit"}
             </motion.button>
+
+            {status === "success" && (
+              <p className="text-green-600 text-center">Your message has been sent successfully!</p>
+            )}
+            {status === "error" && (
+              <p className="text-red-600 text-center">Something went wrong. Please try again.</p>
+            )}
 
             <p className="text-center text-sm text-gray-500">
               By contacting us, you agree to our{" "}

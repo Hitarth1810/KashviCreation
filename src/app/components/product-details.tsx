@@ -86,6 +86,7 @@ export function ProductDetails() {
 								<DialogTitle>Edit Product</DialogTitle>
 							</DialogHeader>
 							<ProductForm
+								update
 								product={product}
 								onSuccess={() => setEditDialogOpen(false)}
 							/>

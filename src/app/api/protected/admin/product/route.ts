@@ -94,7 +94,6 @@ export async function POST(req: Request): Promise<NextResponse> {
 			name,
 			description,
 			category,
-			stock: Number(stock),
 			colors,
 			images,
 		});

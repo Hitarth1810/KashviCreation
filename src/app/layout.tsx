@@ -9,7 +9,7 @@ import "./globals.css";
 import { UserProvider } from "@/context/UserProvider";
 import WhatsAppButton from "./components/WhatsAppButton";
 import StoreProvider from "./StoreProvider";
-import React from "react";
+import React, { Suspense } from "react";
 
 // Initialize Kalam font
 const kalam = Kalam({
@@ -34,13 +34,15 @@ export default function RootLayout({
 				<StoreProvider>
 					<AuthProvider>
 						<UserProvider>
-							{!isAdminRoute && <Navbar />}
-							{!isAdminRoute && (
-								<div className='w-full h-[2px] bg-gradient-to-r from-transparent via-[#ff9933] to-transparent'></div>
-							)}
-							<main>{children}</main>
-							{!isAdminRoute && <Footer />}
-							{!isAdminRoute && <WhatsAppButton />}
+							<Suspense>
+								{!isAdminRoute && <Navbar />}
+								{!isAdminRoute && (
+									<div className='w-full h-[2px] bg-gradient-to-r from-transparent via-[#ff9933] to-transparent'></div>
+								)}
+								<main>{children}</main>
+								{!isAdminRoute && <Footer />}
+								{!isAdminRoute && <WhatsAppButton />}
+							</Suspense>
 						</UserProvider>
 					</AuthProvider>
 				</StoreProvider>

@@ -63,9 +63,6 @@ export default function Dashboard()  {
     setAddresses(addresseData)
   },[router, addresseData])
 
-
-  
-
   useEffect(() => {
     const fetchWishlistItems = async () => {
       if (activeTab !== "wishlist") return;

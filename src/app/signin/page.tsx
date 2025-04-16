@@ -5,12 +5,15 @@ import Link from "next/link";
 import Popup from "@/app/components/popup";
 import { useLoginMutation } from "@/lib/api/authApiSlice";
 import { useRouter } from "next/navigation";
+import { useSelector } from "react-redux";
+import { RootState } from "@/lib/store";
 
 export default function SignInPage() { 
   const [login] = useLoginMutation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [popup, setPopup] = useState<{ message: string; type: "success" | "error"; isVisible: boolean }>({ message: "", type: "success", isVisible: false });
+  const { user } = useSelector((state: RootState) => state.user);
   const router = useRouter();
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -21,7 +24,8 @@ export default function SignInPage() {
       setPopup({ message: "Sign in successful!", type: "success", isVisible: true });
       setTimeout(() => {
         setPopup({ ...popup, isVisible: false });
-        router.push("/dashboard");
+        if(user.role === "ADMIN") router.push("/admin/products")
+        else router.push("/dashboard");
       }, 1500);
     } catch (err: unknown) {
       if (err instanceof Error) {

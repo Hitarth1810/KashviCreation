@@ -6,7 +6,6 @@ interface ProductData {
 	description: string;
 	images: string[];
 	colors: string[];
-	stock: number;
 	category: string;
 }
 
@@ -34,7 +33,6 @@ export async function getProduct(id: string) {
 
 export async function createProduct(data: ProductData) {
 	try {
-		console.log(data)
 		const product = prisma.product.create({
 			data
 		});
@@ -42,5 +40,25 @@ export async function createProduct(data: ProductData) {
 		return product;
 	} catch {
 		throw new Error("Error creating product");
+	}
+}
+
+export async function updateProduct(data: ProductData){
+	try {
+		const product = prisma.product.update({
+			where: {
+				id: data.id,
+			},
+			data: {
+				name: data.name,
+				description: data.description,
+				images: data.images,
+				colors: data.colors,
+				category: data.category,
+			},
+		})
+		return product;
+	} catch {
+		throw new Error("Error updating product");
 	}
 }

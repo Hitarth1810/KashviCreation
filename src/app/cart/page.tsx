@@ -98,7 +98,7 @@ function CartPage() {
 			return;
 		}
 
-		if (!shippingAddress) {
+		if (!shippingAddress || shippingAddress.length === 0) {
 			setIsAddressFormOpen(true);
 			return;
 		}

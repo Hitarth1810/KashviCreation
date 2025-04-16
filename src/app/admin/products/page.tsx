@@ -31,7 +31,7 @@ export default function ProductsPage() {
 					<div className='flex items-center justify-between border-b bg-muted/40 p-4'>
 						<h1 className='text-2xl font-semibold'>Products</h1>
 						{/* Pass fetchProducts function to update the list after adding a new product */}
-						<AddProductButton refreshProducts={fetchProducts} />
+						<AddProductButton refreshProductsAction={fetchProducts} />
 					</div>
 					<ProductList products={products} />
 				</div>

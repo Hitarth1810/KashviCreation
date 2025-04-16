@@ -40,9 +40,7 @@ export async function updateOrderStatus(orderId: string, status: Status) {
 			isDefault: true,
 		},
 	});
-	console.log("stat", status);
-	if (status == "COMPLETE") {
-		console.log("enter");
+	if (status == "CONFIRMED") {
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		const data: any = {
 			id: generateInvoiceId(),
@@ -55,7 +53,6 @@ export async function updateOrderStatus(orderId: string, status: Status) {
 		};
 		try {
 			const invoice = await createInvoice(data);
-			console.log("in", invoice);
 			await sendInvoiceEmail(invoice.id);
 		} catch (error) {
 			throw error;

@@ -98,10 +98,7 @@ export default function ProductItems({
 							))}
 						</span>
 					</div>
-					<div>
-						<span className='font-semibold'>Stock: </span>
-						<span>{product?.stock}</span>
-					</div>
+					
 				</div>
 			</div>
 		</div>

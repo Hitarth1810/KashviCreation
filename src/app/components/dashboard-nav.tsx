@@ -1,5 +1,5 @@
 "use client";
-import {Package, ShoppingBag, Users, ReceiptText,MessageSquare} from "lucide-react";
+import {Package, ShoppingBag, Users, ReceiptText,MessageSquare, Newspaper} from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -33,6 +33,12 @@ const navItems = [
 		href: "/admin/contact",
 		icon: MessageSquare,
 	},
+	{
+		title: "Blogs",
+		href: "/admin/blogs",
+		icon: Newspaper,
+	},
+	
 	
 ];
 

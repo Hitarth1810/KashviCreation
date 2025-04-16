@@ -54,7 +54,7 @@ export default function InvoicePreview({
 							<div>
 								<div className='text-4xl font-semibold'>INVOICE</div>
 								<div className='text-sm text-muted-foreground whitespace-pre-line'>
-									Kashavi Creation
+									Kashvi Creation
 								</div>
 								<div className='text-sm text-muted-foreground whitespace-pre-line'>
 									{

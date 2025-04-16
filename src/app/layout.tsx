@@ -10,6 +10,7 @@ import { UserProvider } from "@/context/UserProvider";
 import WhatsAppButton from "./components/WhatsAppButton";
 import StoreProvider from "./StoreProvider";
 import React, { Suspense } from "react";
+import SEO from "./components/SEO"; // ✅ Import your SEO component
 
 // Initialize Kalam font
 const kalam = Kalam({
@@ -23,13 +24,24 @@ export default function RootLayout({
 }: {
 	children: React.ReactNode;
 }) {
-	const pathname = usePathname()
+	const pathname = usePathname();
 
 	// Hide Navbar and Footer for admin routes
 	const isAdminRoute = pathname.startsWith("/admin");
 
 	return (
 		<html lang='en' className={`${kalam.variable}`}>
+			<head>
+				{/* ✅ Global SEO Defaults */}
+				<SEO
+					title='Kashvi Creation - Elegant Sarees for Every Occasion'
+					description='Discover a beautiful collection of traditional and designer sarees at Kashvi Creation. Perfect for weddings, festivals, and everyday elegance. Shop now for quality and style!'
+					keywords='sarees, Indian sarees, wedding sarees, traditional sarees, designer sarees, Kashvi Creation, ethnic wear, Surat saree shop'
+					url={process.env.NEXT_PUBLIC_WEBSITE_URL}
+					image='public\logo1.jpg'
+					author='Kashvi Creation'
+				/>
+			</head>
 			<body>
 				<StoreProvider>
 					<AuthProvider>

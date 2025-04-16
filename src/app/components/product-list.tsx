@@ -49,14 +49,7 @@ export function ProductList({ products }: ProductListProps) {
 									</Badge>
 								))}
 							</div>
-							<div className='mt-2 flex items-center justify-between'>
-								<Badge variant={product.stock > 0 ? "default" : "destructive"}>
-									{product.stock > 0 ? "In Stock" : "Out of Stock"}
-								</Badge>
-								<span className='text-sm text-muted-foreground'>
-									{product.stock} left
-								</span>
-							</div>
+							
 						</div>
 					</div>
 				))}

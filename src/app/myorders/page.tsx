@@ -157,8 +157,29 @@ export default function OrdersPage() {
                               >
                                 📩 You’ll receive an invoice via email once your
                                 order is confirmed by the admin.
+                                
+                              </motion.div>
+                            )}
+                            {order.status === Status.CONFIRMED && (
+                              <motion.div
+                                initial={{ opacity: 0, y: 5 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.1 }}
+                                className="bg-yellow-100 text-yellow-800 text-sm rounded-xl px-4 py-2 shadow-inner border border-yellow-300 mt-1"
+                              >
+                                📩 Your order has been successfully placed, and an invoice has been sent to your registered email address.
                                 <br className="hidden sm:block" />
                                 🕵️‍♂️ Don’t forget to check your spam folder too!
+                              </motion.div>
+                            )}{order.status === Status.CANCELLED && (
+                              <motion.div
+                                initial={{ opacity: 0, y: 5 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.1 }}
+                                className="bg-yellow-100 text-yellow-800 text-sm rounded-xl px-4 py-2 shadow-inner border border-yellow-300 mt-1"
+                              >
+                                📩 Sorry, your order has been cancelled. Please contact the store for more information.
+                                
                               </motion.div>
                             )}
                           </div>

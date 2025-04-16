@@ -5,7 +5,9 @@ import { getProduct } from "@/lib/products";
 
 
 export async function GET(
-    { params }: { params: Promise<{ id: string }> }
+  request: Request,
+  { params }: { params: { id: string } }
+  
 ) {
   try {
     const { id } = await params;

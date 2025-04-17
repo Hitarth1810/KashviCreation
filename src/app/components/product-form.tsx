@@ -13,10 +13,15 @@ import type { Product } from "@/types/product";
 
 interface ProductFormProps {
 	product?: Product;
+	update?: boolean;
 	onSuccess: () => void;
 }
 
-export function ProductForm({ product, onSuccess }: ProductFormProps) {
+export function ProductForm({
+	product,
+	onSuccess,
+	update = false,
+}: ProductFormProps) {
 	const [id, setId] = useState(product?.id || "");
 	const [name, setName] = useState(product?.name || "");
 	const [description, setDescription] = useState(product?.description || "");
@@ -51,14 +56,14 @@ export function ProductForm({ product, onSuccess }: ProductFormProps) {
 
 			colors.forEach((color) => formData.append("colors", color)); // Ensure colors are properly sent
 			images.forEach((file) => formData.append("images", file)); // Ensure images are properly appended
-
-			const response = await axios.post(
-				"/api/protected/admin/product",
-				formData,
-				{
+			let response;
+			if (update) {
+				response = await axios.put(`/api/protected/admin/product/${id}`, formData)
+			} else {
+				response = await axios.post("/api/protected/admin/product", formData, {
 					headers: { "Content-Type": "multipart/form-data" },
-				}
-			);
+				});
+			}
 
 			if (response.status === 200) {
 				onSuccess();
@@ -69,7 +74,6 @@ export function ProductForm({ product, onSuccess }: ProductFormProps) {
 			setLoading(false);
 		}
 	};
-
 
 	return (
 		<form onSubmit={handleSubmit} className='space-y-6'>

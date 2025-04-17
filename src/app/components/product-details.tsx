@@ -107,9 +107,7 @@ export function ProductDetails() {
 			{/* Mobile: Show Product Details in Dialog with Edit button and one close */}
 			{isMobile && (
 				<Dialog open={mobileDialogOpen} onOpenChange={setMobileDialogOpen}>
-					<DialogContent
-						className='max-h-[90vh] overflow-y-auto sm:max-w-[95vw]'
-					>
+					<DialogContent className='max-h-[90vh] overflow-y-auto sm:max-w-[95vw]'>
 						<div className='flex items-center justify-between'>
 							<DialogTitle>Product Details</DialogTitle>
 							<Button
@@ -122,7 +120,7 @@ export function ProductDetails() {
 						</div>
 
 						{/* Edit Button inside mobile dialog */}
-						<div className="mb-4">
+						<div className='mb-4'>
 							<Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
 								<DialogTrigger asChild>
 									<Button variant='outline' size='sm'>
@@ -135,6 +133,7 @@ export function ProductDetails() {
 										<DialogTitle>Edit Product</DialogTitle>
 									</DialogHeader>
 									<ProductForm
+										update
 										product={product}
 										onSuccess={() => setEditDialogOpen(false)}
 									/>

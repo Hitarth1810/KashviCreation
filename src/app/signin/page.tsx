@@ -1,5 +1,6 @@
 "use client";
-
+import { useDispatch } from "react-redux";
+import { setUser } from "@/lib/features/user/userSlice";
 import { useState } from "react";
 import Link from "next/link";
 import Popup from "@/app/components/popup";
@@ -8,11 +9,16 @@ import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
 import { RootState } from "@/lib/store";
 
-export default function SignInPage() { 
+export default function SignInPage() {
+  const dispatch = useDispatch();
   const [login] = useLoginMutation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [popup, setPopup] = useState<{ message: string; type: "success" | "error"; isVisible: boolean }>({ message: "", type: "success", isVisible: false });
+  const [popup, setPopup] = useState<{
+    message: string;
+    type: "success" | "error";
+    isVisible: boolean;
+  }>({ message: "", type: "success", isVisible: false });
   const { user } = useSelector((state: RootState) => state.user);
   const router = useRouter();
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -20,19 +26,46 @@ export default function SignInPage() {
     setPopup({ message: "", type: "success", isVisible: false });
 
     try {
-      await login({email, password});
-      setPopup({ message: "Sign in successful!", type: "success", isVisible: true });
+      const result = await login({ email, password }).unwrap();
+
+      // after `const result = await login(...).unwrap();`
+      dispatch(setUser(result.user)); // Immediately update Redux with new user
+      localStorage.setItem("user", JSON.stringify(result.user));
+
+      // Assuming result contains user object and token
+      setPopup({
+        message: "Sign in successful! Redirecting...",
+        type: "success",
+        isVisible: true,
+      });
+
       setTimeout(() => {
-        setPopup({ ...popup, isVisible: false });
-        if(user.role === "ADMIN") router.push("/admin/products")
-        else router.push("/dashboard");
+        setPopup((prev) => ({ ...prev, isVisible: false }));
+
+        // Use returned user role instead of store (store not updated yet)
+        if (result.user.role === "ADMIN") {
+          router.push("/admin/products");
+        } else {
+          router.push("/dashboard?tab=orders");
+        }
       }, 1500);
     } catch (err: unknown) {
-      if (err instanceof Error) {
-        setPopup({ message: err.message, type: "error", isVisible: true });
-      } else {
-        setPopup({ message: "An unknown error occurred", type: "error", isVisible: true });
+      // Check if the backend returned a proper error message
+      if (
+        typeof err === "object" &&
+        err !== null &&
+        "data" in err &&
+        typeof (err as { data?: { message?: string } }).data === "object" &&
+        (err as { data?: { message?: string } }).data !== null &&
+        "message" in (err as { data?: { message?: string } }).data!
+      ) {
       }
+
+      setPopup({
+        message: "Incorrect credentials, please try again.",
+        type: "error",
+        isVisible: true,
+      });
     }
   }
 
@@ -49,7 +82,10 @@ export default function SignInPage() {
         </div>
         <form onSubmit={onSubmit} className="space-y-6">
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-gray-700 mb-2"
+            >
               Email
             </label>
             <input
@@ -63,7 +99,10 @@ export default function SignInPage() {
             />
           </div>
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-gray-700 mb-2"
+            >
               Password
             </label>
             <input
@@ -90,7 +129,9 @@ export default function SignInPage() {
           </div>
         </form>
       </div>
-      {popup.isVisible && <Popup message={popup.message} type={popup.type} onClose={closePopup} />}
+      {popup.isVisible && (
+        <Popup message={popup.message} type={popup.type} onClose={closePopup} />
+      )}
     </div>
   );
 }

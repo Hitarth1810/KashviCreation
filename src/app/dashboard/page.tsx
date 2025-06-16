@@ -15,14 +15,25 @@ import {
   Edit,
   Star,
   Trash2,
+  ChevronDown,
+  ChevronUp,
+  CheckCircle,
+  Clock,
+  XCircle,
 } from "lucide-react";
 import Image from "next/image";
 import AddressForm from "../components/address-form";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
+import { useSearchParams } from "next/navigation";
 import { RootState } from "@/lib/store";
-import { useAddToCartMutation, useGetShippingAddressQuery, useRemoveFromWishlistMutation } from "@/lib/api/userDataApiSlice";
+import {
+  useGetOrdersQuery,
+  useAddToCartMutation,
+  useGetShippingAddressQuery,
+  useRemoveFromWishlistMutation,
+} from "@/lib/api/userDataApiSlice";
 
 interface Product {
   id: string;
@@ -42,14 +53,32 @@ interface Address {
   isDefault: boolean;
   instructions: string | null;
 }
+interface OrderItem {
+  id: string;
+  name: string;
+  images: string[];
+  colors: string[];
+}
 
-export default function Dashboard()  {
-  const [activeTab, setActiveTab] = useState("overview");
+interface Order {
+  id: string;
+  products: OrderItem[];
+  status: "PENDING" | "CONFIRMED" | "COMPLETE" | "CANCELLED";
+  date: string;
+}
+
+export default function Dashboard() {
+  const searchParams = useSearchParams();
+  const defaultTab = searchParams.get("tab") || "overview";
+  const [activeTab, setActiveTab] = useState(defaultTab);
+  const [expandedOrder, setExpandedOrder] = useState<string | null>(null);
   //const { wishlist, removeFromWishlist, addToCart, getShippingAddress } = useUser();
-  const { wishlist, user } = useSelector((state: RootState) => state.user);
+  const user  = useSelector((state: RootState) => state.user.user);
+  const { wishlist} = useSelector((state: RootState) => state.user);
+  const { data: orders = [], isLoading: loadingOrders } = useGetOrdersQuery(user?.id, { skip: !user?.id });
   const [removeFromWishlist] = useRemoveFromWishlistMutation();
   const [addToCart] = useAddToCartMutation();
-  const {data: addresseData} = useGetShippingAddressQuery(user.id);
+  const { data: addresseData } = useGetShippingAddressQuery(user.id);
   const [wishlistItems, setWishlistItems] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showAddressForm, setShowAddressForm] = useState(false);
@@ -58,10 +87,13 @@ export default function Dashboard()  {
   const [addresses, setAddresses] = useState<Address[]>([]);
   const router = useRouter();
 
-  useEffect(()=>{
-    router.refresh()
-    setAddresses(addresseData)
-  },[router, addresseData])
+  useEffect(() => {
+  console.log("ORDERS:", orders);
+}, [orders]);
+
+  useEffect(() => {
+    setAddresses(addresseData);
+  }, [router, addresseData]);
 
   useEffect(() => {
     const fetchWishlistItems = async () => {
@@ -101,6 +133,12 @@ export default function Dashboard()  {
   };
 
   const [, setEditingAddress] = useState<Address | null>(null);
+
+  useEffect(() => {
+  console.log("User ID:", user?.id);
+  console.log("Orders:", orders);
+  console.log("Loading:", loadingOrders);
+}, [user, orders, loadingOrders]);
 
   return (
     <div className="min-h-screen bg-[#FDF7F3]">
@@ -230,7 +268,172 @@ export default function Dashboard()  {
         {/* Main Content */}
         <main className="flex-1 p-6 md:p-6 pt-16 md:pt-6">
           <div className="space-y-6">
-            
+            {activeTab === "orders" && (
+              <motion.div
+                key={activeTab}
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.5 }}
+                className="bg-white p-6 rounded-lg shadow-md"
+              >
+                <h2 className="text-lg font-semibold text-[#8B1D3F] mb-4">
+                  My Orders
+                </h2>
+
+                <AnimatePresence mode="wait" >
+                  <div className="space-y-6">
+                    {loadingOrders ? (
+                      <div className="flex items-center justify-center py-20 text-gray-500">
+                        Loading your orders...
+                      </div>
+                    ) : Array.isArray(orders) && orders.length > 0 ? (
+                      orders.map((order: Order, index: number) => (
+                        <motion.div
+                          key={order.id}
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          exit={{ opacity: 0, x: 20 }}
+                          transition={{ delay: index * 0.1 }}
+                          className="rounded-xl bg-white shadow-lg hover:shadow-xl transition-shadow duration-300"
+                        >
+                          <div
+                            className="flex items-center justify-between p-4 cursor-pointer"
+                            onClick={() =>
+                              setExpandedOrder((prev) =>
+                                prev === order.id ? null : order.id
+                              )
+                            }
+                          >
+                            <div className="flex items-center gap-4">
+                              <div className="relative w-20 aspect-square">
+                                <Image
+                                  src={
+                                    order.products[0]?.images?.[0] ||
+                                    "/placeholder.svg"
+                                  }
+                                  alt="Order product"
+                                  width={80}
+                                  height={80}
+                                  className="object-cover rounded-lg"
+                                />
+                              </div>
+                              <div>
+                                <p className="font-medium text-gray-600">
+                                  Order ID: {order.id}
+                                </p>
+                                <p className="text-sm text-gray-500">
+                                  {new Date(order.date).toLocaleDateString()}
+                                </p>
+                                <div className="mt-2 flex flex-col gap-2">
+                                  <div className="flex items-center gap-2">
+                                    <span className="text-gray-700 font-medium">
+                                      Status:
+                                    </span>
+                                    <span
+                                      className={`flex items-center gap-2 ${
+                                        order.status === "COMPLETE"
+                                          ? "text-green-600"
+                                          : order.status === "CONFIRMED"
+                                          ? "text-amber-600"
+                                          : "text-red-600"
+                                      } font-medium`}
+                                    >
+                                      {order.status === "COMPLETE" && (
+                                        <CheckCircle size={16} />
+                                      )}
+                                      {order.status === "PENDING" && (
+                                        <Clock size={16} />
+                                      )}
+                                      {order.status === "CANCELLED" && (
+                                        <XCircle size={16} />
+                                      )}
+                                      {order.status}
+                                    </span>
+                                  </div>
+
+                                  {/* Status Notes */}
+                                  {order.status === "PENDING" && (
+                                    <div className="bg-yellow-100 text-yellow-800 text-sm rounded-xl px-4 py-2 shadow-inner border border-yellow-300 mt-1">
+                                      📩 You’ll receive an invoice via email once your
+                                order is confirmed by the admin.
+                                    </div>
+                                  )}
+                                  {order.status === "CONFIRMED" && (
+                                    <div className="bg-yellow-100 text-yellow-800 text-sm rounded-xl px-4 py-2 shadow-inner border border-yellow-300 mt-1">
+                                      📩 Your order has been successfully placed, and an invoice has been sent to your registered email address.
+                                <br className="hidden sm:block" />
+                                🕵️‍♂️ Don’t forget to check your spam folder too!
+                                    </div>
+                                  )}
+                                  {order.status === "CANCELLED" && (
+                                    <div className="bg-yellow-100 text-yellow-800 text-sm rounded-xl px-4 py-2 shadow-inner border border-yellow-300 mt-1">
+                                      📩 Sorry, your order has been cancelled. Please contact the store for more information.
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                            {expandedOrder === order.id ? (
+                              <ChevronUp size={24} />
+                            ) : (
+                              <ChevronDown size={24} />
+                            )}
+                          </div>
+
+                          {/* Order items collapsible */}
+                          <AnimatePresence>
+                            {expandedOrder === order.id && (
+                              <motion.div
+                                initial={{ height: 0, opacity: 0 }}
+                                animate={{ height: "auto", opacity: 1 }}
+                                exit={{ height: 0, opacity: 0 }}
+                                className="border-t border-gray-200"
+                              >
+                                {order.products.map(
+                                  (item: OrderItem, itemIndex: number) => (
+                                    <div
+                                      key={item.id}
+                                      className={`p-4 flex items-center gap-4 ${
+                                        itemIndex !== order.products.length - 1
+                                          ? "border-b border-gray-200"
+                                          : ""
+                                      }`}
+                                    >
+                                      <div className="relative w-16 aspect-square">
+                                        <Image
+                                          src={
+                                            item.images[0] || "/placeholder.svg"
+                                          }
+                                          alt={item.name}
+                                          fill
+                                          className="object-cover rounded-lg"
+                                        />
+                                      </div>
+                                      <div>
+                                        <h3 className="font-medium text-gray-900">
+                                          {item.name}
+                                        </h3>
+                                        <p className="text-sm text-gray-600">
+                                          Color: {item.colors?.[0] || "N/A"}
+                                        </p>
+                                      </div>
+                                    </div>
+                                  )
+                                )}
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
+                        </motion.div>
+                      ))
+                    ) : (
+                      <div className="text-center py-10 text-gray-500">
+                        You haven&apos;t placed any orders yet.
+                      </div>
+                    )}
+                  </div>
+                </AnimatePresence>
+              </motion.div>
+            )}
             {activeTab === "wishlist" && (
               <motion.div
                 initial={{ y: 20, opacity: 0 }}
@@ -349,7 +552,6 @@ export default function Dashboard()  {
                     onClick={() => {
                       setShowAddressForm(true);
                       setEditingAddress(null);
-                      
                     }}
                     className="flex items-center px-4 py-2 text-[#9B2C2C] hover:bg-[#9B2C2C]/10 rounded-lg ml-2"
                   >

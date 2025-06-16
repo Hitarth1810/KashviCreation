@@ -20,7 +20,7 @@ interface ProductFormProps {
 export function ProductForm({
 	product,
 	onSuccess,
-	update = false,
+	update, 
 }: ProductFormProps) {
 	const [id, setId] = useState(product?.id || "");
 	const [name, setName] = useState(product?.name || "");
@@ -45,6 +45,7 @@ export function ProductForm({
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		setLoading(true);
+		console.log(update)
 
 		try {
 			const formData = new FormData();

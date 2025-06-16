@@ -93,6 +93,7 @@ export function ProductDetails() {
 										<DialogTitle>Edit Product</DialogTitle>
 									</DialogHeader>
 									<ProductForm
+										update={true}
 										product={product}
 										onSuccess={() => setEditDialogOpen(false)}
 									/>
@@ -133,7 +134,7 @@ export function ProductDetails() {
 										<DialogTitle>Edit Product</DialogTitle>
 									</DialogHeader>
 									<ProductForm
-										update
+										update={true}
 										product={product}
 										onSuccess={() => setEditDialogOpen(false)}
 									/>

@@ -72,6 +72,22 @@ export const userDataApiSlice = apiSlice.injectEndpoints({
 				body: address,
 			}),
 		}),
+		updateShippingAddress: builder.mutation({
+			query: ({ addressId, address }: { addressId: string; address: {
+				pincode: string;
+				address: string;
+				area: string;
+				landmark: string;
+				city: string;
+				state: string;
+				isDefault: boolean;
+				instructions: string | null;
+			} }) => ({
+				url: `/protected/user/shipping-address/`,
+				method: "PUT",
+				body: { addressId, address},
+			}),
+		}),
 		sendOrder: builder.mutation({
 			query: (orderIds: string[]) => ({
 				url: `/protected/user/order`,
@@ -103,4 +119,5 @@ export const {
 	useSendOrderMutation,
 	useGetOrdersQuery,
 	useLazyGetOrdersQuery,
+	useUpdateShippingAddressMutation,
 } = userDataApiSlice;

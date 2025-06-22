@@ -1,15 +1,19 @@
 "use client";
 
-import { useSetShippingAddressMutation } from "@/lib/api/userDataApiSlice";
+import { useSetShippingAddressMutation, useUpdateShippingAddressMutation } from "@/lib/api/userDataApiSlice";
 import { AlertCircle, X } from "lucide-react";
 import { useState } from "react";
 
 export default function AddressForm({
   isOpen,
   setIsOpenAction,
+  editAddress = false,
+  addressId,
 }: {
   isOpen: boolean;
   setIsOpenAction: (open: boolean) => void;
+  editAddress?: boolean;
+  addressId?: string;
 }) {
   const [formData, setFormData] = useState({
     pincode: "",
@@ -25,6 +29,7 @@ export default function AddressForm({
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [setShippingAddress] = useSetShippingAddressMutation()
+  const [updateShippingAddress] = useUpdateShippingAddressMutation();
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -67,7 +72,7 @@ export default function AddressForm({
 
     setIsSubmitting(true);
     try {
-      const success = await setShippingAddress(formData);
+      const success = editAddress ? await setShippingAddress(formData) : await updateShippingAddress({addressId: addressId as string, address: formData});
       if (success) {
         setIsOpenAction(false);
       } else {

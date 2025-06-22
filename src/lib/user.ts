@@ -243,6 +243,19 @@ export async function setShippingAddress(
 	return shippingAddress;
 }
 
+export async function updateShippingAddress(
+	token: string,
+	addressId: string,
+	address: shippingAddress
+) {
+	const { userId } = verifyToken(token);
+	const updatedAddress = await prisma.address.update({
+		where: { id: addressId, userId: userId },
+		data: address,
+	});
+	return updatedAddress;
+}
+
 export async function getCustomerOrders(userId: string) {
 	const orders = await prisma.order.findMany({
 		where: { userId },

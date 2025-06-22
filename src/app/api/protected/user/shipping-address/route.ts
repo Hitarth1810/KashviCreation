@@ -1,4 +1,4 @@
-import { getShippingAddress, setShippingAddress } from "@/lib/user";
+import { getShippingAddress, setShippingAddress, updateShippingAddress } from "@/lib/user";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
@@ -57,6 +57,36 @@ export async function POST(req: Request): Promise<NextResponse> {
 			return NextResponse.json({ message: error.message }, { status: 400 });
 		}
 		// For unknown errors
+		return NextResponse.json(
+			{ message: "Internal Server Error", error: String(error) },
+			{ status: 500 }
+		);
+	}
+}
+
+export async function PUT(req: Request): Promise<NextResponse> {
+	try {
+		// Get token from cookies
+		const token = (await cookies()).get("token")?.value.split(";")[0];
+
+		if (!token) {
+			return NextResponse.json(
+				{ message: "Authentication required" },
+				{ status: 401 }
+			);
+		}
+
+		// Parse and validate request body
+		const {adddressId, address} = await req.json();
+
+		// Update address
+		const shippingAddress = await updateShippingAddress(token, adddressId, address);
+		return NextResponse.json(shippingAddress, { status: 200 });
+	} catch (error) {
+		console.error("Error updating address:", error);
+		if (error instanceof Error) {
+			return NextResponse.json({ message: error.message }, { status: 400 });
+		}
 		return NextResponse.json(
 			{ message: "Internal Server Error", error: String(error) },
 			{ status: 500 }

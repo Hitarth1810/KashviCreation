@@ -10,8 +10,8 @@ datasource db {
 model User {
   id                String    @id @default(auto()) @map("_id") @db.ObjectId
   email             String    @unique
-  phone             Int       @unique
-  password          String
+  phone             Int?   @unique
+  password          String?
   name              String?
   image             String?
   role              Role      @default(USER)

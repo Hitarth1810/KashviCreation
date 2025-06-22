@@ -11,6 +11,7 @@ import WhatsAppButton from "./components/WhatsAppButton";
 import StoreProvider from "./StoreProvider";
 import React, { Suspense } from "react";
 import SEO from "./components/SEO"; // ✅ Import your SEO component
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
 // Initialize Kalam font
 const kalam = Kalam({
@@ -44,19 +45,23 @@ export default function RootLayout({
 			</head>
 			<body>
 				<StoreProvider>
-					<AuthProvider>
-						<UserProvider>
-							<Suspense>
-								{!isAdminRoute && <Navbar />}
-								{!isAdminRoute && (
-									<div className='w-full h-[2px] bg-gradient-to-r from-transparent via-[#ff9933] to-transparent'></div>
-								)}
-								<main>{children}</main>
-								{!isAdminRoute && <Footer />}
-								{!isAdminRoute && <WhatsAppButton />}
-							</Suspense>
-						</UserProvider>
-					</AuthProvider>
+					<GoogleOAuthProvider
+						clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || ""}
+					>
+						<AuthProvider>
+							<UserProvider>
+								<Suspense>
+									{!isAdminRoute && <Navbar />}
+									{!isAdminRoute && (
+										<div className='w-full h-[2px] bg-gradient-to-r from-transparent via-[#ff9933] to-transparent'></div>
+									)}
+									<main>{children}</main>
+									{!isAdminRoute && <Footer />}
+									{!isAdminRoute && <WhatsAppButton />}
+								</Suspense>
+							</UserProvider>
+						</AuthProvider>
+					</GoogleOAuthProvider>
 				</StoreProvider>
 			</body>
 		</html>

@@ -79,6 +79,11 @@ export default function SignInPage() {
       localStorage.setItem("user", JSON.stringify(data.user));
 
       localStorage.setItem("token", data.token);
+	  setPopup({
+        message: "Sign in successful! Redirecting...",
+        type: "success",
+        isVisible: true,
+      });
       window.location.href = data.user.role === "ADMIN"
       ? "/admin/products"
       : "/dashboard?tab=orders";

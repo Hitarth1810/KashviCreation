@@ -1,5 +1,5 @@
 "use client";
-import { useDispatch } from "react-redux";
+
 import { setUser } from "@/lib/features/user/userSlice";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -20,8 +20,8 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/lib/store";
 import { useLogoutMutation } from "@/lib/api/authApiSlice";
 
+
 const NavIcons = () => {
-  const dispatch = useDispatch();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [cartItems, setCartItems] = useState<number[]>([]);
   const router = useRouter();
@@ -58,12 +58,7 @@ const NavIcons = () => {
     };
   }, []);
 
-  useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      dispatch(setUser(JSON.parse(storedUser)));
-    }
-  }, []);
+  
 
   const handleLogout = async () => {
     Cookies.remove("token");

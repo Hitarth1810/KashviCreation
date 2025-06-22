@@ -16,14 +16,27 @@ interface UserListProps {
   setSelectedUser: (userId: number) => void;
 }
 
-export function UserList({ setUpdate, updateDetails, setSelectedUser }: UserListProps) {
+export function UserList({
+  setUpdate,
+  updateDetails,
+  setSelectedUser,
+}: UserListProps) {
   const [users, setUsers] = useState<UserData[]>([]);
 
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await axios.get("/api/protected/admin/customer");
-        setUsers(response.data);
+        const response = await axios.get("/api/protected/admin/customers");
+        console.log("API response:", response.data);
+        if (Array.isArray(response.data)) {
+          setUsers(response.data);
+        } else if (Array.isArray(response.data.users)) {
+          setUsers(response.data.users);
+        } else {
+          console.error("Unexpected API response:", response.data);
+          setUsers([]); // fallback to avoid breaking map()
+        }
+
         setUpdate(false);
       } catch (error) {
         console.error("Error fetching users:", error);
@@ -40,29 +53,30 @@ export function UserList({ setUpdate, updateDetails, setSelectedUser }: UserList
         <div>Phone</div>
       </div>
       <div className="mt-2 space-y-4">
-        {users.map((user) => (
-          <div
-            key={user.id}
-            className="cursor-pointer rounded-lg border p-4 transition-colors hover:bg-muted/50"
-            onClick={() => {
-              setSelectedUser(user.id);
-            }}
-          >
-            {/* For small screens, display in a flex column layout */}
-            <div className="md:hidden flex flex-col space-y-2 text-sm">
-              <div className="font-medium text-primary">{user.name}</div>
-              <div className="text-muted-foreground">{user.email}</div>
-              <div className="text-muted-foreground">{user.phone}</div>
-            </div>
+        {Array.isArray(users) &&
+          users.map((user) => (
+            <div
+              key={user.id}
+              className="cursor-pointer rounded-lg border p-4 transition-colors hover:bg-muted/50"
+              onClick={() => {
+                setSelectedUser(user.id);
+              }}
+            >
+              {/* For small screens, display in a flex column layout */}
+              <div className="md:hidden flex flex-col space-y-2 text-sm">
+                <div className="font-medium text-primary">{user.name}</div>
+                <div className="text-muted-foreground">{user.email}</div>
+                <div className="text-muted-foreground">{user.phone}</div>
+              </div>
 
-            {/* For medium and larger screens, display in a grid layout */}
-            <div className="hidden md:grid grid-cols-3 items-center gap-4 text-sm">
-              <div>{user.name}</div>
-              <div>{user.email}</div>
-              <div>{user.phone}</div>
+              {/* For medium and larger screens, display in a grid layout */}
+              <div className="hidden md:grid grid-cols-3 items-center gap-4 text-sm">
+                <div>{user.name}</div>
+                <div>{user.email}</div>
+                <div>{user.phone}</div>
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
       </div>
     </div>
   );

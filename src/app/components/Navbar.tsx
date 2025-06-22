@@ -1,7 +1,6 @@
 "use client"
 
 import type React from "react"
-
 import { useState, useEffect, useRef, type MouseEvent, type FormEvent } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
@@ -10,6 +9,8 @@ import Image from "next/image"
 import { MenuIcon, X, Search } from "lucide-react"
 import Logo from "@/public/KCLogo.png"
 import LogoLetter from "@/public/KCLogoLetter.png"
+import { useSelector } from "react-redux";
+import { RootState } from "@/lib/store";
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false)
@@ -20,6 +21,7 @@ const Navbar = () => {
   const mobileMenuRef = useRef<HTMLDivElement>(null)
   const menuButtonRef = useRef<HTMLButtonElement>(null)
   const router = useRouter()
+  const user = useSelector((state: RootState) => state.user.user);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -123,7 +125,7 @@ const Navbar = () => {
               <Search className="w-6 h-6 text-white" />
             </button>
             <div className="flex items-center space-x-2">
-              <NavIcons />
+              <NavIcons key={user?.email || "guest"} />
             </div>
             <button
               ref={menuButtonRef}
@@ -248,7 +250,7 @@ const Navbar = () => {
             </div>
 
             <div className="flex items-center space-x-3">
-              <NavIcons />
+              <NavIcons key={user?.email || "guest"} />
             </div>
           </div>
         </div>
